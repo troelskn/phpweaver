@@ -12,7 +12,7 @@ if (realpath($_SERVER['SCRIPT_FILENAME']) === __FILE__) {
   $trace_filename = "dumpfile.xt";
   $file_to_weave = $argv[1];
   if (!is_file($file_to_weave)) {
-    throw new Exception("File isn't readable");
+    throw new Exception("File ($file_to_weave) isn't readable");
   }
 
   // read trace

@@ -138,6 +138,9 @@ class xtrace_TraceSignatureLogger {
     if (preg_match('~^class (\w+)~', $return_value, $mm)) {
       return $mm[1];
     }
+    if (preg_match('~^[0-9]+$~', $return_value)) {
+      return 'integer';
+    }
     return 'mixed';
   }
 }

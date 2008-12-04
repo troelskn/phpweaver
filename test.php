@@ -5,6 +5,7 @@ error_reporting(E_ALL | E_STRICT);
  * todo:
  *   blendType to use StaticReflector + xtrace_TraceIncludesLogger
  *   xtrace -> resources ..
+ *   use static typehints for parameter types
  */
 
 // You need to have simpletest in your include_path
