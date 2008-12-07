@@ -1,6 +1,5 @@
-#!/bin/bash
-print_usage()
-{
+#!/usr/bin/env sh
+print_usage() {
     echo "Traces function signatures in a running PHP script."
     printf "Usage: %s [OPTIONS] PHPSCRIPT\n" $(basename $0)
     echo "  PHPSCRIPT   A PHP file to analyse"
