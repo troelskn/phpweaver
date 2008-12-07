@@ -1,7 +1,7 @@
 php-tracer-weaver
 ===
 
-**php-tracer-weaver** is a tool for analysing parameter types in PHP code, using a combination of static and runtime analysis. It relies on the [xdebug extension](http://www.xdebug.org/docs/execution_trace) to trace function calls.
+**php-tracer-weaver** is a tool for analysing parameter types in PHP code, using a combination of static and runtime analysis. It relies on the [xdebug extension](http://www.xdebug.org/docs/execution_trace) to trace function calls. The result of the analysis can then be used to generate docblock comments, with the proper type annotations.
 
 The project consists of two main tools:
 
