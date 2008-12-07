@@ -16,10 +16,11 @@ if (realpath($_SERVER['SCRIPT_FILENAME']) === __FILE__) {
   }
 
   // read trace
-  $db = new Signatures();
+  $reflector = new StaticReflector();
+  $sigs = new Signatures();
   $trace = new xtrace_TraceReader(new SplFileObject($trace_filename));
-  $collector = new xtrace_TraceSignatureLogger($db);
-  $trace->process(new xtrace_FunctionTracer($collector));
+  $collector = new xtrace_TraceSignatureLogger($sigs, $reflector);
+  $trace->process(new xtrace_FunctionTracer($collector, $reflector));
 
   // transform file
   $scanner = new ScannerMultiplexer();
@@ -27,7 +28,7 @@ if (realpath($_SERVER['SCRIPT_FILENAME']) === __FILE__) {
   $function_body_scanner = $scanner->appendScanner(new FunctionBodyScanner());
   $modifiers_scanner = $scanner->appendScanner(new ModifiersScanner());
   $class_scanner = $scanner->appendScanner(new ClassScanner());
-  $editor = new TracerDocBlockEditor($db, $class_scanner, $function_body_scanner);
+  $editor = new TracerDocBlockEditor($sigs, $class_scanner, $function_body_scanner);
   $transformer = $scanner->appendScanner(new DocCommentEditorTransformer($function_body_scanner, $modifiers_scanner, $parameters_scanner, $editor));
   $tokenizer = new TokenStreamParser();
   $token_stream = $tokenizer->scan(file_get_contents($file_to_weave));

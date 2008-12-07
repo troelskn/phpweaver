@@ -3,9 +3,10 @@ error_reporting(E_ALL | E_STRICT);
 
 /**
  * todo:
- *   blendType to use StaticReflector + xtrace_TraceIncludesLogger
  *   xtrace -> resources ..
  *   use static typehints for parameter types
+ *   use docblock comments for parameter types
+ *   merge with existing docblock comments
  */
 
 // You need to have simpletest in your include_path
@@ -108,32 +109,32 @@ class TestOfStaticReflector extends UnitTestCase {
     $reflector = new StaticReflector();
     $reflector->scanString('<'.'?php class Foo implements Bar, Doink {}');
     $reflector->scanString('<'.'?php class Zip implements Bar {}');
-    $this->assertEqual($reflector->ancestors('Foo'), array('bar', 'doink'));
-    $this->assertEqual($reflector->ancestors('zip'), array('bar'));
+    $this->assertEqual($reflector->ancestors('Foo'), array('Bar', 'Doink'));
+    $this->assertEqual($reflector->ancestors('Zip'), array('Bar'));
   }
   function test_can_collate_same() {
     $reflector = new StaticReflector();
     $reflector->scanString('<'.'?php class Foo extends Bar {}');
     $reflector->scanString('<'.'?php class Zip extends Bar {}');
-    $this->assertEqual($reflector->collate('foo', 'foo'), 'foo');
+    $this->assertEqual($reflector->collate('Foo', 'Foo'), 'Foo');
   }
   function test_can_collate_direct_inheritance() {
     $reflector = new StaticReflector();
     $reflector->scanString('<'.'?php class Foo extends Bar {}');
     $reflector->scanString('<'.'?php class Zip extends Bar {}');
-    $this->assertEqual($reflector->collate('foo', 'zip'), 'bar');
+    $this->assertEqual($reflector->collate('Foo', 'Zip'), 'Bar');
   }
   function test_can_collate_child_to_parent() {
     $reflector = new StaticReflector();
     $reflector->scanString('<'.'?php class Foo {}');
     $reflector->scanString('<'.'?php class Bar extends Foo {}');
-    $this->assertEqual($reflector->collate('foo', 'bar'), 'foo');
+    $this->assertEqual($reflector->collate('Foo', 'Bar'), 'Foo');
   }
   function test_can_collate_parent_to_child() {
     $reflector = new StaticReflector();
     $reflector->scanString('<'.'?php class Foo {}');
     $reflector->scanString('<'.'?php class Bar extends Foo {}');
-    $this->assertEqual($reflector->collate('bar', 'foo'), 'foo');
+    $this->assertEqual($reflector->collate('Bar', 'Foo'), 'Foo');
   }
 }
 
@@ -303,7 +304,6 @@ class TestOfTracer extends UnitTestCase {
   function test_can_execute_sandbox_code() {
     chdir($this->sandbox());
     $output = shell_exec('php ' . escapeshellarg($this->sandbox() . '/main.php'));
-    //$this->dump("\n----\n" . $output . "\n----\n");
     $this->assertEqual("(completed)\n", $output);
   }
   function test_can_execute_sandbox_code_with_instrumentation() {
@@ -321,7 +321,7 @@ class TestOfTracer extends UnitTestCase {
   function test_can_parse_tracefile() {
     chdir($this->sandbox());
     shell_exec(escapeshellcmd($this->bindir() . '/trace.sh') . " " . escapeshellarg($this->sandbox() . '/main.php'));
-    $sigs = new Signatures();
+    $sigs = new Signatures(new DummyClassCollator());
     $this->assertFalse($sigs->has('callit'));
     $trace = new xtrace_TraceReader(new SplFileObject($this->sandbox() . '/dumpfile.xt'));
     $collector = new xtrace_TraceSignatureLogger($sigs);
@@ -331,10 +331,55 @@ class TestOfTracer extends UnitTestCase {
   function test_can_parse_class_arg() {
     chdir($this->sandbox());
     shell_exec(escapeshellcmd($this->bindir() . '/trace.sh') . " " . escapeshellarg($this->sandbox() . '/main.php'));
-    $sigs = new Signatures();
+    $sigs = new Signatures(new DummyClassCollator());
     $trace = new xtrace_TraceReader(new SplFileObject($this->sandbox() . '/dumpfile.xt'));
     $collector = new xtrace_TraceSignatureLogger($sigs);
     $trace->process(new xtrace_FunctionTracer($collector));
     $this->assertEqual('Foo', $sigs->get('callit')->getArgumentById(0)->getType());
+  }
+}
+
+class TestOfCollation extends UnitTestCase {
+  function bindir() {
+    return dirname(__FILE__);
+  }
+  function sandbox() {
+    return dirname(__FILE__) . '/sandbox';
+  }
+  function setUp() {
+    $this->curdir = getcwd();
+    $dir_sandbox = $this->sandbox();
+    mkdir($dir_sandbox);
+    $source_main = '<'.'?php' . "\n" .
+      'class Foo {' . "\n" .
+      '}'. "\n" .
+      'class Bar extends Foo {' . "\n" .
+      '}'. "\n" .
+      'class Cuux extends Foo {' . "\n" .
+      '}'. "\n" .
+      'function do_stuff($x) {}'. "\n" .
+      'do_stuff(new Bar());'. "\n" .
+      'do_stuff(new Cuux());'
+      ;
+    file_put_contents($dir_sandbox . '/main.php', $source_main);
+  }
+  function tearDown() {
+    chdir($this->curdir);
+    $dir_sandbox = $this->sandbox();
+    unlink($dir_sandbox . '/main.php');
+    if (is_file($dir_sandbox . '/dumpfile.xt')) {
+      unlink($dir_sandbox . '/dumpfile.xt');
+    }
+    rmdir($dir_sandbox);
+  }
+  function test_can_collate_classes() {
+    chdir($this->sandbox());
+    shell_exec(escapeshellcmd($this->bindir() . '/trace.sh') . " " . escapeshellarg($this->sandbox() . '/main.php'));
+    $reflector = new StaticReflector();
+    $sigs = new Signatures($reflector);
+    $trace = new xtrace_TraceReader(new SplFileObject($this->sandbox() . '/dumpfile.xt'));
+    $collector = new xtrace_TraceSignatureLogger($sigs, $reflector);
+    $trace->process(new xtrace_FunctionTracer($collector));
+    $this->assertEqual('Foo', $sigs->get('do_stuff')->getArgumentById(0)->getType());
   }
 }

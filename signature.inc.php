@@ -1,10 +1,9 @@
 <?php
 class Signatures {
   protected $signatures_array = array();
-  function __construct($signatures_array = array()) {
-    foreach ($signatures_array as $name => $sig) {
-      $this->signatures_array[strtolower($name)] = $sig;
-    }
+  protected $collator;
+  function __construct(ClassCollator $collator) {
+    $this->collator = $collator;
   }
   function has($func, $class = "") {
     $name = strtolower($class ? ($class . '->' . $func) : $func);
@@ -16,26 +15,24 @@ class Signatures {
     }
     $name = strtolower($class ? ($class . '->' . $func) : $func);
     if (!isset($this->signatures_array[$name])) {
-      $this->signatures_array[$name] = new FunctionSignature();
+      $this->signatures_array[$name] = new FunctionSignature($this->collator);
     }
     return $this->signatures_array[$name];
   }
 }
 
-/**
- * Signatures are collected at 3 different places (in order of authority):
- *   static analysis (typehints)
- *   runtime analysis (trace)
- *   docblockcomments (optional)
- */
 class FunctionSignature {
   protected $arguments = array();
   protected $return_type;
+  protected $collator;
+  function __construct(ClassCollator $collator) {
+    $this->collator = $collator;
+  }
   function blend($arguments, $return_type) {
     if ($arguments) {
       foreach ($arguments as $id => $type) {
         $arg = $this->getArgumentById($id);
-        $arg->blendType($type);
+        $arg->collateWith($type);
       }
     }
     if ($return_type) {
@@ -47,7 +44,7 @@ class FunctionSignature {
   }
   function getArgumentById($id) {
     if (!isset($this->arguments[$id])) {
-      $this->arguments[$id] = new FunctionArgument($id);
+      $this->arguments[$id] = new FunctionArgument($id, null, '???', $this->collator);
     }
     return $this->arguments[$id];
   }
@@ -69,10 +66,16 @@ class FunctionArgument {
   protected $id;
   protected $name;
   protected $type;
-  function __construct($id, $name = null, $type = '???') {
+  protected $collator;
+  function __construct($id, $name = null, $type = '???', ClassCollator $collator) {
     $this->id = $id;
     $this->name = $name;
-    $this->type = $type;
+    if ($type === 'null') {
+      $this->type = '???';
+    } else {
+      $this->type = $type;
+    }
+    $this->collator = $collator;
   }
   function getId() {
     return $this->id;
@@ -95,10 +98,37 @@ class FunctionArgument {
   function setType($type) {
     $this->type = $type;
   }
-  function blendType($type) {
-    // todo: could probably be more intelligent
-    if ($type != '???') {
+  function collateWith($type) {
+    static $primitive = array('boolean', 'string', 'array', 'integer', 'double', 'mixed');
+    if ($this->type === $type) {
+      return;
+    }
+    if ($type === 'null') {
+      // todo: set this->nullable = true
+      return;
+    }
+    if ($this->type === '???') {
       $this->type = $type;
+    } elseif ($type != '???') {
+      if (in_array($type, $primitive) || in_array($this->type, $primitive)) {
+        $tmp = array($this->type, $type);
+        sort($tmp);
+        switch (implode(":", $tmp)) {
+        case 'integer:string':
+        case 'double:string':
+          $this->type = 'string';
+          break;
+        case 'double:integer':
+          $this->type = 'double';
+          break;
+        default:
+          $this->type = 'mixed';
+        }
+      } else {
+        //$this->type = $type;
+        $collate = $this->collator->collate($this->type, $type);
+        $this->type = $collate === '*CANT_COLLATE*' ? 'mixed' : $collate;
+      }
     }
   }
 }

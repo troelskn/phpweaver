@@ -36,13 +36,11 @@ class xtrace_TraceReader {
 class xtrace_FunctionTracer {
   protected $handler;
   protected $stack = array();
-  protected $include_functions;
   protected $internal_functions;
   function __construct($handler) {
     $this->handler = $handler;
     $defined_functions = get_defined_functions();
-    $this->include_functions = array('include', 'include_once', 'require', 'require_once');
-    $this->internal_functions = array_merge($defined_functions['internal'], $this->include_functions);
+    $this->internal_functions = array_merge($defined_functions['internal'], array('include', 'include_once', 'require', 'require_once'));
   }
   function trace_start($time) {}
   function trace_end($time) {}
@@ -66,43 +64,30 @@ class xtrace_FunctionTracer {
     if (!in_array($fun_call['function'], $this->internal_functions)) {
       $this->handler->log($fun_call);
     }
-    if (in_array($fun_call['function'], $this->include_functions)) {
-      $this->handler->log_include($fun_call);
-    }
-  }
-}
-
-class xtrace_TraceIncludesLogger {
-  protected $includes = array();
-  function log($trace) {
-    $this->includes[$trace['filename']] = true;
-  }
-  function log_include($trace) {
-    $this->log($trace);
-  }
-  function getIncludes() {
-    $result = array();
-    foreach (array_keys($this->includes) as $filename) {
-      if (is_file($filename)) {
-        $result[] = $filename;
-      }
-    }
-    return $result;
   }
 }
 
 class xtrace_TraceSignatureLogger {
   protected $signatures;
-  function __construct(Signatures $signatures) {
+  protected $reflector;
+  protected $includes = array();
+  function __construct(Signatures $signatures, StaticReflector $reflector = null) {
     $this->signatures = $signatures;
+    $this->reflector = $reflector;
   }
   function log($trace) {
+    if ($this->reflector) {
+      $filename = isset($trace['filename']) ? $trace['filename'] : '';
+      if (!isset($this->includes[$filename]) && is_file($filename)) {
+        $this->reflector->scanFile($filename);
+      }
+      $this->includes[$filename] = true;
+    }
     $sig = $this->signatures->get($trace['function']);
     $sig->blend(
       $this->parseArguments($trace['arguments']),
       $this->parseReturnType($trace['return_value']));
   }
-  function log_include($trace) { /* void */ }
   function parseArguments($as_string) {
     // todo: resources ..
     $types = array();

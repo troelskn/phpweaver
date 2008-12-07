@@ -1,6 +1,35 @@
 <?php
-class StaticReflector {
+interface ClassCollator {
+  function collate($first, $second);
+}
+
+class DummyClassCollator implements ClassCollator {
+  function collate($first, $second) {
+    return 'mixed';
+  }
+}
+
+class TraceIncludesLogger {
+  protected $reflector;
+  protected $includes = array();
+  function __construct(StaticReflector $reflector) {
+    $this->reflector = $reflector;
+  }
+  function log($trace) {
+    $filename = isset($trace['filename']) ? $trace['filename'] : '';
+    if (!isset($this->includes[$filename]) && is_file($filename)) {
+      $this->reflector->scanFile($filename);
+    }
+    $this->includes[$filename] = true;
+  }
+  function log_include($trace) {
+    $this->log($trace);
+  }
+}
+
+class StaticReflector implements ClassCollator {
   protected $scanner;
+  protected $names = array();
   protected $typemap = array();
   protected $collate_cache = array();
   protected $ancestors_cache = array();
@@ -12,6 +41,8 @@ class StaticReflector {
     $inheritance_scanner->notifyOnImplements(array($this, 'logSupertype'));
   }
   function logSupertype($class, $super) {
+    $this->names[strtolower($super)] = $super;
+    $this->names[strtolower($class)] = $class;
     $class = strtolower($class);
     $super = strtolower($super);
     if (!isset($this->typemap[$class])) {
@@ -34,13 +65,20 @@ class StaticReflector {
   function export() {
     return $this->typemap;
   }
+  protected function symbolsToNames($symbols = array()) {
+    $names = array();
+    foreach ($symbols as $symbol) {
+      $names[] = $this->names[$symbol];
+    }
+    return $names;
+  }
   function ancestors($class) {
     $class = strtolower($class);
-    return isset($this->typemap[$class]) ? $this->typemap[$class] : array();
+    return $this->symbolsToNames(isset($this->typemap[$class]) ? $this->typemap[$class] : array());
   }
   function ancestorsAndSelf($class) {
     $class = strtolower($class);
-    return isset($this->typemap[$class]) ? array_merge(array($class), $this->typemap[$class]) : array($class);
+    return $this->symbolsToNames(isset($this->typemap[$class]) ? array_merge(array($class), $this->typemap[$class]) : array($class));
   }
   function allAncestors($class) {
     $class = strtolower($class);
@@ -55,7 +93,7 @@ class StaticReflector {
     return $result;
   }
   function allAncestorsAndSelf($class) {
-    return array_merge(array(strtolower($class)), $this->allAncestors($class));
+    return array_merge(array($this->names[strtolower($class)]), $this->allAncestors($class));
   }
   /**
    * Finds the first common ancestor, if possible
