@@ -33,6 +33,10 @@ if (realpath($_SERVER['SCRIPT_FILENAME']) === __FILE__) {
   $tokenizer = new TokenStreamParser();
   $token_stream = $tokenizer->scan(file_get_contents($file_to_weave));
   $token_stream->iterate($scanner);
-  echo $transformer->getOutput();
+	if (isset($argv[2])) {
+		file_put_contents($argv[2], $transformer->getOutput());
+	} else {
+		echo $transformer->getOutput();
+	}
 
 }
