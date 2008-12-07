@@ -17,7 +17,7 @@ if (realpath($_SERVER['SCRIPT_FILENAME']) === __FILE__) {
 
   // read trace
   $reflector = new StaticReflector();
-  $sigs = new Signatures();
+  $sigs = new Signatures($reflector);
   $trace = new xtrace_TraceReader(new SplFileObject($trace_filename));
   $collector = new xtrace_TraceSignatureLogger($sigs, $reflector);
   $trace->process(new xtrace_FunctionTracer($collector, $reflector));
