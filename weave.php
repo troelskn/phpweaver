@@ -9,18 +9,24 @@ require_once 'reflector.inc.php';
 if (realpath($_SERVER['SCRIPT_FILENAME']) === __FILE__) {
   error_reporting(E_ALL | E_STRICT);
 
+  if (isset($_SERVER['WEAVE_SETUP_FILE'])) {
+    require_once($_SERVER['WEAVE_SETUP_FILE']);
+  }
+
   $trace_filename = "dumpfile.xt";
   $file_to_weave = $argv[1];
   if (!is_file($file_to_weave)) {
     throw new Exception("File ($file_to_weave) isn't readable");
   }
 
-  // read trace
   $reflector = new StaticReflector();
   $sigs = new Signatures($reflector);
-  $trace = new xtrace_TraceReader(new SplFileObject($trace_filename));
-  $collector = new xtrace_TraceSignatureLogger($sigs, $reflector);
-  $trace->process(new xtrace_FunctionTracer($collector, $reflector));
+  // read trace
+  if (is_file($trace_filename)) {
+    $trace = new xtrace_TraceReader(new SplFileObject($trace_filename));
+    $collector = new xtrace_TraceSignatureLogger($sigs, $reflector);
+    $trace->process(new xtrace_FunctionTracer($collector, $reflector));
+  }
 
   // transform file
   $scanner = new ScannerMultiplexer();
@@ -33,10 +39,10 @@ if (realpath($_SERVER['SCRIPT_FILENAME']) === __FILE__) {
   $tokenizer = new TokenStreamParser();
   $token_stream = $tokenizer->scan(file_get_contents($file_to_weave));
   $token_stream->iterate($scanner);
-	if (isset($argv[2])) {
-		file_put_contents($argv[2], $transformer->getOutput());
-	} else {
-		echo $transformer->getOutput();
-	}
+  if (isset($argv[2])) {
+    file_put_contents($argv[2], $transformer->getOutput());
+  } else {
+    echo $transformer->getOutput();
+  }
 
 }
