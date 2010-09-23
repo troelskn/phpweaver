@@ -19,6 +19,13 @@ class Signatures {
     }
     return $this->signatures_array[$name];
   }
+  function export() {
+    $out = array();
+    foreach ($this->signatures_array as $name => $function_signature) {
+      $out[$name] = $function_signature->export();
+    }
+    return $out;
+  }
 }
 
 class FunctionSignature {
@@ -33,6 +40,9 @@ class FunctionSignature {
       foreach ($arguments as $id => $type) {
         $arg = $this->getArgumentById($id);
         $arg->collateWith($type);
+        if (!$arg->getName()) {
+          $arg->setName($id);
+        }
       }
     }
     if ($return_type) {
@@ -59,6 +69,13 @@ class FunctionSignature {
     $args = $this->arguments;
     ksort($args);
     return $args;
+  }
+  function export() {
+    $out = array();
+    foreach ($this->arguments as $argument) {
+      $out[] = $argument->export();
+    }
+    return $out;
   }
 }
 
@@ -130,5 +147,8 @@ class FunctionArgument {
         $this->type = $collate === '*CANT_COLLATE*' ? 'mixed' : $collate;
       }
     }
+  }
+  function export() {
+    return $this->getName() . ' (' . ($this->isUndefined() ? 'mixed' : $this->getType()) . ')';
   }
 }
