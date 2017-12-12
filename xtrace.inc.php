@@ -8,12 +8,12 @@ class XtraceTraceReader
     /** @var SplFileObject */
     protected $file;
 
-    public function __construct($file)
+    public function __construct(SplFileObject $file)
     {
         $this->file = $file;
     }
 
-    public function process($handler)
+    public function process(XtraceFunctionTracer $handler): void
     {
         foreach ($this->file as $lineNo => $line) {
             $line = trim($line);
@@ -79,7 +79,7 @@ class XtraceFunctionTracer
     /** @var array */
     protected $internalFunctions;
 
-    public function __construct($handler)
+    public function __construct(XtraceTraceSignatureLogger $handler)
     {
         $this->handler = $handler;
         $definedFunctions = get_defined_functions();
@@ -139,7 +139,7 @@ class XtraceTraceSignatureLogger
         $this->reflector = $reflector;
     }
 
-    public function log($trace)
+    public function log(array $trace): void
     {
         if ($this->reflector) {
             $filename = $trace['filename'] ?? '';
@@ -155,7 +155,7 @@ class XtraceTraceSignatureLogger
         );
     }
 
-    public function parseArguments($as_string)
+    public function parseArguments(string $asString): array
     {
         if (!$asString) {
             return [];
@@ -179,7 +179,7 @@ class XtraceTraceSignatureLogger
         return $types;
     }
 
-    public function parseReturnType($return_value)
+    public function parseReturnType(string $returnValue): string
     {
         // todo: numbers, resources ..
         if ('TRUE' === $returnValue || 'FALSE' === $returnValue) {
