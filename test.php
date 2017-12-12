@@ -54,7 +54,7 @@ class TestOfClassScanner extends UnitTestCase
     {
         $scanner = new ClassScanner();
         $tokenizer = new TokenStreamParser();
-        $token_stream = $tokenizer->scan('<' . '?php when (true) { class Foo { function bar($x) {} } }');
+        $token_stream = $tokenizer->scan('<' . '?php while (true) { class Foo { function bar($x) {} } }');
         $token_stream->iterate($scanner);
         $this->assertEqual($scanner->getCurrentClass(), null);
     }
