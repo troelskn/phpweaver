@@ -126,6 +126,9 @@ class TracerDocBlockEditor implements BufferEditor
             foreach ($params as $name => $type) {
                 $doc .= '     * @param ' . $type . str_repeat(' ', $longestType - mb_strlen($type) + 1) . $name . "\n";
             }
+            if ($params) {
+                $doc .= "     *\n";
+            }
             $doc .= '     * @return ' . $signature->getReturnType() . "\n";
             $doc .= '     */';
 
@@ -143,10 +146,12 @@ class TracerDocBlockEditor implements BufferEditor
         if (!$text) {
             return;
         }
+
         if (!$buffer->getFirstToken()->isA(T_DOC_COMMENT)) {
-            $buffer->prepend(new Token("\n  ", -1, $buffer->getFirstToken()->getDepth()));
-            $buffer->prepend(new Token('/** */', T_DOC_COMMENT, $buffer->getFirstToken()->getDepth()));
+            $buffer->prepend(new Token("\n    ", -1, $buffer->getFirstToken()->getDepth()));
+            $buffer->prepend(new Token("\n    /**\n     */", T_DOC_COMMENT, $buffer->getFirstToken()->getDepth()));
         }
+
         $current = $buffer->getFirstToken();
         $new_token = new Token($text, $current->getToken(), $current->getDepth());
         $buffer->replaceToken($current, $new_token);
