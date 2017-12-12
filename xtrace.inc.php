@@ -37,7 +37,6 @@ class XtraceTraceReader
 
             // runtime-generated functions?
             if (preg_match('~^([.\d]+)\s+(\d+)(\s+)-> ([^(]+)\((.*)\)(?:\'d)?\s+([^:]+):([0-9]+)$~', $line, $match)) {
-                //var_dump($line, $match);
                 $handler->functionCall([
                     'time'         => $match[1],
                     'memory_usage' => $match[2],
@@ -52,7 +51,6 @@ class XtraceTraceReader
 
             // Return value
             if (preg_match('~^[.\d]+\s+\d+(\s+)>=> (.+)$~', $line, $match)) {
-                //var_dump($line, $match);
                 $depth = (strlen($match[1]) - 4) / 2;
                 $handler->returnValue($depth, $match[2]);
                 continue;
