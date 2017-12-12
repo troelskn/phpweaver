@@ -198,6 +198,9 @@ class XtraceTraceSignatureLogger
         if (preg_match('~^class (\w+)~', $returnValue, $match)) {
             return $match[1];
         }
+        if (preg_match('~^[.0-9]+$~', $returnValue)) {
+            return 'float';
+        }
         if (preg_match('~^[0-9]+$~', $returnValue)) {
             return 'int';
         }
