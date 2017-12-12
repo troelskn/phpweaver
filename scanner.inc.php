@@ -72,7 +72,7 @@ class TokenStreamParser
         //todo: track indentation
         $stream = new TokenStream();
         $depth = 0;
-        foreach (token_get_all($source) as $token) {
+        foreach (token_get_all($source, true) as $token) {
             if (is_array($token)) {
                 [$token, $text] = $token;
             } elseif (is_string($token)) {
