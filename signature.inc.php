@@ -163,39 +163,30 @@ class FunctionArgument
         $this->type = $type;
     }
 
-    public function collateWith($type)
+    public function collateWith(string $type)
     {
-        static $primitive = ['boolean', 'string', 'array', 'integer', 'double', 'mixed'];
-        if ($this->type === $type) {
-            return;
-        }
-        if ('null' === $type) {
-            // todo: set this->nullable = true
-            return;
-        }
         if ('???' === $this->type) {
             $this->type = $type;
-        } elseif ('???' != $type) {
-            if (in_array($type, $primitive) || in_array($this->type, $primitive)) {
-                $tmp = [$this->type, $type];
-                sort($tmp);
-                switch (implode(':', $tmp)) {
-                    case 'integer:string':
-                    case 'double:string':
-                        $this->type = 'string';
-                        break;
-                    case 'double:integer':
-                        $this->type = 'double';
-                        break;
-                    default:
-                        $this->type = 'mixed';
-                }
-            } else {
-                //$this->type = $type;
-                $collate = $this->collator->collate($this->type, $type);
-                $this->type = '*CANT_COLLATE*' === $collate ? 'mixed' : $collate;
-            }
         }
+
+        if ($type === $this->type || '???' === $type || '' === $type) {
+            return;
+        }
+
+        $tmp = explode('|', $this->type);
+        $tmp = array_filter($tmp);
+        $tmp = array_flip($tmp);
+        $tmp[$type] = 0;
+
+        ksort($tmp);
+        if (isset($tmp['null'])) {
+            unset($tmp['null']);
+            $tmp['null'] = 0; // Always have null as the last option
+        }
+
+        $tmp = array_keys($tmp);
+
+        $this->type = implode('|', $tmp);
     }
 
     public function export()
