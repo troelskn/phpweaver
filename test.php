@@ -403,9 +403,9 @@ class TestOfTracer extends UnitTestCase
         shell_exec(escapeshellcmd($this->bindir() . '/trace.sh') . ' ' . escapeshellarg($this->sandbox() . '/main.php'));
         $sigs = new Signatures(new DummyClassCollator());
         $this->assertFalse($sigs->has('callit'));
-        $trace = new xtrace_TraceReader(new SplFileObject($this->sandbox() . '/dumpfile.xt'));
-        $collector = new xtrace_TraceSignatureLogger($sigs);
-        $trace->process(new xtrace_FunctionTracer($collector));
+        $trace = new XtraceTraceReader(new SplFileObject($this->sandbox() . '/dumpfile.xt'));
+        $collector = new XtraceTraceSignatureLogger($sigs);
+        $trace->process(new XtraceFunctionTracer($collector));
         $this->assertTrue($sigs->has('callit'));
     }
 
@@ -414,9 +414,9 @@ class TestOfTracer extends UnitTestCase
         chdir($this->sandbox());
         shell_exec(escapeshellcmd($this->bindir() . '/trace.sh') . ' ' . escapeshellarg($this->sandbox() . '/main.php'));
         $sigs = new Signatures(new DummyClassCollator());
-        $trace = new xtrace_TraceReader(new SplFileObject($this->sandbox() . '/dumpfile.xt'));
-        $collector = new xtrace_TraceSignatureLogger($sigs);
-        $trace->process(new xtrace_FunctionTracer($collector));
+        $trace = new XtraceTraceReader(new SplFileObject($this->sandbox() . '/dumpfile.xt'));
+        $collector = new XtraceTraceSignatureLogger($sigs);
+        $trace->process(new XtraceFunctionTracer($collector));
         $this->assertEqual('Foo', $sigs->get('callit')->getArgumentById(0)->getType());
     }
 }
@@ -468,9 +468,9 @@ class TestOfCollation extends UnitTestCase
         shell_exec(escapeshellcmd($this->bindir() . '/trace.sh') . ' ' . escapeshellarg($this->sandbox() . '/main.php'));
         $reflector = new StaticReflector();
         $sigs = new Signatures($reflector);
-        $trace = new xtrace_TraceReader(new SplFileObject($this->sandbox() . '/dumpfile.xt'));
-        $collector = new xtrace_TraceSignatureLogger($sigs, $reflector);
-        $trace->process(new xtrace_FunctionTracer($collector));
+        $trace = new XtraceTraceReader(new SplFileObject($this->sandbox() . '/dumpfile.xt'));
+        $collector = new XtraceTraceSignatureLogger($sigs, $reflector);
+        $trace->process(new XtraceFunctionTracer($collector));
         $this->assertEqual('Foo', $sigs->get('do_stuff')->getArgumentById(0)->getType());
     }
 }

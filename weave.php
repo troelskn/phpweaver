@@ -23,9 +23,9 @@ if (__FILE__ === realpath($_SERVER['SCRIPT_FILENAME'])) {
     $sigs = new Signatures($reflector);
     // read trace
     if (is_file($trace_filename)) {
-        $trace = new xtrace_TraceReader(new SplFileObject($trace_filename));
-        $collector = new xtrace_TraceSignatureLogger($sigs, $reflector);
-        $trace->process(new xtrace_FunctionTracer($collector, $reflector));
+        $trace = new XtraceTraceReader(new SplFileObject($trace_filename));
+        $collector = new XtraceTraceSignatureLogger($sigs, $reflector);
+        $trace->process(new XtraceFunctionTracer($collector, $reflector));
     }
 
     // transform file

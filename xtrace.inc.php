@@ -1,8 +1,9 @@
 <?php
+
 /**
  * Class for parsing xdebug function trace files.
  */
-class xtrace_TraceReader
+class XtraceTraceReader
 {
     /** @var SplFileObject */
     protected $file;
@@ -14,83 +15,116 @@ class xtrace_TraceReader
 
     public function process($handler)
     {
-        foreach ($this->file as $line) {
-            if (preg_match('~TRACE START \\[([0-9 :-]+)\\]~', $line, $mm)) {
-                $handler->trace_start($mm[1]);
-            } elseif (preg_match('~TRACE END   \\[([0-9 :-]+)\\]~', $line, $mm)) {
-                $handler->trace_end($mm[1]);
-            } elseif (preg_match('~^\\s+([0-9.]+)\\s+([0-9.]+)\\s+-> ([^(]+)\\((.*)\\)\\s+([^:]+):([0-9]+)$~', $line, $mm)) { // runtime-generated functions?
-                $handler->fun_call([
-                'time'         => $mm[1],
-                'memory_usage' => $mm[2],
-                'function'     => $mm[3],
-                'arguments'    => $mm[4],
-                'filename'     => $mm[5],
-                'linenumber'   => $mm[6], ]);
-            } elseif (preg_match('~^\\s+>=> (.+)$~', $line, $mm)) {
-                $handler->return_value($mm[1]);
-            } elseif (preg_match('~^\\s+[0-9.]+\\s+[0-9.]+$~', $line)) {
-                // dunno what this is?
-            } elseif (preg_match('~^\\s*$~', $line)) {
-            } else {
-                $handler->miss($line);
+        foreach ($this->file as $lineNo => $line) {
+            $line = trim($line);
+
+            // Blank line
+            if (!$line) {
+                continue;
             }
+
+            // Trace start
+            if (preg_match('~TRACE START \[([0-9 :-]+)\]~', $line, $match)) {
+                $handler->traceStart($match[1]);
+                continue;
+            }
+
+            // Trace end
+            if (preg_match('~TRACE END   \[([0-9 :-]+)\]~', $line, $match)) {
+                $handler->traceEnd($match[1]);
+                return;
+            }
+
+            // runtime-generated functions?
+            if (preg_match('~^([.\d]+)\s+(\d+)(\s+)-> ([^(]+)\((.*)\)(?:\'d)?\s+([^:]+):([0-9]+)$~', $line, $match)) {
+                //var_dump($line, $match);
+                $handler->functionCall([
+                    'time'         => $match[1],
+                    'memory_usage' => $match[2],
+                    'depth'        => (strlen($match[3]) - 3) / 2,
+                    'function'     => $match[4],
+                    'arguments'    => $match[5],
+                    'filename'     => $match[6],
+                    'linenumber'   => $match[7],
+                ]);
+                continue;
+            }
+
+            // Return value
+            if (preg_match('~^[.\d]+\s+\d+(\s+)>=> (.+)$~', $line, $match)) {
+                //var_dump($line, $match);
+                $depth = (strlen($match[1]) - 4) / 2;
+                $handler->returnValue($depth, $match[2]);
+                continue;
+            }
+
+            // dunno what this is?
+            if (preg_match('~^[.\d]+\s+\d+$~', $line, $match)) {
+                continue;
+            }
+
+            throw new Exception("Could not parse line " . $lineNo . ': ' . $line ."\n");
         }
+
+        $handler->traceEnd();
     }
 }
 
-class xtrace_FunctionTracer
+class XtraceFunctionTracer
 {
     /** @var XtraceTraceSignatureLogger */
     protected $handler;
     /** @var array */
     protected $stack = [];
-    protected $internal_functions;
+    /** @var array */
+    protected $internalFunctions;
 
     public function __construct($handler)
     {
         $this->handler = $handler;
-        $defined_functions = get_defined_functions();
-        $this->internal_functions = array_merge($defined_functions['internal'], ['include', 'include_once', 'require', 'require_once']);
+        $definedFunctions = get_defined_functions();
+
+        $this->internalFunctions = array_merge(
+            $definedFunctions['internal'],
+            ['include', 'include_once', 'require', 'require_once']
+        );
     }
 
-    public function trace_start($time)
+    public function traceStart(string $time): void
     {
     }
 
-    public function trace_end($time)
+    public function traceEnd(string $time = null): void
     {
+        $this->returnValue(0);
     }
 
-    public function miss($line)
-    {
-        echo "miss($line)\n";
-        die;
-    }
-
-    public function fun_call($trace)
+    public function functionCall(array $trace): void
     {
         $this->stack[] = $trace;
     }
 
-    public function return_value($value)
+    public function returnValue(int $depth, string $value = 'VOID'): void
     {
-        $fun_call = array_pop($this->stack);
-        if (!isset($fun_call['function'])) {
-            echo "xtrace_FunctionTracer failure in return_value()\n";
-            var_dump($this->stack);
-            var_dump($fun_call);
-            var_dump($value);
-            exit;
+        $functionCall = array_pop($this->stack);
+
+        $previousCall = end($this->stack);
+        if ($previousCall && $depth < $previousCall['depth']) {
+            $this->returnValue($previousCall['depth']);
         }
-        $fun_call['return_value'] = $value;
-        if (!in_array($fun_call['function'], $this->internal_functions)) {
-            $this->handler->log($fun_call);
+
+        $functionCall['returnValue'] = $value;
+        if (!in_array($functionCall['function'], $this->internalFunctions)) {
+            $this->handler->log($functionCall);
+        }
+
+        if ($previousCall && $depth === $previousCall['depth']) {
+            $this->returnValue($previousCall['depth']);
         }
     }
 }
 
-class xtrace_TraceSignatureLogger
+class XtraceTraceSignatureLogger
 {
     /** @var Signatures */
     protected $signatures;
@@ -117,26 +151,29 @@ class xtrace_TraceSignatureLogger
         $sig = $this->signatures->get($trace['function']);
         $sig->blend(
             $this->parseArguments($trace['arguments']),
-            $this->parseReturnType($trace['return_value'])
+            $this->parseReturnType($trace['returnValue'])
         );
     }
 
     public function parseArguments($as_string)
     {
+        if (!$asString) {
+            return [];
+        }
+
+        $typeTransforms = ['~^(string)\([0-9]+\)$~', '~^(array)\([0-9]+\)$~', '~^class (.+)$~'];
+        $typeAliases = ['long' => 'int', 'double' => 'float'];
         // todo: resources ..
         $types = [];
-        foreach (explode(', ', $as_string) as $type) {
-            if ($type) {
-                if (preg_match('~^string\\([0-9]+\\)$~', $type)) {
-                    $types[] = 'string';
-                } elseif (preg_match('~^array\\([0-9]+\\)$~', $type)) {
-                    $types[] = 'array';
-                } elseif (preg_match('~^class (.+)$~', $type, $mm)) {
-                    $types[] = $mm[1];
-                } else {
-                    $types[] = $type;
+        foreach (explode(', ', $asString) as $type) {
+            foreach ($typeTransforms as $regex) {
+                if (preg_match($regex, $type, $match)) {
+                    $type = $match[1];
+                    break;
                 }
             }
+
+            $types[] = $typeAliases[$type] ?? $type;
         }
 
         return $types;
@@ -145,25 +182,28 @@ class xtrace_TraceSignatureLogger
     public function parseReturnType($return_value)
     {
         // todo: numbers, resources ..
-        if ('TRUE' === $return_value || 'FALSE' === $return_value) {
+        if ('TRUE' === $returnValue || 'FALSE' === $returnValue) {
             return 'boolean';
         }
-        if ('NULL' === $return_value) {
+        if ('NULL' === $returnValue) {
             return 'null';
         }
-        if ("'" === substr($return_value, 0, 1)) {
+        if ('VOID' === $returnValue) {
+            return 'void';
+        }
+        if ("'" === substr($returnValue, 0, 1)) {
             return 'string';
         }
-        if ('array' === substr($return_value, 0, 5)) {
+        if ('array' === substr($returnValue, 0, 5)) {
             return 'array';
         }
-        if (preg_match('~^class (\w+)~', $return_value, $mm)) {
-            return $mm[1];
+        if (preg_match('~^class (\w+)~', $returnValue, $match)) {
+            return $match[1];
         }
-        if (preg_match('~^[0-9]+$~', $return_value)) {
+        if (preg_match('~^[0-9]+$~', $returnValue)) {
             return 'integer';
         }
 
-        return 'mixed';
+        throw new Exception('Unknown return value: ' . $returnValue);
     }
 }
