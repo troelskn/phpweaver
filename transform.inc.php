@@ -97,23 +97,37 @@ class TracerDocBlockEditor implements BufferEditor
     protected $class_scanner;
     protected $function_body_scanner;
 
-    public function __construct(Signatures $signatures, ClassScanner $class_scanner, FunctionBodyScanner $function_body_scanner)
+    public function __construct(Signatures $signatures, ClassScanner $class_scanner, FunctionBodyScanner $function_body_scanner, FunctionParametersScanner $parameters_scanner)
     {
         $this->signatures = $signatures;
         $this->class_scanner = $class_scanner;
         $this->function_body_scanner = $function_body_scanner;
+        $this->parameters_scanner = $parameters_scanner;
     }
 
-    public function getCommentFor($func, $class = '')
+    public function generateDoc($func, $class = '', $params = [])
     {
         if ($this->signatures->has($func, $class)) {
             $signature = $this->signatures->get($func, $class);
-            $doc = "/**\n";
-            foreach ($signature->getArguments() as $argument) {
-                $doc .= '    * @param ' . $argument->getType() . "\n";
+
+            $key = 0;
+            $longestType = 0;
+            $seenArguments = $signature->getArguments();
+            foreach ($params as $name => $type) {
+                $seenArgument = $seenArguments[$key];
+                $seenArgument->collateWith($type);
+                $longestType = max(mb_strlen($seenArgument->getType()), $longestType);
+                $params[$name] = $seenArgument->getType();
+                $key++;
             }
-            $doc .= '    * @return ' . $signature->getReturnType() . "\n";
-            $doc .= '    *' . '/';
+
+            $doc = "\n";
+            $doc .= "    /**\n";
+            foreach ($params as $name => $type) {
+                $doc .= '     * @param ' . $type . str_repeat(' ', $longestType - mb_strlen($type) + 1) . $name . "\n";
+            }
+            $doc .= '     * @return ' . $signature->getReturnType() . "\n";
+            $doc .= '     */';
 
             return $doc;
         }
@@ -121,7 +135,11 @@ class TracerDocBlockEditor implements BufferEditor
 
     public function editBuffer(TokenBuffer $buffer)
     {
-        $text = $this->getCommentFor($this->function_body_scanner->getName(), $this->class_scanner->getCurrentClass());
+        $text = $this->generateDoc(
+            $this->function_body_scanner->getName(),
+            $this->class_scanner->getCurrentClass(),
+            $this->parameters_scanner->getCurrentSignatureAsTypeMap()
+        );
         if (!$text) {
             return;
         }

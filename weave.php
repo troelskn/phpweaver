@@ -34,7 +34,7 @@ if (__FILE__ === realpath($_SERVER['SCRIPT_FILENAME'])) {
     $function_body_scanner = $scanner->appendScanner(new FunctionBodyScanner());
     $modifiers_scanner = $scanner->appendScanner(new ModifiersScanner());
     $class_scanner = $scanner->appendScanner(new ClassScanner());
-    $editor = new TracerDocBlockEditor($sigs, $class_scanner, $function_body_scanner);
+    $editor = new TracerDocBlockEditor($sigs, $class_scanner, $function_body_scanner, $parameters_scanner);
     $transformer = $scanner->appendScanner(new DocCommentEditorTransformer($function_body_scanner, $modifiers_scanner, $parameters_scanner, $editor));
     $tokenizer = new TokenStreamParser();
     $token_stream = $tokenizer->scan(file_get_contents($file_to_weave));
