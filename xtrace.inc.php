@@ -4,6 +4,7 @@
  */
 class xtrace_TraceReader
 {
+    /** @var SplFileObject */
     protected $file;
 
     public function __construct($file)
@@ -40,7 +41,9 @@ class xtrace_TraceReader
 
 class xtrace_FunctionTracer
 {
+    /** @var XtraceTraceSignatureLogger */
     protected $handler;
+    /** @var array */
     protected $stack = [];
     protected $internal_functions;
 
@@ -89,8 +92,11 @@ class xtrace_FunctionTracer
 
 class xtrace_TraceSignatureLogger
 {
+    /** @var Signatures */
     protected $signatures;
+    /** @var StaticReflector */
     protected $reflector;
+    /** @var array */
     protected $includes = [];
 
     public function __construct(Signatures $signatures, StaticReflector $reflector = null)

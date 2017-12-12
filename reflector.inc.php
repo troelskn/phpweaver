@@ -138,8 +138,10 @@ class StaticReflector implements ClassCollator
     /**
      * Finds the first common ancestor, if possible.
      *
-     * @param mixed $first
-     * @param mixed $second
+     * @param string $first
+     * @param string $second
+     *
+     * @return string
      */
     public function collate($first, $second)
     {
