@@ -128,6 +128,10 @@ class StaticReflector implements ClassCollator
 
     public function allAncestorsAndSelf($class)
     {
+        if (!isset($this->names[strtolower($class)])) {
+            return $this->allAncestors($class);
+        }
+
         return array_merge([$this->names[strtolower($class)]], $this->allAncestors($class));
     }
 
