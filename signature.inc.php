@@ -43,39 +43,40 @@ class Signatures
 class FunctionSignature
 {
     protected $arguments = [];
-    protected $return_type;
+    /** @var FunctionArgument */
+    protected $returnType;
     protected $collator;
 
     public function __construct(ClassCollator $collator)
     {
         $this->collator = $collator;
+        $this->returnType = new FunctionArgument(0);
     }
 
-    public function blend($arguments, $return_type)
+    public function blend(array $arguments, string $returnType)
     {
-        if ($arguments) {
-            foreach ($arguments as $id => $type) {
-                $arg = $this->getArgumentById($id);
-                $arg->collateWith($type);
-                if (!$arg->getName()) {
-                    $arg->setName($id);
-                }
+        foreach ($arguments as $id => $type) {
+            $arg = $this->getArgumentById($id);
+            $arg->collateWith($type);
+            if (!$arg->getName()) {
+                $arg->setName($id);
             }
         }
-        if ($return_type) {
-            $this->return_type = $return_type;
+
+        if ($returnType) {
+            $this->returnType->collateWith($returnType);
         }
     }
 
-    public function getReturnType()
+    public function getReturnType(): string
     {
-        return $this->return_type;
+        return $this->returnType->getType();
     }
 
     public function getArgumentById($id)
     {
         if (!isset($this->arguments[$id])) {
-            $this->arguments[$id] = new FunctionArgument($id, null, '???', $this->collator);
+            $this->arguments[$id] = new FunctionArgument($id);
         }
 
         return $this->arguments[$id];
@@ -114,9 +115,8 @@ class FunctionArgument
     protected $id;
     protected $name;
     protected $type;
-    protected $collator;
 
-    public function __construct($id, $name = null, $type = '???', ClassCollator $collator)
+    public function __construct($id, $name = null, $type = '???')
     {
         $this->id = $id;
         $this->name = $name;
@@ -125,7 +125,6 @@ class FunctionArgument
         } else {
             $this->type = $type;
         }
-        $this->collator = $collator;
     }
 
     public function getId()
