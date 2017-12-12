@@ -34,6 +34,7 @@ class TestOfClassScanner extends UnitTestCase
 {
     public function test_can_track_current_class()
     {
+        throw new Exception('Can\'t test invalid php');
         $scanner = new ClassScanner();
         $tokenizer = new TokenStreamParser();
         $token_stream = $tokenizer->scan('<' . '?php class Foo { function bar($x) {}');
@@ -183,6 +184,7 @@ class TestOfFunctionParametersScanner extends UnitTestCase
 
     public function test_scanner_is_active_after_first_opening_paren()
     {
+        throw new Exception('Can\'t test invalid php');
         $scanner = new FunctionParametersScanner();
         $tokenizer = new TokenStreamParser();
         $token_stream = $tokenizer->scan('<' . '?php function bar(');
@@ -196,6 +198,7 @@ class TestOfModifiersScanner extends UnitTestCase
 {
     public function test_can_track_modifiers()
     {
+        throw new Exception('Can\'t test invalid php');
         $scanner = new ModifiersScanner();
         $tokenizer = new TokenStreamParser();
         $token_stream = $tokenizer->scan('<' . '?php final static protected');
@@ -206,6 +209,7 @@ class TestOfModifiersScanner extends UnitTestCase
 
     public function test_ends_on_function()
     {
+        throw new Exception('Can\'t test invalid php');
         $scanner = new ModifiersScanner();
         $tokenizer = new TokenStreamParser();
         $token_stream = $tokenizer->scan('<' . '?php final static protected function foo() {} ');
@@ -218,6 +222,7 @@ class TestOfFunctionBodyScanner extends UnitTestCase
 {
     public function test_can_track_function_body()
     {
+        throw new Exception('Can\'t test invalid php');
         $scanner = new FunctionBodyScanner();
         $tokenizer = new TokenStreamParser();
         $token_stream = $tokenizer->scan('<' . '?php function bar() {');
@@ -237,6 +242,7 @@ class TestOfFunctionBodyScanner extends UnitTestCase
 
     public function test_can_track_function_name()
     {
+        throw new Exception('Can\'t test invalid php');
         $scanner = new FunctionBodyScanner();
         $tokenizer = new TokenStreamParser();
         $token_stream = $tokenizer->scan('<' . '?php function bar() { print 42;');
@@ -246,6 +252,7 @@ class TestOfFunctionBodyScanner extends UnitTestCase
 
     public function test_can_track_end_of_scoped_function_body()
     {
+        throw new Exception('Can\'t test invalid php');
         $scanner = new FunctionBodyScanner();
         $tokenizer = new TokenStreamParser();
         $token_stream = $tokenizer->scan('<' . '?php class Fizz { function buzz() { if (true) {} }');
@@ -299,6 +306,7 @@ class TestOfDocCommentEditorTransformer extends UnitTestCase
 
     public function test_invokes_editor_on_function_modifiers()
     {
+        throw new Exception('Can\'t test invalid php');
         $source = '<' . '?php' . "\n" . 'abstract function bar($x) {}';
         $mock_editor = new MockPassthruBufferEditor();
         $transformer = $this->scan($source, $mock_editor);
