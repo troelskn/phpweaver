@@ -181,7 +181,7 @@ class XtraceTraceSignatureLogger
     {
         // todo: numbers, resources ..
         if ('TRUE' === $returnValue || 'FALSE' === $returnValue) {
-            return 'boolean';
+            return 'bool';
         }
         if ('NULL' === $returnValue) {
             return 'null';
@@ -199,7 +199,7 @@ class XtraceTraceSignatureLogger
             return $match[1];
         }
         if (preg_match('~^[0-9]+$~', $returnValue)) {
-            return 'integer';
+            return 'int';
         }
 
         throw new Exception('Unknown return value: ' . $returnValue);
