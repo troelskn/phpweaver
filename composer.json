@@ -22,6 +22,8 @@
         }
     },
     "autoload-dev": {
-        "classmap": ["tests"]
+        "psr-4": {
+            "PHPTracerWeaver\\Test\\": "tests/PHPTracerWeaver"
+        }
     }
 }
