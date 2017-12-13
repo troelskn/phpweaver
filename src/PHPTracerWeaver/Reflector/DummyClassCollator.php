@@ -10,6 +10,6 @@ class DummyClassCollator implements ClassCollatorInterface
      */
     public function collate(string $first, string $second): string
     {
-        return 'mixed';
+        return $first . '|' . $second;
     }
 }
