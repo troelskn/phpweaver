@@ -17,15 +17,15 @@ class TestOfDocCommentEditorTransformer extends TestCase
     {
         $editor = $editor ? $editor : new PassthruBufferEditor();
         $scanner = new ScannerMultiplexer();
-        $parameters_scanner = $scanner->appendScanner(new FunctionParametersScanner());
-        $function_body_scanner = $scanner->appendScanner(new FunctionBodyScanner());
-        $modifiers_scanner = $scanner->appendScanner(new ModifiersScanner());
+        $parametersScanner = $scanner->appendScanner(new FunctionParametersScanner());
+        $functionBodyScanner = $scanner->appendScanner(new FunctionBodyScanner());
+        $modifiersScanner = $scanner->appendScanner(new ModifiersScanner());
         $transformer = $scanner->appendScanner(
-            new DocCommentEditorTransformer($function_body_scanner, $modifiers_scanner, $parameters_scanner, $editor)
+            new DocCommentEditorTransformer($functionBodyScanner, $modifiersScanner, $parametersScanner, $editor)
         );
         $tokenizer = new TokenStreamParser();
-        $token_stream = $tokenizer->scan($source);
-        $token_stream->iterate($scanner);
+        $tokenStream = $tokenizer->scan($source);
+        $tokenStream->iterate($scanner);
 
         return $transformer;
     }
@@ -40,36 +40,36 @@ class TestOfDocCommentEditorTransformer extends TestCase
     public function testInvokesEditorOnFunction()
     {
         $source = '<?php' . "\n" . 'function bar($x) {}';
-        $mock_editor = new MockPassthruBufferEditor();
-        $transformer = $this->scan($source, $mock_editor);
-        $this->assertInstanceOf(TokenBuffer::class, $mock_editor->buffer);
-        $this->assertSame('function bar($x) ', $mock_editor->buffer->toText());
+        $mockEditor = new MockPassthruBufferEditor();
+        $transformer = $this->scan($source, $mockEditor);
+        $this->assertInstanceOf(TokenBuffer::class, $mockEditor->buffer);
+        $this->assertSame('function bar($x) ', $mockEditor->buffer->toText());
     }
 
     public function testInvokesEditorOnFunctionModifiers()
     {
         $source = '<?php' . "\n" . 'class Foo { abstract function bar($x) {} }';
-        $mock_editor = new MockPassthruBufferEditor();
-        $transformer = $this->scan($source, $mock_editor);
-        $this->assertInstanceOf(TokenBuffer::class, $mock_editor->buffer);
-        $this->assertSame('abstract function bar($x) ', $mock_editor->buffer->toText());
+        $mockEditor = new MockPassthruBufferEditor();
+        $transformer = $this->scan($source, $mockEditor);
+        $this->assertInstanceOf(TokenBuffer::class, $mockEditor->buffer);
+        $this->assertSame('abstract function bar($x) ', $mockEditor->buffer->toText());
     }
 
     public function testDoesntInvokeEditorOnClassModifiers()
     {
         $source = '<?php' . "\n" . 'abstract class Foo {}';
-        $mock_editor = new MockPassthruBufferEditor();
-        $transformer = $this->scan($source, $mock_editor);
-        $this->assertNull($mock_editor->buffer);
+        $mockEditor = new MockPassthruBufferEditor();
+        $transformer = $this->scan($source, $mockEditor);
+        $this->assertNull($mockEditor->buffer);
     }
 
     public function testInvokesEditorOnDocblock()
     {
         $source = '<?php' . "\n" . '/** Lorem Ipsum */' . "\n" . 'function bar($x) {}';
-        $mock_editor = new MockPassthruBufferEditor();
-        $transformer = $this->scan($source, $mock_editor);
-        $this->assertInstanceOf(TokenBuffer::class, $mock_editor->buffer);
-        $this->assertTrue($mock_editor->buffer->getFirstToken()->isA(T_DOC_COMMENT));
-        $this->assertSame('/** Lorem Ipsum */' . "\n" . 'function bar($x) ', $mock_editor->buffer->toText());
+        $mockEditor = new MockPassthruBufferEditor();
+        $transformer = $this->scan($source, $mockEditor);
+        $this->assertInstanceOf(TokenBuffer::class, $mockEditor->buffer);
+        $this->assertTrue($mockEditor->buffer->getFirstToken()->isA(T_DOC_COMMENT));
+        $this->assertSame('/** Lorem Ipsum */' . "\n" . 'function bar($x) ', $mockEditor->buffer->toText());
     }
 }

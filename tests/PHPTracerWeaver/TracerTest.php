@@ -24,9 +24,9 @@ class TestOfTracer extends TestCase
     public function setUp()
     {
         $this->curdir = getcwd();
-        $dir_sandbox = $this->sandbox();
-        mkdir($dir_sandbox);
-        $source_include = '<?php' . "\n" .
+        $dirSandbox = $this->sandbox();
+        mkdir($dirSandbox);
+        $sourceInclude = '<?php' . "\n" .
         'function callit($foo) {' . "\n" .
         '  return new Bar();' . "\n" .
         '}' . "\n" .
@@ -38,24 +38,24 @@ class TestOfTracer extends TestCase
         '}' . "\n" .
         'class Bar {' . "\n" .
         '}';
-        file_put_contents($dir_sandbox . '/include.php', $source_include);
-        $source_main = '<?php' . "\n" .
+        file_put_contents($dirSandbox . '/include.php', $sourceInclude);
+        $sourceMain = '<?php' . "\n" .
         'require_once "include.php";' . "\n" .
         'callit(new Foo(42));' . "\n" .
         'echo "(completed)\n";';
-        file_put_contents($dir_sandbox . '/main.php', $source_main);
+        file_put_contents($dirSandbox . '/main.php', $sourceMain);
     }
 
     public function tearDown()
     {
         chdir($this->curdir);
-        $dir_sandbox = $this->sandbox();
-        unlink($dir_sandbox . '/include.php');
-        unlink($dir_sandbox . '/main.php');
-        if (is_file($dir_sandbox . '/dumpfile.xt')) {
-            unlink($dir_sandbox . '/dumpfile.xt');
+        $dirSandbox = $this->sandbox();
+        unlink($dirSandbox . '/include.php');
+        unlink($dirSandbox . '/main.php');
+        if (is_file($dirSandbox . '/dumpfile.xt')) {
+            unlink($dirSandbox . '/dumpfile.xt');
         }
-        rmdir($dir_sandbox);
+        rmdir($dirSandbox);
     }
 
     public function testCanExecuteSandboxCode()

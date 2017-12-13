@@ -4,56 +4,56 @@
 class ClassScanner implements ScannerInterface
 {
     /** @var int */
-    protected $current_class_scope = 0;
-    protected $current_class;
+    protected $currentClassScope = 0;
+    protected $currentClass;
     /** @var int */
     protected $state = 0;
-    protected $on_class_begin;
-    protected $on_class_end;
-    protected $on_classname;
+    protected $onClassBegin;
+    protected $onClassEnd;
+    protected $onClassname;
 
     public function notifyOnClassBegin($callback)
     {
-        $this->on_class_begin = $callback;
+        $this->onClassBegin = $callback;
     }
 
     public function notifyOnClassEnd($callback)
     {
-        $this->on_class_end = $callback;
+        $this->onClassEnd = $callback;
     }
 
     public function notifyOnClassName($callback)
     {
-        $this->on_classname = $callback;
+        $this->onClassname = $callback;
     }
 
     public function accept(Token $token)
     {
         if ($token->isA(T_INTERFACE) || $token->isA(T_CLASS)) {
             $this->state = 1;
-            if (is_callable($this->on_class_begin)) {
-                call_user_func($this->on_class_begin);
+            if (is_callable($this->onClassBegin)) {
+                call_user_func($this->onClassBegin);
             }
         } elseif ($token->isA(T_STRING) && 1 === $this->state) {
-            $this->current_class = $token->getText();
-            $this->current_class_scope = $token->getDepth();
+            $this->currentClass = $token->getText();
+            $this->currentClassScope = $token->getDepth();
             $this->state = 2;
-            if (is_callable($this->on_classname)) {
-                call_user_func($this->on_classname);
+            if (is_callable($this->onClassname)) {
+                call_user_func($this->onClassname);
             }
-        } elseif (2 === $this->state && $token->getDepth() > $this->current_class_scope) {
+        } elseif (2 === $this->state && $token->getDepth() > $this->currentClassScope) {
             $this->state = 3;
-        } elseif (3 === $this->state && $token->getDepth() === $this->current_class_scope) {
-            $this->current_class = null;
+        } elseif (3 === $this->state && $token->getDepth() === $this->currentClassScope) {
+            $this->currentClass = null;
             $this->state = 0;
-            if (is_callable($this->on_class_end)) {
-                call_user_func($this->on_class_end);
+            if (is_callable($this->onClassEnd)) {
+                call_user_func($this->onClassEnd);
             }
         }
     }
 
     public function getCurrentClass()
     {
-        return $this->current_class;
+        return $this->currentClass;
     }
 }

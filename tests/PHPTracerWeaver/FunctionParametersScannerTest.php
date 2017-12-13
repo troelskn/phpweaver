@@ -10,8 +10,8 @@ class TestOfFunctionParametersScanner extends TestCase
     {
         $scanner = new FunctionParametersScanner();
         $tokenizer = new TokenStreamParser();
-        $token_stream = $tokenizer->scan('<?php function bar($x) {}');
-        $token_stream->iterate($scanner);
+        $tokenStream = $tokenizer->scan('<?php function bar($x) {}');
+        $tokenStream->iterate($scanner);
         $this->assertSame('($x)', $scanner->getCurrentSignatureAsString());
     }
 
@@ -20,9 +20,9 @@ class TestOfFunctionParametersScanner extends TestCase
         $this->markTestSkipped('Partial php is no longer parsable.');
         $scanner = new FunctionParametersScanner();
         $tokenizer = new TokenStreamParser();
-        $token_stream = $tokenizer->scan('<?php function bar(');
+        $tokenStream = $tokenizer->scan('<?php function bar(');
         $this->assertFalse($scanner->isActive());
-        $token_stream->iterate($scanner);
+        $tokenStream->iterate($scanner);
         $this->assertTrue($scanner->isActive());
     }
 }

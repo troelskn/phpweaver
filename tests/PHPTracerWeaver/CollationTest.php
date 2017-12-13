@@ -24,9 +24,9 @@ class TestOfCollation extends TestCase
     public function setUp()
     {
         $this->curdir = getcwd();
-        $dir_sandbox = $this->sandbox();
-        mkdir($dir_sandbox);
-        $source_main = '<?php' . "\n" .
+        $dirSandbox = $this->sandbox();
+        mkdir($dirSandbox);
+        $sourceMain = '<?php' . "\n" .
         'class Foo {' . "\n" .
         '}' . "\n" .
         'class Bar extends Foo {' . "\n" .
@@ -36,18 +36,18 @@ class TestOfCollation extends TestCase
         'function do_stuff($x) {}' . "\n" .
         'do_stuff(new Bar());' . "\n" .
         'do_stuff(new Cuux());';
-        file_put_contents($dir_sandbox . '/main.php', $source_main);
+        file_put_contents($dirSandbox . '/main.php', $sourceMain);
     }
 
     public function tearDown()
     {
         chdir($this->curdir);
-        $dir_sandbox = $this->sandbox();
-        unlink($dir_sandbox . '/main.php');
-        if (is_file($dir_sandbox . '/dumpfile.xt')) {
-            unlink($dir_sandbox . '/dumpfile.xt');
+        $dirSandbox = $this->sandbox();
+        unlink($dirSandbox . '/main.php');
+        if (is_file($dirSandbox . '/dumpfile.xt')) {
+            unlink($dirSandbox . '/dumpfile.xt');
         }
-        rmdir($dir_sandbox);
+        rmdir($dirSandbox);
     }
 
     public function testCanCollateClasses()

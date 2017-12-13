@@ -35,8 +35,8 @@ class Signatures
     public function export()
     {
         $out = [];
-        foreach ($this->signatures_array as $name => $function_signature) {
-            $out[$name] = $function_signature->export();
+        foreach ($this->signatures_array as $name => $functionSignature) {
+            $out[$name] = $functionSignature->export();
         }
 
         return $out;

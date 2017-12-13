@@ -11,16 +11,16 @@ class StaticReflector implements ClassCollatorInterface
     protected $scanner;
     protected $names = [];
     protected $typemap = [];
-    protected $collate_cache = [];
-    protected $ancestors_cache = [];
+    protected $collateCache = [];
+    protected $ancestorsCache = [];
 
     public function __construct()
     {
         $this->scanner = new ScannerMultiplexer();
-        $class_scanner = $this->scanner->appendScanner(new ClassScanner());
-        $inheritance_scanner = $this->scanner->appendScanner(new ClassExtendsScanner($class_scanner));
-        $inheritance_scanner->notifyOnExtends([$this, 'logSupertype']);
-        $inheritance_scanner->notifyOnImplements([$this, 'logSupertype']);
+        $classScanner = $this->scanner->appendScanner(new ClassScanner());
+        $inheritanceScanner = $this->scanner->appendScanner(new ClassExtendsScanner($classScanner));
+        $inheritanceScanner->notifyOnExtends([$this, 'logSupertype']);
+        $inheritanceScanner->notifyOnImplements([$this, 'logSupertype']);
     }
 
     public function logSupertype($class, $super)
@@ -42,13 +42,13 @@ class StaticReflector implements ClassCollatorInterface
         $this->scanString(file_get_contents($file));
     }
 
-    public function scanString($php_source)
+    public function scanString($phpSource)
     {
-        $this->collate_cache = [];
-        $this->ancestors_cache = [];
+        $this->collateCache = [];
+        $this->ancestorsCache = [];
         $tokenizer = new TokenStreamParser();
-        $token_stream = $tokenizer->scan($php_source);
-        $token_stream->iterate($this->scanner);
+        $tokenStream = $tokenizer->scan($phpSource);
+        $tokenStream->iterate($this->scanner);
     }
 
     public function export()
@@ -85,14 +85,14 @@ class StaticReflector implements ClassCollatorInterface
     public function allAncestors($class)
     {
         $class = strtolower($class);
-        if (isset($this->ancestors_cache[$class])) {
-            return $this->ancestors_cache[$class];
+        if (isset($this->ancestorsCache[$class])) {
+            return $this->ancestorsCache[$class];
         }
         $result = $this->ancestors($class);
         foreach ($result as $p) {
             $result = array_merge($result, $this->allAncestors($p));
         }
-        $this->ancestors_cache[$class] = $result;
+        $this->ancestorsCache[$class] = $result;
 
         return $result;
     }
@@ -118,12 +118,12 @@ class StaticReflector implements ClassCollatorInterface
     {
         $first = strtolower($first);
         $second = strtolower($second);
-        $id = "$first:$second";
-        if (!array_key_exists($id, $this->collate_cache)) {
+        $id = $first . ':' . $second;
+        if (!array_key_exists($id, $this->collateCache)) {
             $intersection = array_intersect($this->allAncestorsAndSelf($first), $this->allAncestorsAndSelf($second));
-            $this->collate_cache[$id] = count($intersection) > 0 ? array_shift($intersection) : '*CANT_COLLATE*';
+            $this->collateCache[$id] = count($intersection) > 0 ? array_shift($intersection) : '*CANT_COLLATE*';
         }
 
-        return $this->collate_cache[$id];
+        return $this->collateCache[$id];
     }
 }

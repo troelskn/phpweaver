@@ -2,7 +2,7 @@
 
 class Foo
 {
-    public function dims($x, $f = null)
+    public function dims($param1, $param2 = null)
     {
         return 42;
     }

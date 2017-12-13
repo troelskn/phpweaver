@@ -9,11 +9,11 @@ use PHPTracerWeaver\Scanner\TokenBuffer;
 class DocCommentEditorTransformer implements TransformerInterface
 {
     /** @var FunctionBodyScanner */
-    protected $function_body_scanner;
+    protected $functionBodyScanner;
     /** @var ModifiersScanner */
-    protected $modifiers_scanner;
+    protected $modifiersScanner;
     /** @var FunctionParametersScanner */
-    protected $parameters_scanner;
+    protected $parametersScanner;
     /** @var BufferEditorInterface */
     protected $editor;
     /** @var int */
@@ -22,20 +22,20 @@ class DocCommentEditorTransformer implements TransformerInterface
     protected $buffer;
 
     /**
-     * @param FunctionBodyScanner       $function_body_scanner
-     * @param ModifiersScanner          $modifiers_scanner
-     * @param FunctionParametersScanner $parameters_scanner
+     * @param FunctionBodyScanner       $functionBodyScanner
+     * @param ModifiersScanner          $modifiersScanner
+     * @param FunctionParametersScanner $parametersScanner
      * @param BufferEditorInterface     $editor
      */
     public function __construct(
-        FunctionBodyScanner $function_body_scanner,
-        ModifiersScanner $modifiers_scanner,
-        FunctionParametersScanner $parameters_scanner,
+        FunctionBodyScanner $functionBodyScanner,
+        ModifiersScanner $modifiersScanner,
+        FunctionParametersScanner $parametersScanner,
         BufferEditorInterface $editor
     ) {
-        $this->function_body_scanner = $function_body_scanner;
-        $this->modifiers_scanner = $modifiers_scanner;
-        $this->parameters_scanner = $parameters_scanner;
+        $this->functionBodyScanner = $functionBodyScanner;
+        $this->modifiersScanner = $modifiersScanner;
+        $this->parametersScanner = $parametersScanner;
         $this->editor = $editor;
         $this->buffer = new TokenBuffer();
     }
@@ -50,16 +50,16 @@ class DocCommentEditorTransformer implements TransformerInterface
         if ($token->isA(T_DOC_COMMENT)) {
             $this->state = 1;
             $this->raiseBuffer();
-        } elseif (0 === $this->state && ($this->modifiers_scanner->isActive() || $token->isA(T_FUNCTION))) {
+        } elseif (0 === $this->state && ($this->modifiersScanner->isActive() || $token->isA(T_FUNCTION))) {
             $this->state = 1;
             $this->raiseBuffer();
-        } elseif ($this->state > 0 && $this->function_body_scanner->isActive()) {
+        } elseif ($this->state > 0 && $this->functionBodyScanner->isActive()) {
             $this->editor->editBuffer($this->buffer);
             $this->state = 0;
             $this->flushBuffers();
         } elseif ($token->isA(T_INTERFACE)
             || $token->isA(T_CLASS)
-            || ($token->isA(T_VARIABLE) && !$this->parameters_scanner->isActive())
+            || ($token->isA(T_VARIABLE) && !$this->parametersScanner->isActive())
         ) {
             $this->state = 0;
             $this->flushBuffers();

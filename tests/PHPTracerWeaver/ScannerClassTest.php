@@ -11,8 +11,8 @@ class TestOfClassScanner extends TestCase
         $this->markTestSkipped('Partial php is no longer parsable.');
         $scanner = new ClassScanner();
         $tokenizer = new TokenStreamParser();
-        $token_stream = $tokenizer->scan('<?php class Foo { function bar($x) {}');
-        $token_stream->iterate($scanner);
+        $tokenStream = $tokenizer->scan('<?php class Foo { function bar($x) {}');
+        $tokenStream->iterate($scanner);
         $this->assertSame('Foo', $scanner->getCurrentClass());
     }
 
@@ -20,8 +20,8 @@ class TestOfClassScanner extends TestCase
     {
         $scanner = new ClassScanner();
         $tokenizer = new TokenStreamParser();
-        $token_stream = $tokenizer->scan('<?php class Foo { function bar($x) {} }');
-        $token_stream->iterate($scanner);
+        $tokenStream = $tokenizer->scan('<?php class Foo { function bar($x) {} }');
+        $tokenStream->iterate($scanner);
         $this->assertNull($scanner->getCurrentClass());
     }
 
@@ -29,8 +29,8 @@ class TestOfClassScanner extends TestCase
     {
         $scanner = new ClassScanner();
         $tokenizer = new TokenStreamParser();
-        $token_stream = $tokenizer->scan('<?php while (true) { class Foo { function bar($x) {} } }');
-        $token_stream->iterate($scanner);
+        $tokenStream = $tokenizer->scan('<?php while (true) { class Foo { function bar($x) {} } }');
+        $tokenStream->iterate($scanner);
         $this->assertNull($scanner->getCurrentClass());
     }
 }

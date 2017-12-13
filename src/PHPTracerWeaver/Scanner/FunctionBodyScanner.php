@@ -3,7 +3,7 @@
 /** Scans for function name + body */
 class FunctionBodyScanner implements ScannerInterface
 {
-    protected $current_class_scope;
+    protected $currentClassScope;
     protected $name;
     /** @var int */
     protected $state = 0;
@@ -11,14 +11,14 @@ class FunctionBodyScanner implements ScannerInterface
     public function accept(Token $token)
     {
         if ($token->isA(T_FUNCTION)) {
-            $this->current_class_scope = $token->getDepth();
+            $this->currentClassScope = $token->getDepth();
             $this->state = 1;
         } elseif (1 === $this->state && $token->isA(T_STRING)) {
             $this->name = $token->getText();
             $this->state = 2;
-        } elseif (2 === $this->state && $token->getDepth() > $this->current_class_scope) {
+        } elseif (2 === $this->state && $token->getDepth() > $this->currentClassScope) {
             $this->state = 3;
-        } elseif (3 === $this->state && $token->getDepth() === $this->current_class_scope) {
+        } elseif (3 === $this->state && $token->getDepth() === $this->currentClassScope) {
             $this->state = 0;
         }
     }

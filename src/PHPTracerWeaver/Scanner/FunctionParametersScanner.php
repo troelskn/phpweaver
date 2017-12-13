@@ -8,17 +8,17 @@ class FunctionParametersScanner implements ScannerInterface
     protected $paren_count = 0;
     /** @var int */
     protected $state = 0;
-    protected $on_signature_begin;
-    protected $on_signature_end;
+    protected $onSignatureBegin;
+    protected $onSignatureEnd;
 
     public function notifyOnSignatureBegin($callback)
     {
-        $this->on_signature_begin = $callback;
+        $this->onSignatureBegin = $callback;
     }
 
     public function notifyOnSignatureEnd($callback)
     {
-        $this->on_signature_end = $callback;
+        $this->onSignatureEnd = $callback;
     }
 
     public function accept(Token $token)
@@ -30,8 +30,8 @@ class FunctionParametersScanner implements ScannerInterface
             $this->signature[] = [$token->getText(), $token->getToken()];
             $this->paren_count = 1;
             $this->state = 2;
-            if (is_callable($this->on_signature_begin)) {
-                call_user_func($this->on_signature_begin);
+            if (is_callable($this->onSignatureBegin)) {
+                call_user_func($this->onSignatureBegin);
             }
         } elseif (2 === $this->state) {
             $this->signature[] = [$token->getText(), $token->getToken()];
@@ -42,8 +42,8 @@ class FunctionParametersScanner implements ScannerInterface
             }
             if (0 === $this->paren_count) {
                 $this->state = 0;
-                if (is_callable($this->on_signature_end)) {
-                    call_user_func($this->on_signature_end);
+                if (is_callable($this->onSignatureEnd)) {
+                    call_user_func($this->onSignatureEnd);
                 }
             }
         }

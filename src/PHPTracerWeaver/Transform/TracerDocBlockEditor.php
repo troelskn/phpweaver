@@ -13,28 +13,28 @@ class TracerDocBlockEditor implements BufferEditorInterface
     /** @var Signatures */
     protected $signatures;
     /** @var ClassScanner */
-    protected $class_scanner;
+    protected $classScanner;
     /** @var FunctionBodyScanner */
-    protected $function_body_scanner;
+    protected $functionBodyScanner;
     /** @var FunctionParametersScanner */
-    protected $parameters_scanner;
+    protected $parametersScanner;
 
     /**
      * @param Signatures                $signatures
-     * @param ClassScanner              $class_scanner
-     * @param FunctionBodyScanner       $function_body_scanner
-     * @param FunctionParametersScanner $parameters_scanner
+     * @param ClassScanner              $classScanner
+     * @param FunctionBodyScanner       $functionBodyScanner
+     * @param FunctionParametersScanner $parametersScanner
      */
     public function __construct(
         Signatures $signatures,
-        ClassScanner $class_scanner,
-        FunctionBodyScanner $function_body_scanner,
-        FunctionParametersScanner $parameters_scanner
+        ClassScanner $classScanner,
+        FunctionBodyScanner $functionBodyScanner,
+        FunctionParametersScanner $parametersScanner
     ) {
         $this->signatures = $signatures;
-        $this->class_scanner = $class_scanner;
-        $this->function_body_scanner = $function_body_scanner;
-        $this->parameters_scanner = $parameters_scanner;
+        $this->classScanner = $classScanner;
+        $this->functionBodyScanner = $functionBodyScanner;
+        $this->parametersScanner = $parametersScanner;
     }
 
     public function generateDoc($func, string $class = '', array $params = []): string
@@ -53,7 +53,7 @@ class TracerDocBlockEditor implements BufferEditorInterface
                 ++$key;
             }
 
-            $doc = "\n";
+            $doc = "\n"; // TODO do not add an empty line if at the top of the class
             $doc .= "    /**\n";
             foreach ($params as $name => $type) {
                 $doc .= '     * @param ' . $type . str_repeat(' ', $longestType - mb_strlen($type) + 1) . $name . "\n";
@@ -76,9 +76,9 @@ class TracerDocBlockEditor implements BufferEditorInterface
     public function editBuffer(TokenBuffer $buffer): void
     {
         $text = $this->generateDoc(
-            $this->function_body_scanner->getName(),
-            $this->class_scanner->getCurrentClass(),
-            $this->parameters_scanner->getCurrentSignatureAsTypeMap()
+            $this->functionBodyScanner->getName(),
+            $this->classScanner->getCurrentClass(),
+            $this->parametersScanner->getCurrentSignatureAsTypeMap()
         );
         if (!$text) {
             return;
@@ -90,7 +90,7 @@ class TracerDocBlockEditor implements BufferEditorInterface
         }
 
         $current = $buffer->getFirstToken();
-        $new_token = new Token($text, $current->getToken(), $current->getDepth());
-        $buffer->replaceToken($current, $new_token);
+        $newToken = new Token($text, $current->getToken(), $current->getDepth());
+        $buffer->replaceToken($current, $newToken);
     }
 }

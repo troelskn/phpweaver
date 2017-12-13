@@ -8,6 +8,9 @@ class TokenBuffer
     /** @var Token[] */
     protected $tokens = [];
 
+    /**
+     * @param self $super
+     */
     public function __construct(self $super = null)
     {
         $this->super = $super;
@@ -43,20 +46,22 @@ class TokenBuffer
 
     /**
      * @param Token $token
-     * @param Token $new_token
+     * @param Token $newToken
      *
      * @return void
      */
-    public function replaceToken(Token $token, Token $new_token): void
+    public function replaceToken(Token $token, Token $newToken): void
     {
         $tmp = [];
-        foreach ($this->tokens as $t) {
-            if ($t === $token) {
-                $tmp[] = $new_token;
-            } else {
-                $tmp[] = $t;
+        foreach ($this->tokens as $existingToken) {
+            if ($existingToken === $token) {
+                $tmp[] = $newToken;
+                continue;
             }
+
+            $tmp[] = $existingToken;
         }
+
         $this->tokens = $tmp;
     }
 
@@ -77,7 +82,7 @@ class TokenBuffer
     }
 
     /**
-     * @return self|null
+     * @return ?self
      */
     public function flush(): ?self
     {

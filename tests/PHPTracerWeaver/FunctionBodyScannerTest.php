@@ -11,9 +11,9 @@ class TestOfFunctionBodyScanner extends TestCase
         $this->markTestSkipped('Partial php is no longer parsable.');
         $scanner = new FunctionBodyScanner();
         $tokenizer = new TokenStreamParser();
-        $token_stream = $tokenizer->scan('<?php function bar() {');
+        $tokenStream = $tokenizer->scan('<?php function bar() {');
         $this->assertFalse($scanner->isActive());
-        $token_stream->iterate($scanner);
+        $tokenStream->iterate($scanner);
         $this->assertTrue($scanner->isActive());
     }
 
@@ -21,8 +21,8 @@ class TestOfFunctionBodyScanner extends TestCase
     {
         $scanner = new FunctionBodyScanner();
         $tokenizer = new TokenStreamParser();
-        $token_stream = $tokenizer->scan('<?php function bar() { if (true) {} }');
-        $token_stream->iterate($scanner);
+        $tokenStream = $tokenizer->scan('<?php function bar() { if (true) {} }');
+        $tokenStream->iterate($scanner);
         $this->assertFalse($scanner->isActive());
     }
 
@@ -30,8 +30,8 @@ class TestOfFunctionBodyScanner extends TestCase
     {
         $scanner = new FunctionBodyScanner();
         $tokenizer = new TokenStreamParser();
-        $token_stream = $tokenizer->scan('<?php function bar() { print 42; }');
-        $token_stream->iterate($scanner);
+        $tokenStream = $tokenizer->scan('<?php function bar() { print 42; }');
+        $tokenStream->iterate($scanner);
         $this->assertSame('bar', $scanner->getName());
     }
 
@@ -39,8 +39,8 @@ class TestOfFunctionBodyScanner extends TestCase
     {
         $scanner = new FunctionBodyScanner();
         $tokenizer = new TokenStreamParser();
-        $token_stream = $tokenizer->scan('<?php class Fizz { function buzz() { if (true) {} } }');
-        $token_stream->iterate($scanner);
+        $tokenStream = $tokenizer->scan('<?php class Fizz { function buzz() { if (true) {} } }');
+        $tokenStream->iterate($scanner);
         $this->assertFalse($scanner->isActive());
     }
 }

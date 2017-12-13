@@ -3,21 +3,21 @@
 /** Tracks possible preludes for functions */
 class ModifiersScanner implements ScannerInterface
 {
-    protected $on_modifiers_begin;
-    protected $on_modifiers_end;
+    protected $onModifiersBegin;
+    protected $onModifiersEnd;
     /** @var bool */
-    protected $was_function = false;
+    protected $wasFunction = false;
     /** @var int */
     protected $state = 0;
 
     public function notifyOnModifiersBegin($callback)
     {
-        $this->on_modifiers_begin = $callback;
+        $this->onModifiersBegin = $callback;
     }
 
     public function notifyOnModifiersEnd($callback)
     {
-        $this->on_modifiers_end = $callback;
+        $this->onModifiersEnd = $callback;
     }
 
     public function accept(Token $token)
@@ -30,18 +30,18 @@ class ModifiersScanner implements ScannerInterface
             || $token->isA(T_ABSTRACT)
         ) {
             $this->state = 1;
-            if (is_callable($this->on_modifiers_begin)) {
-                call_user_func($this->on_modifiers_begin);
+            if (is_callable($this->onModifiersBegin)) {
+                call_user_func($this->onModifiersBegin);
             }
         } elseif ($token->isA(T_INTERFACE)
             || $token->isA(T_CLASS)
             || $token->isA(T_FUNCTION)
             || $token->isA(T_VARIABLE)
         ) {
-            $this->was_function = $token->isA(T_FUNCTION);
+            $this->wasFunction = $token->isA(T_FUNCTION);
             $this->state = 0;
-            if (is_callable($this->on_modifiers_end)) {
-                call_user_func($this->on_modifiers_end);
+            if (is_callable($this->onModifiersEnd)) {
+                call_user_func($this->onModifiersEnd);
             }
         }
     }
@@ -53,6 +53,6 @@ class ModifiersScanner implements ScannerInterface
 
     public function wasFunction()
     {
-        return $this->was_function;
+        return $this->wasFunction;
     }
 }
