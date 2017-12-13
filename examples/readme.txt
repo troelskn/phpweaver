@@ -1,2 +1,2 @@
 prerequisites:
-  sudo apt-get install php-cli php-xdebug source-highlight meld
+  sudo apt-get install php-cli php-xdebug diff
