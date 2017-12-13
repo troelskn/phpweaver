@@ -1,11 +1,20 @@
 <?php
-interface Transformer extends Scanner
+
+use PHPTracerWeaver\Scanner\ClassScanner;
+use PHPTracerWeaver\Scanner\FunctionBodyScanner;
+use PHPTracerWeaver\Scanner\FunctionParametersScanner;
+use PHPTracerWeaver\Scanner\ModifiersScanner;
+use PHPTracerWeaver\Scanner\ScannerInterface;
+use PHPTracerWeaver\Scanner\Token;
+use PHPTracerWeaver\Scanner\TokenBuffer;
+
+interface TransformerInterface extends ScannerInterface
 {
     public function getOutput();
 }
 
 /** Just a dummy really */
-class PassthruTransformer implements Transformer
+class PassthruTransformer implements TransformerInterface
 {
     protected $output = '';
 
@@ -32,7 +41,7 @@ class PassthruBufferEditor implements BufferEditor
     }
 }
 
-class DocCommentEditorTransformer implements Transformer
+class DocCommentEditorTransformer implements TransformerInterface
 {
     protected $function_body_scanner;
     protected $modifiers_scanner;

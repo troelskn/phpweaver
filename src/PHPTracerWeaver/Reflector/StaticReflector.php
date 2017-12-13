@@ -1,43 +1,11 @@
-<?php
-interface ClassCollator
-{
-    public function collate($first, $second);
-}
+<?php namespace PHPTracerWeaver\Reflector;
 
-class DummyClassCollator implements ClassCollator
-{
-    public function collate($first, $second)
-    {
-        return 'mixed';
-    }
-}
+use PHPTracerWeaver\Scanner\ClassExtendsScanner;
+use PHPTracerWeaver\Scanner\ClassScanner;
+use PHPTracerWeaver\Scanner\ScannerMultiplexer;
+use PHPTracerWeaver\Scanner\TokenStreamParser;
 
-class TraceIncludesLogger
-{
-    protected $reflector;
-    protected $includes = [];
-
-    public function __construct(StaticReflector $reflector)
-    {
-        $this->reflector = $reflector;
-    }
-
-    public function log($trace)
-    {
-        $filename = $trace['filename'] ?? '';
-        if (!isset($this->includes[$filename]) && is_file($filename)) {
-            $this->reflector->scanFile($filename);
-        }
-        $this->includes[$filename] = true;
-    }
-
-    public function log_include($trace)
-    {
-        $this->log($trace);
-    }
-}
-
-class StaticReflector implements ClassCollator
+class StaticReflector implements ClassCollatorInterface
 {
     protected $scanner;
     protected $names = [];

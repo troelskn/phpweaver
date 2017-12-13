@@ -1,5 +1,7 @@
 <?php
 
+use PHPTracerWeaver\Reflector\StaticReflector;
+
 /**
  * Class for parsing xdebug function trace files.
  */

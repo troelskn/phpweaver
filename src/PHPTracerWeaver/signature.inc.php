@@ -1,10 +1,13 @@
 <?php
+
+use PHPTracerWeaver\Reflector\ClassCollatorInterface;
+
 class Signatures
 {
     protected $signatures_array = [];
     protected $collator;
 
-    public function __construct(ClassCollator $collator)
+    public function __construct(ClassCollatorInterface $collator)
     {
         $this->collator = $collator;
     }
@@ -47,7 +50,7 @@ class FunctionSignature
     protected $returnType;
     protected $collator;
 
-    public function __construct(ClassCollator $collator)
+    public function __construct(ClassCollatorInterface $collator)
     {
         $this->collator = $collator;
         $this->returnType = new FunctionArgument(0);

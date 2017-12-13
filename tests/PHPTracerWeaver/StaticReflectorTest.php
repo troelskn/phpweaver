@@ -1,5 +1,6 @@
 <?php
 
+use PHPTracerWeaver\Reflector\StaticReflector;
 use PHPUnit\Framework\TestCase;
 
 class TestOfStaticReflector extends TestCase

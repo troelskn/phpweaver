@@ -10,16 +10,19 @@
         "php": "^7.1",
         "ext-xdebug": "*"
     },
-    "autoload-dev": {
-        "classmap": [
-            "src/PHPTracerWeaver",
-            "tests"
-        ]
-    },
     "require-dev": {
         "phpunit/phpunit": "^6.5",
         "vimeo/psalm": "^0.3.68",
         "php-coveralls/php-coveralls": "^2.0",
         "codacy/coverage": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {"PHPTracerWeaver\\": ["src/"]}
+    },
+    "autoload-dev": {
+        "classmap": [
+            "src/PHPTracerWeaver",
+            "tests"
+        ]
     }
 }

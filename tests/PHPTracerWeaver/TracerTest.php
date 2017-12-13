@@ -1,5 +1,6 @@
 <?php
 
+use PHPTracerWeaver\Reflector\DummyClassCollator;
 use PHPUnit\Framework\TestCase;
 
 class TestOfTracer extends TestCase

@@ -1,6 +1,14 @@
 #!/usr/bin/env php
 <?php
 
+use PHPTracerWeaver\Reflector\StaticReflector;
+use PHPTracerWeaver\Scanner\ClassScanner;
+use PHPTracerWeaver\Scanner\FunctionBodyScanner;
+use PHPTracerWeaver\Scanner\FunctionParametersScanner;
+use PHPTracerWeaver\Scanner\ModifiersScanner;
+use PHPTracerWeaver\Scanner\ScannerMultiplexer;
+use PHPTracerWeaver\Scanner\TokenStreamParser;
+
 if (PHP_SAPI !== 'cli') {
     echo 'Warning: Composer should be invoked via the CLI version of PHP, not the '.PHP_SAPI.' SAPI'.PHP_EOL;
 }
