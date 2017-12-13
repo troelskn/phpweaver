@@ -86,6 +86,6 @@ class TraceSignatureLogger
             return 'int';
         }
 
-        throw new Exception('Unknown return value: ' . $returnValue);
+        return $returnValue;
     }
 }
