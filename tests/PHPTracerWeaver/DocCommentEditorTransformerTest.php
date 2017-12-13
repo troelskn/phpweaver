@@ -53,7 +53,7 @@ class TestOfDocCommentEditorTransformer extends TestCase
     {
         $source = '<?php' . "\n" . 'function bar($x) {}';
         $mockEditor = new MockPassthruBufferEditor();
-        $transformer = $this->scan($source, $mockEditor);
+        $this->scan($source, $mockEditor);
         $this->assertInstanceOf(TokenBuffer::class, $mockEditor->buffer);
         $this->assertSame('function bar($x) ', $mockEditor->buffer->toText());
     }
@@ -65,7 +65,7 @@ class TestOfDocCommentEditorTransformer extends TestCase
     {
         $source = '<?php' . "\n" . 'class Foo { abstract function bar($x) {} }';
         $mockEditor = new MockPassthruBufferEditor();
-        $transformer = $this->scan($source, $mockEditor);
+        $this->scan($source, $mockEditor);
         $this->assertInstanceOf(TokenBuffer::class, $mockEditor->buffer);
         $this->assertSame('abstract function bar($x) ', $mockEditor->buffer->toText());
     }
@@ -77,7 +77,7 @@ class TestOfDocCommentEditorTransformer extends TestCase
     {
         $source = '<?php' . "\n" . 'abstract class Foo {}';
         $mockEditor = new MockPassthruBufferEditor();
-        $transformer = $this->scan($source, $mockEditor);
+        $this->scan($source, $mockEditor);
         $this->assertNull($mockEditor->buffer);
     }
 
@@ -88,7 +88,7 @@ class TestOfDocCommentEditorTransformer extends TestCase
     {
         $source = '<?php' . "\n" . '/** Lorem Ipsum */' . "\n" . 'function bar($x) {}';
         $mockEditor = new MockPassthruBufferEditor();
-        $transformer = $this->scan($source, $mockEditor);
+        $this->scan($source, $mockEditor);
         $this->assertInstanceOf(TokenBuffer::class, $mockEditor->buffer);
         $this->assertTrue($mockEditor->buffer->getFirstToken()->isA(T_DOC_COMMENT));
         $this->assertSame('/** Lorem Ipsum */' . "\n" . 'function bar($x) ', $mockEditor->buffer->toText());
