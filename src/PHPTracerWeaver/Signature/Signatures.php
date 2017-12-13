@@ -1,5 +1,6 @@
 <?php namespace PHPTracerWeaver\Signature;
 
+use PHPTracerWeaver\Exceptions\Exception;
 use PHPTracerWeaver\Reflector\ClassCollatorInterface;
 
 class Signatures

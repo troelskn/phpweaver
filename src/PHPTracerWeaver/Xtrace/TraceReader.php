@@ -1,5 +1,6 @@
 <?php namespace PHPTracerWeaver\Xtrace;
 
+use PHPTracerWeaver\Exceptions\Exception;
 use SplFileObject;
 
 /**

@@ -1,5 +1,7 @@
 <?php namespace PHPTracerWeaver\Test;
 
+use PHPTracerWeaver\Exceptions\Exception;
+
 class TestCallbackListener
 {
     /** @var array[] */

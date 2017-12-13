@@ -1,5 +1,7 @@
 <?php namespace PHPTracerWeaver\Scanner;
 
+use PHPTracerWeaver\Exceptions\Exception;
+
 /** default implementation for FileAccess */
 class FilePath implements FileAccessInterface
 {
