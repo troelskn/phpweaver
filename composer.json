@@ -3,6 +3,9 @@
     "description": "A tool for analysing parameter types in PHP code, using a combination of static and runtime analysis",
     "type": "project",
     "license": "MIT",
+    "bin": [
+        "bin/PHPTracerWeaver"
+    ],
     "require": {
         "php": "^7.1",
         "ext-xdebug": "*"
