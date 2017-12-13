@@ -8,10 +8,10 @@ class TestOfModifiersScanner extends TestCase
     {
         $scanner = new ModifiersScanner();
         $tokenizer = new TokenStreamParser();
-        $token_stream = $tokenizer->scan('<?php final static protected');
+        $token_stream = $tokenizer->scan('<?php class Foo { final static protected function foo() {} }');
         $this->assertFalse($scanner->isActive());
         $token_stream->iterate($scanner);
-        $this->assertTrue($scanner->isActive());
+        $this->assertFalse($scanner->isActive());
     }
 
     public function testEndsOnFunction()
