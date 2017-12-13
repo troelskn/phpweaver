@@ -1,0 +1,19 @@
+<?php
+
+use PHPUnit\Framework\TestCase;
+
+/**
+ * todo:
+ *   xtrace -> resources ..
+ *   use static typehints for parameter types
+ *   use docblock comments for parameter types
+ *   merge with existing docblock comments.
+ */
+class TestOfTokenizer extends TestCase
+{
+    public function testTokenizePhpWithoutErrors()
+    {
+        $tokenizer = new TokenStreamParser();
+        $tokenizer->scan('<?php function foo($x) {} ?>');
+    }
+}

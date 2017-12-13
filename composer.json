@@ -8,6 +8,12 @@
         "ext-xdebug": "*"
     },
     "autoload-dev": {
-        "classmap": ["src/PHPTracerWeaver"]
+        "classmap": [
+            "src/PHPTracerWeaver",
+            "tests"
+        ]
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.5"
     }
 }
