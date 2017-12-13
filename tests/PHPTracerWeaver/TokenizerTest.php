@@ -14,6 +14,7 @@ class TestOfTokenizer extends TestCase
     public function testTokenizePhpWithoutErrors()
     {
         $tokenizer = new TokenStreamParser();
-        $tokenizer->scan('<?php function foo($x) {} ?>');
+        $tokenStream = $tokenizer->scan('<?php function foo($x) {} ?>');
+        $this->assertInstanceOf('TokenStream', $tokenStream);
     }
 }
