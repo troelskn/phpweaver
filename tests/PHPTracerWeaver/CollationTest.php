@@ -53,7 +53,8 @@ class TestOfCollation extends TestCase
     public function testCanCollateClasses()
     {
         chdir($this->sandbox());
-        shell_exec(escapeshellcmd($this->bindir() . '/trace.sh') . ' ' . escapeshellarg($this->sandbox() . '/main.php'));
+        $command = escapeshellcmd($this->bindir() . '/trace.sh') . ' ' . escapeshellarg($this->sandbox() . '/main.php');
+        shell_exec($command);
         $reflector = new StaticReflector();
         $sigs = new Signatures($reflector);
         $trace = new TraceReader(new SplFileObject($this->sandbox() . '/dumpfile.xt'));

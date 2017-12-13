@@ -20,7 +20,9 @@ class TestOfDocCommentEditorTransformer extends TestCase
         $parameters_scanner = $scanner->appendScanner(new FunctionParametersScanner());
         $function_body_scanner = $scanner->appendScanner(new FunctionBodyScanner());
         $modifiers_scanner = $scanner->appendScanner(new ModifiersScanner());
-        $transformer = $scanner->appendScanner(new DocCommentEditorTransformer($function_body_scanner, $modifiers_scanner, $parameters_scanner, $editor));
+        $transformer = $scanner->appendScanner(
+            new DocCommentEditorTransformer($function_body_scanner, $modifiers_scanner, $parameters_scanner, $editor)
+        );
         $tokenizer = new TokenStreamParser();
         $token_stream = $tokenizer->scan($source);
         $token_stream->iterate($scanner);

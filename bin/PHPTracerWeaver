@@ -16,7 +16,8 @@ use PHPTracerWeaver\Xtrace\TraceReader;
 use PHPTracerWeaver\Xtrace\TraceSignatureLogger;
 
 if (PHP_SAPI !== 'cli') {
-    echo 'Warning: PHPTracerWeaver should be invoked via the CLI version of PHP, not the ' . PHP_SAPI . ' SAPI' . PHP_EOL;
+    echo 'Warning: PHPTracerWeaver should be invoked via the CLI version of PHP, not the ' . PHP_SAPI . ' SAPI'
+        . PHP_EOL;
 }
 
 require __DIR__ . '/../src/bootstrap.php';

@@ -1,4 +1,5 @@
 <?php
+
 require_once 'include.php';
 
 $f = new Foo();

@@ -22,12 +22,22 @@ class ModifiersScanner implements ScannerInterface
 
     public function accept(Token $token)
     {
-        if ($token->isA(T_PRIVATE) || $token->isA(T_PROTECTED) || $token->isA(T_PUBLIC) || $token->isA(T_FINAL) || $token->isA(T_STATIC) || $token->isA(T_ABSTRACT)) {
+        if ($token->isA(T_PRIVATE)
+            || $token->isA(T_PROTECTED)
+            || $token->isA(T_PUBLIC)
+            || $token->isA(T_FINAL)
+            || $token->isA(T_STATIC)
+            || $token->isA(T_ABSTRACT)
+        ) {
             $this->state = 1;
             if (is_callable($this->on_modifiers_begin)) {
                 call_user_func($this->on_modifiers_begin);
             }
-        } elseif ($token->isA(T_INTERFACE) || $token->isA(T_CLASS) || $token->isA(T_FUNCTION) || $token->isA(T_VARIABLE)) {
+        } elseif ($token->isA(T_INTERFACE)
+            || $token->isA(T_CLASS)
+            || $token->isA(T_FUNCTION)
+            || $token->isA(T_VARIABLE)
+        ) {
             $this->was_function = $token->isA(T_FUNCTION);
             $this->state = 0;
             if (is_callable($this->on_modifiers_end)) {

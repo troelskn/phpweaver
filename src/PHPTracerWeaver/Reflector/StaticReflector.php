@@ -77,7 +77,9 @@ class StaticReflector implements ClassCollatorInterface
     {
         $class = strtolower($class);
 
-        return $this->symbolsToNames(isset($this->typemap[$class]) ? array_merge([$class], $this->typemap[$class]) : [$class]);
+        $symbols = isset($this->typemap[$class]) ? array_merge([$class], $this->typemap[$class]) : [$class];
+
+        return $this->symbolsToNames($symbols);
     }
 
     public function allAncestors($class)

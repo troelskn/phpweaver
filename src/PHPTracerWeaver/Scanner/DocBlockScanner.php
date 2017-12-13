@@ -19,7 +19,11 @@ class DocBlockScanner implements ScannerInterface
         if ($token->isA(T_DOC_COMMENT)) {
             $this->last_doc_block = $token->getText();
             $this->state = 1;
-        } elseif ($token->isA(T_INTERFACE) || $token->isA(T_CLASS) || $token->isA(T_FUNCTION) || ($token->isA(T_VARIABLE) && !$this->parameters_scanner->isActive())) {
+        } elseif ($token->isA(T_INTERFACE)
+            || $token->isA(T_CLASS)
+            || $token->isA(T_FUNCTION)
+            || ($token->isA(T_VARIABLE) && !$this->parameters_scanner->isActive())
+        ) {
             if (1 === $this->state) {
                 $this->state = 2;
             } else {

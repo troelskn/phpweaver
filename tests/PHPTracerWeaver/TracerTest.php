@@ -68,7 +68,8 @@ class TestOfTracer extends TestCase
     public function testCanExecuteSandboxCodeWithInstrumentation()
     {
         chdir($this->sandbox());
-        $output = shell_exec(escapeshellcmd($this->bindir() . '/trace.sh') . ' ' . escapeshellarg($this->sandbox() . '/main.php'));
+        $command = escapeshellcmd($this->bindir() . '/trace.sh') . ' ' . escapeshellarg($this->sandbox() . '/main.php');
+        $output = shell_exec($command);
         //$this->dump("\n----\n" . $output . "\n----\n");
         $this->assertRegExp('~\(completed\)~', $output);
         $this->assertRegExp('~TRACE COMPLETE\n$~', $output);
@@ -77,14 +78,16 @@ class TestOfTracer extends TestCase
     public function testInstrumentationCreatesTracefile()
     {
         chdir($this->sandbox());
-        $output = shell_exec(escapeshellcmd($this->bindir() . '/trace.sh') . ' ' . escapeshellarg($this->sandbox() . '/main.php'));
+        $command = escapeshellcmd($this->bindir() . '/trace.sh') . ' ' . escapeshellarg($this->sandbox() . '/main.php');
+        $output = shell_exec($command);
         $this->assertTrue(is_file($this->sandbox() . '/dumpfile.xt'));
     }
 
     public function testCanParseTracefile()
     {
         chdir($this->sandbox());
-        shell_exec(escapeshellcmd($this->bindir() . '/trace.sh') . ' ' . escapeshellarg($this->sandbox() . '/main.php'));
+        $command = escapeshellcmd($this->bindir() . '/trace.sh') . ' ' . escapeshellarg($this->sandbox() . '/main.php');
+        shell_exec($command);
         $sigs = new Signatures(new DummyClassCollator());
         $this->assertFalse($sigs->has('callit'));
         $trace = new TraceReader(new SplFileObject($this->sandbox() . '/dumpfile.xt'));
@@ -96,7 +99,8 @@ class TestOfTracer extends TestCase
     public function testCanParseClassArg()
     {
         chdir($this->sandbox());
-        shell_exec(escapeshellcmd($this->bindir() . '/trace.sh') . ' ' . escapeshellarg($this->sandbox() . '/main.php'));
+        $command = escapeshellcmd($this->bindir() . '/trace.sh') . ' ' . escapeshellarg($this->sandbox() . '/main.php');
+        shell_exec($command);
         $sigs = new Signatures(new DummyClassCollator());
         $trace = new TraceReader(new SplFileObject($this->sandbox() . '/dumpfile.xt'));
         $collector = new TraceSignatureLogger($sigs);

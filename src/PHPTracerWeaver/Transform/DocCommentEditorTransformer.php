@@ -57,7 +57,10 @@ class DocCommentEditorTransformer implements TransformerInterface
             $this->editor->editBuffer($this->buffer);
             $this->state = 0;
             $this->flushBuffers();
-        } elseif ($token->isA(T_INTERFACE) || $token->isA(T_CLASS) || ($token->isA(T_VARIABLE) && !$this->parameters_scanner->isActive())) {
+        } elseif ($token->isA(T_INTERFACE)
+            || $token->isA(T_CLASS)
+            || ($token->isA(T_VARIABLE) && !$this->parameters_scanner->isActive())
+        ) {
             $this->state = 0;
             $this->flushBuffers();
         }
