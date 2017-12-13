@@ -37,35 +37,37 @@ class TracerDocBlockEditor implements BufferEditorInterface
         $this->parametersScanner = $parametersScanner;
     }
 
-    public function generateDoc($func, string $class = '', array $params = []): string
+    public function generateDoc($func, string $class = '', array $params = []): ?string
     {
-        if ($this->signatures->has($func, $class)) {
-            $signature = $this->signatures->get($func, $class);
-
-            $key = 0;
-            $longestType = 0;
-            $seenArguments = $signature->getArguments();
-            foreach ($params as $name => $type) {
-                $seenArgument = $seenArguments[$key];
-                $seenArgument->collateWith($type);
-                $longestType = max(mb_strlen($seenArgument->getType()), $longestType);
-                $params[$name] = $seenArgument->getType();
-                ++$key;
-            }
-
-            $doc = "\n"; // TODO do not add an empty line if at the top of the class
-            $doc .= "    /**\n";
-            foreach ($params as $name => $type) {
-                $doc .= '     * @param ' . $type . str_repeat(' ', $longestType - mb_strlen($type) + 1) . $name . "\n";
-            }
-            if ($params) {
-                $doc .= "     *\n";
-            }
-            $doc .= '     * @return ' . $signature->getReturnType() . "\n";
-            $doc .= '     */';
-
-            return $doc;
+        if (!$this->signatures->has($func, $class)) {
+            return null;
         }
+
+        $signature = $this->signatures->get($func, $class);
+
+        $key = 0;
+        $longestType = 0;
+        $seenArguments = $signature->getArguments();
+        foreach ($params as $name => $type) {
+            $seenArgument = $seenArguments[$key];
+            $seenArgument->collateWith($type);
+            $longestType = max(mb_strlen($seenArgument->getType()), $longestType);
+            $params[$name] = $seenArgument->getType();
+            ++$key;
+        }
+
+        $doc = "\n"; // TODO do not add an empty line if at the top of the class
+        $doc .= "    /**\n";
+        foreach ($params as $name => $type) {
+            $doc .= '     * @param ' . $type . str_repeat(' ', $longestType - mb_strlen($type) + 1) . $name . "\n";
+        }
+        if ($params) {
+            $doc .= "     *\n";
+        }
+        $doc .= '     * @return ' . $signature->getReturnType() . "\n";
+        $doc .= '     */';
+
+        return $doc;
     }
 
     /**
@@ -80,7 +82,7 @@ class TracerDocBlockEditor implements BufferEditorInterface
             $this->classScanner->getCurrentClass(),
             $this->parametersScanner->getCurrentSignatureAsTypeMap()
         );
-        if (!$text) {
+        if (null === $text) {
             return;
         }
 
