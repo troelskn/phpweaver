@@ -4,7 +4,9 @@
 class FunctionParametersScanner implements ScannerInterface
 {
     protected $signature = [];
+    /** @var int */
     protected $paren_count = 0;
+    /** @var int */
     protected $state = 0;
     protected $on_signature_begin;
     protected $on_signature_end;

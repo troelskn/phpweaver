@@ -2,6 +2,7 @@
 
 class TraceIncludesLogger
 {
+    /** @var StaticReflector */
     protected $reflector;
     protected $includes = [];
 

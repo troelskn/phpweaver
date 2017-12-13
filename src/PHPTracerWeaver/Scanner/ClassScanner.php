@@ -3,8 +3,10 @@
 /** Tracks the current class scope */
 class ClassScanner implements ScannerInterface
 {
+    /** @var int */
     protected $current_class_scope = 0;
     protected $current_class;
+    /** @var int */
     protected $state = 0;
     protected $on_class_begin;
     protected $on_class_end;

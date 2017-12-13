@@ -5,6 +5,7 @@ class FunctionBodyScanner implements ScannerInterface
 {
     protected $current_class_scope;
     protected $name;
+    /** @var int */
     protected $state = 0;
 
     public function accept(Token $token)

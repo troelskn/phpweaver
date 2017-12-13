@@ -4,18 +4,28 @@ use PHPTracerWeaver\Reflector\ClassCollatorInterface;
 
 class FunctionSignature
 {
+    /** @var FunctionArgument[] */
     protected $arguments = [];
     /** @var FunctionArgument */
     protected $returnType;
     protected $collator;
 
+    /**
+     * @param ClassCollatorInterface $collator
+     */
     public function __construct(ClassCollatorInterface $collator)
     {
         $this->collator = $collator;
         $this->returnType = new FunctionArgument(0);
     }
 
-    public function blend(array $arguments, string $returnType)
+    /**
+     * @param string[] $arguments
+     * @param string   $returnType
+     *
+     * @return void
+     */
+    public function blend(array $arguments, string $returnType): void
     {
         foreach ($arguments as $id => $type) {
             $arg = $this->getArgumentById($id);
@@ -30,12 +40,15 @@ class FunctionSignature
         }
     }
 
+    /**
+     * @return string
+     */
     public function getReturnType(): string
     {
         return $this->returnType->getType();
     }
 
-    public function getArgumentById($id)
+    public function getArgumentById($id): FunctionArgument
     {
         if (!isset($this->arguments[$id])) {
             $this->arguments[$id] = new FunctionArgument($id);
@@ -44,16 +57,21 @@ class FunctionSignature
         return $this->arguments[$id];
     }
 
-    public function getArgumentByName($name)
+    public function getArgumentByName($name): ?FunctionArgument
     {
         foreach ($this->arguments as $argument) {
             if ($argument->getName() === $name) {
                 return $argument;
             }
         }
+
+        return null;
     }
 
-    public function getArguments()
+    /**
+     * @return FunctionArgument[]
+     */
+    public function getArguments(): array
     {
         $args = $this->arguments;
         ksort($args);
@@ -61,7 +79,10 @@ class FunctionSignature
         return $args;
     }
 
-    public function export()
+    /**
+     * @return string[]
+     */
+    public function export(): array
     {
         $out = [];
         foreach ($this->arguments as $argument) {

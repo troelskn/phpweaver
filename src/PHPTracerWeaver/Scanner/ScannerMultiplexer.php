@@ -5,14 +5,24 @@ class ScannerMultiplexer implements ScannerInterface
 {
     protected $scanners = [];
 
-    public function appendScanner(ScannerInterface $scanner)
+    /**
+     * @param ScannerInterface $scanner
+     *
+     * @return ScannerInterface
+     */
+    public function appendScanner(ScannerInterface $scanner): ScannerInterface
     {
         $this->scanners[] = $scanner;
 
         return $scanner;
     }
 
-    public function accept(Token $token)
+    /**
+     * @param Token $token
+     *
+     * @return void
+     */
+    public function accept(Token $token): void
     {
         foreach ($this->scanners as $scanner) {
             $scanner->accept($token);

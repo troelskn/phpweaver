@@ -5,14 +5,23 @@ use PHPTracerWeaver\Scanner\Token;
 /** Just a dummy really */
 class PassthruTransformer implements TransformerInterface
 {
+    /** @var string */
     protected $output = '';
 
-    public function accept(Token $token)
+    /**
+     * @param Token $token
+     *
+     * @return void
+     */
+    public function accept(Token $token): void
     {
         $this->output .= $token->getText();
     }
 
-    public function getOutput()
+    /**
+     * @return string
+     */
+    public function getOutput(): string
     {
         return $this->output;
     }

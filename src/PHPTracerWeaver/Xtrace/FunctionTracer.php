@@ -9,6 +9,9 @@ class FunctionTracer
     /** @var array */
     protected $internalFunctions;
 
+    /**
+     * @param TraceSignatureLogger $handler
+     */
     public function __construct(TraceSignatureLogger $handler)
     {
         $this->handler = $handler;
@@ -20,10 +23,20 @@ class FunctionTracer
         );
     }
 
+    /**
+     * @param string $time
+     *
+     * @return void
+     */
     public function traceStart(string $time): void
     {
     }
 
+    /**
+     * @param string $time
+     *
+     * @return void
+     */
     public function traceEnd(string $time = null): void
     {
         $this->returnValue(0);
@@ -34,6 +47,12 @@ class FunctionTracer
         $this->stack[] = $trace;
     }
 
+    /**
+     * @param int    $depth
+     * @param string $value
+     *
+     * @return void
+     */
     public function returnValue(int $depth, string $value = 'VOID'): void
     {
         $functionCall = array_pop($this->stack);

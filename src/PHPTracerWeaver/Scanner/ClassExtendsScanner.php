@@ -5,7 +5,9 @@ class ClassExtendsScanner implements ScannerInterface
 {
     protected $on_extends;
     protected $on_implements;
+    /** @var int */
     protected $state = 0;
+    /** @var ClassScanner */
     protected $class_scanner;
 
     public function __construct(ClassScanner $class_scanner)

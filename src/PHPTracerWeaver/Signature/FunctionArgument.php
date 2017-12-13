@@ -53,7 +53,12 @@ class FunctionArgument
         $this->type = $type;
     }
 
-    public function collateWith(string $type)
+    /**
+     * @param string $type
+     *
+     * @return void
+     */
+    public function collateWith(string $type): void
     {
         if ('???' === $this->type) {
             $this->type = $type;
@@ -79,7 +84,10 @@ class FunctionArgument
         $this->type = implode('|', $tmp);
     }
 
-    public function export()
+    /**
+     * @return string
+     */
+    public function export(): string
     {
         return $this->getName() . ' (' . ($this->isUndefined() ? 'mixed' : $this->getType()) . ')';
     }

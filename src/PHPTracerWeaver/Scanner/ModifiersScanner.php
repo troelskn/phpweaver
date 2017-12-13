@@ -5,7 +5,9 @@ class ModifiersScanner implements ScannerInterface
 {
     protected $on_modifiers_begin;
     protected $on_modifiers_end;
+    /** @var bool */
     protected $was_function = false;
+    /** @var int */
     protected $state = 0;
 
     public function notifyOnModifiersBegin($callback)

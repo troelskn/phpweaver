@@ -7,6 +7,7 @@ use PHPTracerWeaver\Scanner\TokenStreamParser;
 
 class StaticReflector implements ClassCollatorInterface
 {
+    /** @var ScannerMultiplexer */
     protected $scanner;
     protected $names = [];
     protected $typemap = [];

@@ -3,7 +3,9 @@
 /** Used by transformers */
 class TokenBuffer
 {
+    /** @var self|null */
     protected $super;
+    /** @var Token[] */
     protected $tokens = [];
 
     public function __construct(self $super = null)
@@ -11,22 +13,41 @@ class TokenBuffer
         $this->super = $super;
     }
 
-    public function prepend(Token $token)
+    /**
+     * @param Token $token
+     *
+     * @return void
+     */
+    public function prepend(Token $token): void
     {
         array_unshift($this->tokens, $token);
     }
 
-    public function append(Token $token)
+    /**
+     * @param Token $token
+     *
+     * @return void
+     */
+    public function append(Token $token): void
     {
         $this->tokens[] = $token;
     }
 
-    public function getFirstToken()
+    /**
+     * @return ?Token
+     */
+    public function getFirstToken(): ?Token
     {
         return isset($this->tokens[0]) ? $this->tokens[0] : null;
     }
 
-    public function replaceToken(Token $token, Token $new_token)
+    /**
+     * @param Token $token
+     * @param Token $new_token
+     *
+     * @return void
+     */
+    public function replaceToken(Token $token, Token $new_token): void
     {
         $tmp = [];
         foreach ($this->tokens as $t) {
@@ -39,17 +60,26 @@ class TokenBuffer
         $this->tokens = $tmp;
     }
 
-    public function hasSuper()
+    /**
+     * @return bool
+     */
+    public function hasSuper(): bool
     {
         return (bool) $this->super;
     }
 
-    public function raise()
+    /**
+     * @return self
+     */
+    public function raise(): self
     {
         return new self($this);
     }
 
-    public function flush()
+    /**
+     * @return self|null
+     */
+    public function flush(): ?self
     {
         if (!$this->super) {
             return $this;
@@ -63,7 +93,10 @@ class TokenBuffer
         return $this->super;
     }
 
-    public function toText()
+    /**
+     * @return string
+     */
+    public function toText(): string
     {
         $out = '';
         foreach ($this->tokens as $token) {

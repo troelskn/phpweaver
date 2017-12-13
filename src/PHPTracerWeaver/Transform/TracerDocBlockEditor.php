@@ -10,20 +10,34 @@ use PHPTracerWeaver\Signature\Signatures;
 /** Uses result from a trace to construct docblocks */
 class TracerDocBlockEditor implements BufferEditorInterface
 {
+    /** @var Signatures */
     protected $signatures;
+    /** @var ClassScanner */
     protected $class_scanner;
+    /** @var FunctionBodyScanner */
     protected $function_body_scanner;
+    /** @var FunctionParametersScanner */
     protected $parameters_scanner;
 
-    public function __construct(Signatures $signatures, ClassScanner $class_scanner, FunctionBodyScanner $function_body_scanner, FunctionParametersScanner $parameters_scanner)
-    {
+    /**
+     * @param Signatures                $signatures
+     * @param ClassScanner              $class_scanner
+     * @param FunctionBodyScanner       $function_body_scanner
+     * @param FunctionParametersScanner $parameters_scanner
+     */
+    public function __construct(
+        Signatures $signatures,
+        ClassScanner $class_scanner,
+        FunctionBodyScanner $function_body_scanner,
+        FunctionParametersScanner $parameters_scanner
+    ) {
         $this->signatures = $signatures;
         $this->class_scanner = $class_scanner;
         $this->function_body_scanner = $function_body_scanner;
         $this->parameters_scanner = $parameters_scanner;
     }
 
-    public function generateDoc($func, $class = '', $params = [])
+    public function generateDoc($func, string $class = '', array $params = []): string
     {
         if ($this->signatures->has($func, $class)) {
             $signature = $this->signatures->get($func, $class);
@@ -54,7 +68,12 @@ class TracerDocBlockEditor implements BufferEditorInterface
         }
     }
 
-    public function editBuffer(TokenBuffer $buffer)
+    /**
+     * @param TokenBuffer $buffer
+     *
+     * @return void
+     */
+    public function editBuffer(TokenBuffer $buffer): void
     {
         $text = $this->generateDoc(
             $this->function_body_scanner->getName(),

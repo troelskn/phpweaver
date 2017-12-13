@@ -3,10 +3,16 @@
 /** entity representing a file with sourcecode */
 class SourceFile
 {
+    /** @var TokenStream */
     protected $token_stream;
     protected $hash;
+    /** @var FileAccessInterface */
     protected $path;
 
+    /**
+     * @param FileAccessInterface $path
+     * @param TokenStream         $token_stream
+     */
     public function __construct(FileAccessInterface $path, TokenStream $token_stream)
     {
         $this->path = $path;
@@ -14,22 +20,36 @@ class SourceFile
         $this->hash = $token_stream->getHash();
     }
 
-    public function getPath()
+    /**
+     * @return FileAccessInterface
+     */
+    public function getPath(): FileAccessInterface
     {
         return $this->path;
     }
 
-    public function hasChanges()
+    /**
+     * @return bool
+     */
+    public function hasChanges(): bool
     {
         return $this->hash != $this->token_stream->getHash();
     }
 
-    public function getTokenStream()
+    /**
+     * @return TokenStream
+     */
+    public function getTokenStream(): TokenStream
     {
         return $this->token_stream;
     }
 
-    public function setTokenStream(TokenStream $token_stream)
+    /**
+     * @param TokenStream $token_stream
+     *
+     * @return void
+     */
+    public function setTokenStream(TokenStream $token_stream): void
     {
         $this->token_stream = $token_stream;
     }

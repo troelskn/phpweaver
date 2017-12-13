@@ -34,6 +34,9 @@ class Token
         return $this->getToken() === $type;
     }
 
+    /**
+     * @return bool
+     */
     public function isCurlyOpen()
     {
         $token = $this->getToken();

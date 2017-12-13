@@ -3,19 +3,33 @@
 /** a collection of tokens */
 class TokenStream
 {
+    /** @var array */
     protected $tokens = [];
 
-    public function getHash()
+    /**
+     * @return string
+     */
+    public function getHash(): string
     {
         return md5(serialize($this->tokens));
     }
 
-    public function append(Token $token)
+    /**
+     * @param Token $token
+     *
+     * @return void
+     */
+    public function append(Token $token): void
     {
         $this->tokens[] = $token;
     }
 
-    public function iterate(ScannerInterface $scanner)
+    /**
+     * @param ScannerInterface $scanner
+     *
+     * @return void
+     */
+    public function iterate(ScannerInterface $scanner): void
     {
         foreach ($this->tokens as $token) {
             $scanner->accept($token);

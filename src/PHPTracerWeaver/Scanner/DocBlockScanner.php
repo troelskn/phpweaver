@@ -4,7 +4,9 @@
 class DocBlockScanner implements ScannerInterface
 {
     protected $last_doc_block;
+    /** @var int */
     protected $state = 0;
+    /** @var FunctionParametersScanner */
     protected $parameters_scanner;
 
     public function __construct(FunctionParametersScanner $parameters_scanner)
