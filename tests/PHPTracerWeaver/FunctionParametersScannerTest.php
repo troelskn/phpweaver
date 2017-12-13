@@ -17,7 +17,7 @@ class TestOfFunctionParametersScanner extends TestCase
     {
         $scanner = new FunctionParametersScanner();
         $tokenizer = new TokenStreamParser();
-        $token_stream = $tokenizer->scan('<?php function bar(');
+        $token_stream = $tokenizer->scan('<?php function bar() {}');
         $this->assertFalse($scanner->isActive());
         $token_stream->iterate($scanner);
         $this->assertTrue($scanner->isActive());

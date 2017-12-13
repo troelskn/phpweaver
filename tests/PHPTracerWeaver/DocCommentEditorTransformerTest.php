@@ -37,7 +37,7 @@ class TestOfDocCommentEditorTransformer extends TestCase
 
     public function testInvokesEditorOnFunctionModifiers()
     {
-        $source = '<?php' . "\n" . 'abstract function bar($x) {}';
+        $source = '<?php' . "\n" . 'class Foo { abstract function bar($x) {} }';
         $mock_editor = new MockPassthruBufferEditor();
         $transformer = $this->scan($source, $mock_editor);
         $this->assertInstanceOf('TokenBuffer', $mock_editor->buffer);
