@@ -27,7 +27,7 @@ class Signatures
     {
         $name = strtolower($class ? ($class . '->' . $func) : $func);
 
-        return isset($this->signatures_array[$name]);
+        return isset($this->signaturesArray[$name]);
     }
 
     /**
@@ -42,11 +42,11 @@ class Signatures
             throw new Exception('Illegal identifier: {' . "$func, $class" . '}');
         }
         $name = strtolower($class ? ($class . '->' . $func) : $func);
-        if (!isset($this->signatures_array[$name])) {
-            $this->signatures_array[$name] = new FunctionSignature($this->collator);
+        if (!isset($this->signaturesArray[$name])) {
+            $this->signaturesArray[$name] = new FunctionSignature($this->collator);
         }
 
-        return $this->signatures_array[$name];
+        return $this->signaturesArray[$name];
     }
 
     /**
@@ -55,7 +55,7 @@ class Signatures
     public function export(): array
     {
         $out = [];
-        foreach ($this->signatures_array as $name => $functionSignature) {
+        foreach ($this->signaturesArray as $name => $functionSignature) {
             $out[$name] = $functionSignature->export();
         }
 
