@@ -8,6 +8,12 @@ use PHPTracerWeaver\Scanner\FunctionParametersScanner;
 use PHPTracerWeaver\Scanner\ModifiersScanner;
 use PHPTracerWeaver\Scanner\ScannerMultiplexer;
 use PHPTracerWeaver\Scanner\TokenStreamParser;
+use PHPTracerWeaver\Signature\Signatures;
+use PHPTracerWeaver\Transform\DocCommentEditorTransformer;
+use PHPTracerWeaver\Transform\TracerDocBlockEditor;
+use PHPTracerWeaver\Xtrace\FunctionTracer;
+use PHPTracerWeaver\Xtrace\TraceReader;
+use PHPTracerWeaver\Xtrace\TraceSignatureLogger;
 
 if (PHP_SAPI !== 'cli') {
     echo 'Warning: PHPTracerWeaver should be invoked via the CLI version of PHP, not the ' . PHP_SAPI . ' SAPI' . PHP_EOL;
@@ -35,9 +41,9 @@ $reflector = new StaticReflector();
 $sigs = new Signatures($reflector);
 // read trace
 if (is_file($trace_filename)) {
-    $trace = new XtraceTraceReader(new SplFileObject($trace_filename));
-    $collector = new XtraceTraceSignatureLogger($sigs, $reflector);
-    $trace->process(new XtraceFunctionTracer($collector, $reflector));
+    $trace = new TraceReader(new SplFileObject($trace_filename));
+    $collector = new TraceSignatureLogger($sigs, $reflector);
+    $trace->process(new FunctionTracer($collector, $reflector));
 }
 
 // transform file

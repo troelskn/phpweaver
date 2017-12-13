@@ -2,12 +2,9 @@
 
 use PHPTracerWeaver\Scanner\TokenBuffer;
 
-class MockPassthruBufferEditor extends PassthruBufferEditor
+class PassthruBufferEditor implements BufferEditorInterface
 {
-    public $buffer;
-
     public function editBuffer(TokenBuffer $buffer)
     {
-        $this->buffer = clone $buffer;
     }
 }

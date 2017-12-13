@@ -1,106 +1,14 @@
-<?php
+<?php namespace PHPTracerWeaver\Transform;
 
 use PHPTracerWeaver\Scanner\ClassScanner;
 use PHPTracerWeaver\Scanner\FunctionBodyScanner;
 use PHPTracerWeaver\Scanner\FunctionParametersScanner;
-use PHPTracerWeaver\Scanner\ModifiersScanner;
-use PHPTracerWeaver\Scanner\ScannerInterface;
 use PHPTracerWeaver\Scanner\Token;
 use PHPTracerWeaver\Scanner\TokenBuffer;
-
-interface TransformerInterface extends ScannerInterface
-{
-    public function getOutput();
-}
-
-/** Just a dummy really */
-class PassthruTransformer implements TransformerInterface
-{
-    protected $output = '';
-
-    public function accept(Token $token)
-    {
-        $this->output .= $token->getText();
-    }
-
-    public function getOutput()
-    {
-        return $this->output;
-    }
-}
-
-interface BufferEditor
-{
-    public function editBuffer(TokenBuffer $buffer);
-}
-
-class PassthruBufferEditor implements BufferEditor
-{
-    public function editBuffer(TokenBuffer $buffer)
-    {
-    }
-}
-
-class DocCommentEditorTransformer implements TransformerInterface
-{
-    protected $function_body_scanner;
-    protected $modifiers_scanner;
-    protected $parameters_scanner;
-    protected $editor;
-    protected $state = 0;
-    protected $buffer;
-
-    public function __construct(FunctionBodyScanner $function_body_scanner, ModifiersScanner $modifiers_scanner, FunctionParametersScanner $parameters_scanner, BufferEditor $editor)
-    {
-        $this->function_body_scanner = $function_body_scanner;
-        $this->modifiers_scanner = $modifiers_scanner;
-        $this->parameters_scanner = $parameters_scanner;
-        $this->editor = $editor;
-        $this->buffer = new TokenBuffer();
-    }
-
-    public function accept(Token $token)
-    {
-        if ($token->isA(T_DOC_COMMENT)) {
-            $this->state = 1;
-            $this->raiseBuffer();
-        } elseif (0 === $this->state && ($this->modifiers_scanner->isActive() || $token->isA(T_FUNCTION))) {
-            $this->state = 1;
-            $this->raiseBuffer();
-        } elseif ($this->state > 0 && $this->function_body_scanner->isActive()) {
-            $this->editor->editBuffer($this->buffer);
-            $this->state = 0;
-            $this->flushBuffers();
-        } elseif ($token->isA(T_INTERFACE) || $token->isA(T_CLASS) || ($token->isA(T_VARIABLE) && !$this->parameters_scanner->isActive())) {
-            $this->state = 0;
-            $this->flushBuffers();
-        }
-        $this->buffer->append($token);
-    }
-
-    public function raiseBuffer()
-    {
-        $this->flushBuffers();
-        $this->buffer = $this->buffer->raise();
-    }
-
-    public function flushBuffers()
-    {
-        while ($this->buffer->hasSuper()) {
-            $this->buffer = $this->buffer->flush();
-        }
-    }
-
-    public function getOutput()
-    {
-        $this->flushBuffers();
-
-        return $this->buffer->toText();
-    }
-}
+use PHPTracerWeaver\Signature\Signatures;
 
 /** Uses result from a trace to construct docblocks */
-class TracerDocBlockEditor implements BufferEditor
+class TracerDocBlockEditor implements BufferEditorInterface
 {
     protected $signatures;
     protected $class_scanner;

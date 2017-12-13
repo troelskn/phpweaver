@@ -1,5 +1,7 @@
 <?php
 
+use PHPTracerWeaver\Scanner\TokenStream;
+use PHPTracerWeaver\Scanner\TokenStreamParser;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -15,6 +17,6 @@ class TestOfTokenizer extends TestCase
     {
         $tokenizer = new TokenStreamParser();
         $tokenStream = $tokenizer->scan('<?php function foo($x) {} ?>');
-        $this->assertInstanceOf('TokenStream', $tokenStream);
+        $this->assertInstanceOf(TokenStream::class, $tokenStream);
     }
 }

@@ -1,0 +1,55 @@
+<?php namespace PHPTracerWeaver\Xtrace;
+
+class FunctionTracer
+{
+    /** @var TraceSignatureLogger */
+    protected $handler;
+    /** @var array */
+    protected $stack = [];
+    /** @var array */
+    protected $internalFunctions;
+
+    public function __construct(TraceSignatureLogger $handler)
+    {
+        $this->handler = $handler;
+        $definedFunctions = get_defined_functions();
+
+        $this->internalFunctions = array_merge(
+            $definedFunctions['internal'],
+            ['include', 'include_once', 'require', 'require_once']
+        );
+    }
+
+    public function traceStart(string $time): void
+    {
+    }
+
+    public function traceEnd(string $time = null): void
+    {
+        $this->returnValue(0);
+    }
+
+    public function functionCall(array $trace): void
+    {
+        $this->stack[] = $trace;
+    }
+
+    public function returnValue(int $depth, string $value = 'VOID'): void
+    {
+        $functionCall = array_pop($this->stack);
+
+        $previousCall = end($this->stack);
+        if ($previousCall && $depth < $previousCall['depth']) {
+            $this->returnValue($previousCall['depth']);
+        }
+
+        $functionCall['returnValue'] = $value;
+        if (!in_array($functionCall['function'], $this->internalFunctions)) {
+            $this->handler->log($functionCall);
+        }
+
+        if ($previousCall && $depth === $previousCall['depth']) {
+            $this->returnValue($previousCall['depth']);
+        }
+    }
+}

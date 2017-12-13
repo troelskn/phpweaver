@@ -17,12 +17,11 @@
         "codacy/coverage": "^1.0"
     },
     "autoload": {
-        "psr-4": {"PHPTracerWeaver\\": ["src/"]}
+        "psr-4": {
+            "PHPTracerWeaver\\": "src/PHPTracerWeaver"
+        }
     },
     "autoload-dev": {
-        "classmap": [
-            "src/PHPTracerWeaver",
-            "tests"
-        ]
+        "classmap": ["tests"]
     }
 }

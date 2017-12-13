@@ -1,6 +1,10 @@
 <?php
 
 use PHPTracerWeaver\Reflector\StaticReflector;
+use PHPTracerWeaver\Signature\Signatures;
+use PHPTracerWeaver\Xtrace\FunctionTracer;
+use PHPTracerWeaver\Xtrace\TraceReader;
+use PHPTracerWeaver\Xtrace\TraceSignatureLogger;
 use PHPUnit\Framework\TestCase;
 
 class TestOfCollation extends TestCase
@@ -52,9 +56,9 @@ class TestOfCollation extends TestCase
         shell_exec(escapeshellcmd($this->bindir() . '/trace.sh') . ' ' . escapeshellarg($this->sandbox() . '/main.php'));
         $reflector = new StaticReflector();
         $sigs = new Signatures($reflector);
-        $trace = new XtraceTraceReader(new SplFileObject($this->sandbox() . '/dumpfile.xt'));
-        $collector = new XtraceTraceSignatureLogger($sigs, $reflector);
-        $trace->process(new XtraceFunctionTracer($collector));
+        $trace = new TraceReader(new SplFileObject($this->sandbox() . '/dumpfile.xt'));
+        $collector = new TraceSignatureLogger($sigs, $reflector);
+        $trace->process(new FunctionTracer($collector));
         $this->assertSame('Bar|Cuux', $sigs->get('do_stuff')->getArgumentById(0)->getType());
     }
 }

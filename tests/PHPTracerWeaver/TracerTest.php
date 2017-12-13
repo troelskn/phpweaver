@@ -1,6 +1,10 @@
 <?php
 
 use PHPTracerWeaver\Reflector\DummyClassCollator;
+use PHPTracerWeaver\Signature\Signatures;
+use PHPTracerWeaver\Xtrace\FunctionTracer;
+use PHPTracerWeaver\Xtrace\TraceReader;
+use PHPTracerWeaver\Xtrace\TraceSignatureLogger;
 use PHPUnit\Framework\TestCase;
 
 class TestOfTracer extends TestCase
@@ -83,9 +87,9 @@ class TestOfTracer extends TestCase
         shell_exec(escapeshellcmd($this->bindir() . '/trace.sh') . ' ' . escapeshellarg($this->sandbox() . '/main.php'));
         $sigs = new Signatures(new DummyClassCollator());
         $this->assertFalse($sigs->has('callit'));
-        $trace = new XtraceTraceReader(new SplFileObject($this->sandbox() . '/dumpfile.xt'));
-        $collector = new XtraceTraceSignatureLogger($sigs);
-        $trace->process(new XtraceFunctionTracer($collector));
+        $trace = new TraceReader(new SplFileObject($this->sandbox() . '/dumpfile.xt'));
+        $collector = new TraceSignatureLogger($sigs);
+        $trace->process(new FunctionTracer($collector));
         $this->assertTrue($sigs->has('callit'));
     }
 
@@ -94,9 +98,9 @@ class TestOfTracer extends TestCase
         chdir($this->sandbox());
         shell_exec(escapeshellcmd($this->bindir() . '/trace.sh') . ' ' . escapeshellarg($this->sandbox() . '/main.php'));
         $sigs = new Signatures(new DummyClassCollator());
-        $trace = new XtraceTraceReader(new SplFileObject($this->sandbox() . '/dumpfile.xt'));
-        $collector = new XtraceTraceSignatureLogger($sigs);
-        $trace->process(new XtraceFunctionTracer($collector));
+        $trace = new TraceReader(new SplFileObject($this->sandbox() . '/dumpfile.xt'));
+        $collector = new TraceSignatureLogger($sigs);
+        $trace->process(new FunctionTracer($collector));
         $this->assertSame('Foo', $sigs->get('callit')->getArgumentById(0)->getType());
     }
 }

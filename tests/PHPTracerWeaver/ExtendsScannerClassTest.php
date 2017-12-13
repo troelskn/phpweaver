@@ -1,5 +1,9 @@
 <?php
 
+use PHPTracerWeaver\Scanner\ClassExtendsScanner;
+use PHPTracerWeaver\Scanner\ClassScanner;
+use PHPTracerWeaver\Scanner\ScannerMultiplexer;
+use PHPTracerWeaver\Scanner\TokenStreamParser;
 use PHPUnit\Framework\TestCase;
 
 class TestOfClassExtendsScanner extends TestCase
