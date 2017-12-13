@@ -20,7 +20,7 @@ class TraceIncludesLogger
         $this->includes[$filename] = true;
     }
 
-    public function log_include($trace)
+    public function logInclude($trace)
     {
         $this->log($trace);
     }

@@ -1,4 +1,4 @@
-<?php
+<?php namespace PHPTracerWeaver\Test;
 
 use PHPTracerWeaver\Reflector\StaticReflector;
 use PHPTracerWeaver\Signature\Signatures;
@@ -6,9 +6,11 @@ use PHPTracerWeaver\Xtrace\FunctionTracer;
 use PHPTracerWeaver\Xtrace\TraceReader;
 use PHPTracerWeaver\Xtrace\TraceSignatureLogger;
 use PHPUnit\Framework\TestCase;
+use SplFileObject;
 
 class TestOfCollation extends TestCase
 {
+    /** @var string */
     private $curdir;
 
     public function bindir()

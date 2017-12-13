@@ -1,4 +1,4 @@
-<?php
+<?php namespace PHPTracerWeaver\Test;
 
 use PHPTracerWeaver\Scanner\ClassExtendsScanner;
 use PHPTracerWeaver\Scanner\ClassScanner;

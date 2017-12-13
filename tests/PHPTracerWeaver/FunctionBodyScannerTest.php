@@ -1,4 +1,4 @@
-<?php
+<?php namespace PHPTracerWeaver\Test;
 
 use PHPTracerWeaver\Scanner\FunctionBodyScanner;
 use PHPTracerWeaver\Scanner\TokenStreamParser;

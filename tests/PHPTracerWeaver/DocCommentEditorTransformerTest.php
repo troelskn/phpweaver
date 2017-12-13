@@ -1,4 +1,4 @@
-<?php
+<?php namespace PHPTracerWeaver\Test;
 
 use PHPTracerWeaver\Scanner\FunctionBodyScanner;
 use PHPTracerWeaver\Scanner\FunctionParametersScanner;
@@ -7,7 +7,6 @@ use PHPTracerWeaver\Scanner\ScannerMultiplexer;
 use PHPTracerWeaver\Scanner\TokenBuffer;
 use PHPTracerWeaver\Scanner\TokenStreamParser;
 use PHPTracerWeaver\Transform\DocCommentEditorTransformer;
-use PHPTracerWeaver\Transform\MockPassthruBufferEditor;
 use PHPTracerWeaver\Transform\PassthruBufferEditor;
 use PHPUnit\Framework\TestCase;
 

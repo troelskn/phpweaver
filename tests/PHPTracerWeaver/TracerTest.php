@@ -1,4 +1,4 @@
-<?php
+<?php namespace PHPTracerWeaver\Test;
 
 use PHPTracerWeaver\Reflector\DummyClassCollator;
 use PHPTracerWeaver\Signature\Signatures;
@@ -6,6 +6,7 @@ use PHPTracerWeaver\Xtrace\FunctionTracer;
 use PHPTracerWeaver\Xtrace\TraceReader;
 use PHPTracerWeaver\Xtrace\TraceSignatureLogger;
 use PHPUnit\Framework\TestCase;
+use SplFileObject;
 
 class TestOfTracer extends TestCase
 {

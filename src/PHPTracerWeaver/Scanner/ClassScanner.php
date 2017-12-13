@@ -34,21 +34,35 @@ class ClassScanner implements ScannerInterface
             if (is_callable($this->onClassBegin)) {
                 call_user_func($this->onClassBegin);
             }
-        } elseif ($token->isA(T_STRING) && 1 === $this->state) {
+
+            return;
+        }
+
+        if ($token->isA(T_STRING) && 1 === $this->state) {
+            $this->state = 2;
             $this->currentClass = $token->getText();
             $this->currentClassScope = $token->getDepth();
-            $this->state = 2;
             if (is_callable($this->onClassname)) {
                 call_user_func($this->onClassname);
             }
-        } elseif (2 === $this->state && $token->getDepth() > $this->currentClassScope) {
+
+            return;
+        }
+
+        if (2 === $this->state && $token->getDepth() > $this->currentClassScope) {
             $this->state = 3;
-        } elseif (3 === $this->state && $token->getDepth() === $this->currentClassScope) {
-            $this->currentClass = null;
+
+            return;
+        }
+
+        if (3 === $this->state && $token->getDepth() === $this->currentClassScope) {
             $this->state = 0;
+            $this->currentClass = null;
             if (is_callable($this->onClassEnd)) {
                 call_user_func($this->onClassEnd);
             }
+
+            return;
         }
     }
 

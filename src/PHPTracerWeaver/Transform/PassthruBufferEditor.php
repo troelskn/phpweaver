@@ -4,7 +4,12 @@ use PHPTracerWeaver\Scanner\TokenBuffer;
 
 class PassthruBufferEditor implements BufferEditorInterface
 {
-    public function editBuffer(TokenBuffer $buffer)
+    /**
+     * @param TokenBuffer $buffer
+     *
+     * @return void
+     */
+    public function editBuffer(TokenBuffer $buffer): void
     {
     }
 }

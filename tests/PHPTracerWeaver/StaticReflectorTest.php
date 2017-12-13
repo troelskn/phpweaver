@@ -1,4 +1,4 @@
-<?php
+<?php namespace PHPTracerWeaver\Test;
 
 use PHPTracerWeaver\Reflector\StaticReflector;
 use PHPUnit\Framework\TestCase;

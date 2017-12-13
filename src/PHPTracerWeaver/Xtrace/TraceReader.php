@@ -64,7 +64,7 @@ class TraceReader
                 continue;
             }
 
-            throw new Exception('Could not parse line ' . $lineNo . ': ' . $line . "\n");
+            throw new Exception('Could not parse line ' . $lineNo . ': ' . $line . PHP_EOL);
         }
 
         $handler->traceEnd();
