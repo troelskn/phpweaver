@@ -52,6 +52,6 @@ class TestOfCollation extends TestCase
         $trace = new XtraceTraceReader(new SplFileObject($this->sandbox() . '/dumpfile.xt'));
         $collector = new XtraceTraceSignatureLogger($sigs, $reflector);
         $trace->process(new XtraceFunctionTracer($collector));
-        $this->assertSame('Foo', $sigs->get('do_stuff')->getArgumentById(0)->getType());
+        $this->assertSame('Bar|Cuux', $sigs->get('do_stuff')->getArgumentById(0)->getType());
     }
 }
