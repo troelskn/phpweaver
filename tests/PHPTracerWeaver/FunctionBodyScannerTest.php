@@ -6,7 +6,10 @@ use PHPUnit\Framework\TestCase;
 
 class TestOfFunctionBodyScanner extends TestCase
 {
-    public function testCanTrackFunctionBody()
+    /**
+     * @return void
+     */
+    public function testCanTrackFunctionBody(): void
     {
         $this->markTestSkipped('Partial php is no longer parsable.');
         $scanner = new FunctionBodyScanner();
@@ -17,7 +20,10 @@ class TestOfFunctionBodyScanner extends TestCase
         $this->assertTrue($scanner->isActive());
     }
 
-    public function testCanTrackEndOfFunctionBody()
+    /**
+     * @return void
+     */
+    public function testCanTrackEndOfFunctionBody(): void
     {
         $scanner = new FunctionBodyScanner();
         $tokenizer = new TokenStreamParser();
@@ -26,7 +32,10 @@ class TestOfFunctionBodyScanner extends TestCase
         $this->assertFalse($scanner->isActive());
     }
 
-    public function testCanTrackFunctionName()
+    /**
+     * @return void
+     */
+    public function testCanTrackFunctionName(): void
     {
         $scanner = new FunctionBodyScanner();
         $tokenizer = new TokenStreamParser();
@@ -35,7 +44,10 @@ class TestOfFunctionBodyScanner extends TestCase
         $this->assertSame('bar', $scanner->getName());
     }
 
-    public function testCanTrackEndOfScopedFunctionBody()
+    /**
+     * @return void
+     */
+    public function testCanTrackEndOfScopedFunctionBody(): void
     {
         $scanner = new FunctionBodyScanner();
         $tokenizer = new TokenStreamParser();

@@ -3,7 +3,7 @@
 /** a collection of tokens */
 class TokenStream
 {
-    /** @var array */
+    /** @var Token[] */
     protected $tokens = [];
 
     /**

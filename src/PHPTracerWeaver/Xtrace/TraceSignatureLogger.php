@@ -9,15 +9,24 @@ class TraceSignatureLogger
     protected $signatures;
     /** @var StaticReflector|null */
     protected $reflector;
-    /** @var array */
+    /** @var bool[] */
     protected $includes = [];
 
+    /**
+     * @param Signatures      $signatures
+     * @param StaticReflector $reflector
+     */
     public function __construct(Signatures $signatures, StaticReflector $reflector = null)
     {
         $this->signatures = $signatures;
         $this->reflector = $reflector;
     }
 
+    /**
+     * @param string[] $trace
+     *
+     * @return void
+     */
     public function log(array $trace): void
     {
         if ($this->reflector) {
@@ -34,6 +43,11 @@ class TraceSignatureLogger
         );
     }
 
+    /**
+     * @param string $asString
+     *
+     * @return string[]
+     */
     public function parseArguments(string $asString): array
     {
         if (!$asString) {
@@ -58,6 +72,11 @@ class TraceSignatureLogger
         return $types;
     }
 
+    /**
+     * @param string $returnValue
+     *
+     * @return string
+     */
     public function parseReturnType(string $returnValue): string
     {
         // todo: numbers, resources ..

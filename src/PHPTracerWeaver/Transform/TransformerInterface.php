@@ -4,5 +4,8 @@ use PHPTracerWeaver\Scanner\ScannerInterface;
 
 interface TransformerInterface extends ScannerInterface
 {
-    public function getOutput();
+    /**
+     * @return string
+     */
+    public function getOutput(): string;
 }

@@ -37,7 +37,14 @@ class TracerDocBlockEditor implements BufferEditorInterface
         $this->parametersScanner = $parametersScanner;
     }
 
-    public function generateDoc($func, string $class = '', array $params = []): ?string
+    /**
+     * @param string   $func
+     * @param string   $class
+     * @param string[] $params
+     *
+     * @return ?string
+     */
+    public function generateDoc(string $func, string $class = '', array $params = []): ?string
     {
         if (!$this->signatures->has($func, $class)) {
             return null;

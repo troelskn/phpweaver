@@ -4,5 +4,10 @@ use PHPTracerWeaver\Scanner\TokenBuffer;
 
 interface BufferEditorInterface
 {
-    public function editBuffer(TokenBuffer $buffer);
+    /**
+     * @param TokenBuffer $buffer
+     *
+     * @return void
+     */
+    public function editBuffer(TokenBuffer $buffer): void;
 }

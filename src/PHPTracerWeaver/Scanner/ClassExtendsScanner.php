@@ -3,29 +3,49 @@
 /** Scans for class inheritance */
 class ClassExtendsScanner implements ScannerInterface
 {
+    /** @var ?callable */
     protected $onExtends;
+    /** @var ?callable */
     protected $onImplements;
     /** @var int */
     protected $state = 0;
     /** @var ClassScanner */
     protected $classScanner;
 
+    /**
+     * @param ClassScanner $classScanner
+     */
     public function __construct(ClassScanner $classScanner)
     {
         $this->classScanner = $classScanner;
     }
 
-    public function notifyOnExtends($callback)
+    /**
+     * @param ?callable $callback
+     *
+     * @return void
+     */
+    public function notifyOnExtends(?callable $callback): void
     {
         $this->onExtends = $callback;
     }
 
-    public function notifyOnImplements($callback)
+    /**
+     * @param ?callable $callback
+     *
+     * @return void
+     */
+    public function notifyOnImplements(?callable $callback): void
     {
         $this->onImplements = $callback;
     }
 
-    public function accept(Token $token)
+    /**
+     * @param Token $token
+     *
+     * @return void
+     */
+    public function accept(Token $token): void
     {
         if ($token->isA(T_EXTENDS)) {
             $this->state = 1;

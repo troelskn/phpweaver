@@ -3,25 +3,43 @@
 /** Scans for, collects and parses function signatures */
 class FunctionParametersScanner implements ScannerInterface
 {
+    /** @var array[] */
     protected $signature = [];
     /** @var int */
     protected $paren_count = 0;
     /** @var int */
     protected $state = 0;
+    /** @var ?callable */
     protected $onSignatureBegin;
+    /** @var ?callable */
     protected $onSignatureEnd;
 
-    public function notifyOnSignatureBegin($callback)
+    /**
+     * @param ?callable $callback
+     *
+     * @return void
+     */
+    public function notifyOnSignatureBegin(?callable $callback): void
     {
         $this->onSignatureBegin = $callback;
     }
 
-    public function notifyOnSignatureEnd($callback)
+    /**
+     * @param ?callable $callback
+     *
+     * @return void
+     */
+    public function notifyOnSignatureEnd(?callable $callback): void
     {
         $this->onSignatureEnd = $callback;
     }
 
-    public function accept(Token $token)
+    /**
+     * @param Token $token
+     *
+     * @return void
+     */
+    public function accept(Token $token): void
     {
         if ($token->isA(T_FUNCTION)) {
             $this->state = 1;
@@ -49,17 +67,26 @@ class FunctionParametersScanner implements ScannerInterface
         }
     }
 
-    public function isActive()
+    /**
+     * @return bool
+     */
+    public function isActive(): bool
     {
         return 0 !== $this->state;
     }
 
-    public function getCurrentSignature()
+    /**
+     * @return array[]
+     */
+    public function getCurrentSignature(): array
     {
         return $this->signature;
     }
 
-    public function getCurrentSignatureAsString()
+    /**
+     * @return string
+     */
+    public function getCurrentSignatureAsString(): string
     {
         $txt = '';
         foreach ($this->signature as $struct) {
@@ -69,7 +96,10 @@ class FunctionParametersScanner implements ScannerInterface
         return $txt;
     }
 
-    public function getCurrentSignatureAsTypeMap()
+    /**
+     * @return string[]
+     */
+    public function getCurrentSignatureAsTypeMap(): array
     {
         $current = null;
         $map = [];

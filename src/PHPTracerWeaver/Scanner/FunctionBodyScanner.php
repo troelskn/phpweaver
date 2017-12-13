@@ -3,12 +3,19 @@
 /** Scans for function name + body */
 class FunctionBodyScanner implements ScannerInterface
 {
+    /** @var int */
     protected $currentClassScope;
+    /** @var ?stringn */
     protected $name;
     /** @var int */
     protected $state = 0;
 
-    public function accept(Token $token)
+    /**
+     * @param Token $token
+     *
+     * @return void
+     */
+    public function accept(Token $token): void
     {
         if ($token->isA(T_FUNCTION)) {
             $this->currentClassScope = $token->getDepth();
@@ -23,12 +30,18 @@ class FunctionBodyScanner implements ScannerInterface
         }
     }
 
-    public function isActive()
+    /**
+     * @return bool
+     */
+    public function isActive(): bool
     {
         return $this->state > 2;
     }
 
-    public function getName()
+    /**
+     * @return ?string
+     */
+    public function getName(): ?string
     {
         return $this->name;
     }

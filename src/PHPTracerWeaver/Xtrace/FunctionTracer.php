@@ -4,9 +4,9 @@ class FunctionTracer
 {
     /** @var TraceSignatureLogger */
     protected $handler;
-    /** @var array */
+    /** @var array[] */
     protected $stack = [];
-    /** @var array */
+    /** @var string[] */
     protected $internalFunctions;
 
     /**
@@ -42,6 +42,11 @@ class FunctionTracer
         $this->returnValue(0);
     }
 
+    /**
+     * @param array $trace
+     *
+     * @return void
+     */
     public function functionCall(array $trace): void
     {
         $this->stack[] = $trace;

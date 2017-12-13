@@ -13,7 +13,10 @@ use PHPUnit\Framework\TestCase;
  */
 class TestOfTokenizer extends TestCase
 {
-    public function testTokenizePhpWithoutErrors()
+    /**
+     * @return void
+     */
+    public function testTokenizePhpWithoutErrors(): void
     {
         $tokenizer = new TokenStreamParser();
         $tokenStream = $tokenizer->scan('<?php function foo($x) {} ?>');

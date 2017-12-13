@@ -13,16 +13,25 @@ class TestOfCollation extends TestCase
     /** @var string */
     private $curdir;
 
-    public function bindir()
+    /**
+     * @return string
+     */
+    public function bindir(): string
     {
         return __DIR__ . '/../..';
     }
 
-    public function sandbox()
+    /**
+     * @return string
+     */
+    public function sandbox(): string
     {
         return __DIR__ . '/../sandbox';
     }
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->curdir = getcwd();
@@ -41,6 +50,9 @@ class TestOfCollation extends TestCase
         file_put_contents($dirSandbox . '/main.php', $sourceMain);
     }
 
+    /**
+     * @return void
+     */
     public function tearDown()
     {
         chdir($this->curdir);
@@ -52,7 +64,10 @@ class TestOfCollation extends TestCase
         rmdir($dirSandbox);
     }
 
-    public function testCanCollateClasses()
+    /**
+     * @return void
+     */
+    public function testCanCollateClasses(): void
     {
         chdir($this->sandbox());
         $command = escapeshellcmd($this->bindir() . '/trace.sh') . ' ' . escapeshellarg($this->sandbox() . '/main.php');

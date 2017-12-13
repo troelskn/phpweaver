@@ -6,7 +6,10 @@ use PHPUnit\Framework\TestCase;
 
 class TestOfModifiersScanner extends TestCase
 {
-    public function testCanTrackModifiers()
+    /**
+     * @return void
+     */
+    public function testCanTrackModifiers(): void
     {
         $scanner = new ModifiersScanner();
         $tokenizer = new TokenStreamParser();
@@ -16,7 +19,10 @@ class TestOfModifiersScanner extends TestCase
         $this->assertFalse($scanner->isActive());
     }
 
-    public function testEndsOnFunction()
+    /**
+     * @return void
+     */
+    public function testEndsOnFunction(): void
     {
         $scanner = new ModifiersScanner();
         $tokenizer = new TokenStreamParser();

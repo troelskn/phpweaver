@@ -2,7 +2,13 @@
 
 class DummyClassCollator implements ClassCollatorInterface
 {
-    public function collate($first, $second)
+    /**
+     * @param string $first
+     * @param string $second
+     *
+     * @return string
+     */
+    public function collate(string $first, string $second): string
     {
         return 'mixed';
     }

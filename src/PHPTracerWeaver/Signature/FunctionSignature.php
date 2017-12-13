@@ -8,6 +8,7 @@ class FunctionSignature
     protected $arguments = [];
     /** @var FunctionArgument */
     protected $returnType;
+    /** @var ClassCollatorInterface */
     protected $collator;
 
     /**
@@ -48,7 +49,12 @@ class FunctionSignature
         return $this->returnType->getType();
     }
 
-    public function getArgumentById($id): FunctionArgument
+    /**
+     * @param int $id
+     *
+     * @return FunctionArgument
+     */
+    public function getArgumentById(int $id): FunctionArgument
     {
         if (!isset($this->arguments[$id])) {
             $this->arguments[$id] = new FunctionArgument($id);
@@ -57,7 +63,12 @@ class FunctionSignature
         return $this->arguments[$id];
     }
 
-    public function getArgumentByName($name): ?FunctionArgument
+    /**
+     * @param string $name
+     *
+     * @return ?FunctionArgument
+     */
+    public function getArgumentByName(string $name): ?FunctionArgument
     {
         foreach ($this->arguments as $argument) {
             if ($argument->getName() === $name) {

@@ -10,11 +10,19 @@ class TraceReader
     /** @var SplFileObject */
     protected $file;
 
+    /**
+     * @param SplFileObject $file
+     */
     public function __construct(SplFileObject $file)
     {
         $this->file = $file;
     }
 
+    /**
+     * @param FunctionTracer $handler
+     *
+     * @return void
+     */
     public function process(FunctionTracer $handler): void
     {
         foreach ($this->file as $lineNo => $line) {

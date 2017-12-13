@@ -3,6 +3,7 @@
 /** used for sending output to multiple scanners at once */
 class ScannerMultiplexer implements ScannerInterface
 {
+    /** @var ScannerInterface[] */
     protected $scanners = [];
 
     /**

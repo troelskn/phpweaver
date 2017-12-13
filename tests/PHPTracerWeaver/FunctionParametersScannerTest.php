@@ -6,7 +6,10 @@ use PHPUnit\Framework\TestCase;
 
 class TestOfFunctionParametersScanner extends TestCase
 {
-    public function testCanTrackCurrentSignatureForFunction()
+    /**
+     * @return void
+     */
+    public function testCanTrackCurrentSignatureForFunction(): void
     {
         $scanner = new FunctionParametersScanner();
         $tokenizer = new TokenStreamParser();
@@ -15,7 +18,10 @@ class TestOfFunctionParametersScanner extends TestCase
         $this->assertSame('($x)', $scanner->getCurrentSignatureAsString());
     }
 
-    public function testScannerIsActiveAfterFirstOpeningParen()
+    /**
+     * @return void
+     */
+    public function testScannerIsActiveAfterFirstOpeningParen(): void
     {
         $this->markTestSkipped('Partial php is no longer parsable.');
         $scanner = new FunctionParametersScanner();

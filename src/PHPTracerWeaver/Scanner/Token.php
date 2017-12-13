@@ -3,33 +3,55 @@
 /** a single token in the source code of a file */
 class Token
 {
+    /** @var string */
     protected $text;
+    /** @var int */
     protected $token;
+    /** @var int */
     protected $depth;
 
-    public function __construct($text, $token, $depth)
+    /**
+     * @param string $text
+     * @param int    $token
+     * @param int    $depth
+     */
+    public function __construct(string $text, int $token, int $depth)
     {
         $this->text = $text;
         $this->token = $token;
         $this->depth = $depth;
     }
 
-    public function getText()
+    /**
+     * @return string
+     */
+    public function getText(): string
     {
         return $this->text;
     }
 
-    public function getToken()
+    /**
+     * @return int
+     */
+    public function getToken(): int
     {
         return $this->token;
     }
 
-    public function getDepth()
+    /**
+     * @return int
+     */
+    public function getDepth(): int
     {
         return $this->depth;
     }
 
-    public function isA($type)
+    /**
+     * @param int $type
+     *
+     * @return bool
+     */
+    public function isA(int $type): bool
     {
         return $this->getToken() === $type;
     }
@@ -37,7 +59,7 @@ class Token
     /**
      * @return bool
      */
-    public function isCurlyOpen()
+    public function isCurlyOpen(): bool
     {
         $token = $this->getToken();
 

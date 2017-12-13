@@ -21,7 +21,7 @@ class SourceFileRepository
      *
      * @return SourceFile
      */
-    public function get(FileAccessInterface $path)
+    public function get(FileAccessInterface $path): SourceFile
     {
         if (!isset($this->streams[$path->getPathname()])) {
             $this->streams[$path->getPathname()] = $this->load($path);

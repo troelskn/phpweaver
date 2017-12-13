@@ -10,18 +10,28 @@ use SplFileObject;
 
 class TestOfTracer extends TestCase
 {
+    /** @var string */
     private $curdir;
 
-    public function bindir()
+    /**
+     * @return string
+     */
+    public function bindir(): string
     {
         return __DIR__ . '/../..';
     }
 
-    public function sandbox()
+    /**
+     * @return string
+     */
+    public function sandbox(): string
     {
         return __DIR__ . '/../sandbox';
     }
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->curdir = getcwd();
@@ -47,6 +57,9 @@ class TestOfTracer extends TestCase
         file_put_contents($dirSandbox . '/main.php', $sourceMain);
     }
 
+    /**
+     * @return void
+     */
     public function tearDown()
     {
         chdir($this->curdir);
@@ -59,14 +72,20 @@ class TestOfTracer extends TestCase
         rmdir($dirSandbox);
     }
 
-    public function testCanExecuteSandboxCode()
+    /**
+     * @return void
+     */
+    public function testCanExecuteSandboxCode(): void
     {
         chdir($this->sandbox());
         $output = shell_exec('php ' . escapeshellarg($this->sandbox() . '/main.php'));
         $this->assertSame("(completed)\n", $output);
     }
 
-    public function testCanExecuteSandboxCodeWithInstrumentation()
+    /**
+     * @return void
+     */
+    public function testCanExecuteSandboxCodeWithInstrumentation(): void
     {
         chdir($this->sandbox());
         $command = escapeshellcmd($this->bindir() . '/trace.sh') . ' ' . escapeshellarg($this->sandbox() . '/main.php');
@@ -76,7 +95,10 @@ class TestOfTracer extends TestCase
         $this->assertRegExp('~TRACE COMPLETE\n$~', $output);
     }
 
-    public function testInstrumentationCreatesTracefile()
+    /**
+     * @return void
+     */
+    public function testInstrumentationCreatesTracefile(): void
     {
         chdir($this->sandbox());
         $command = escapeshellcmd($this->bindir() . '/trace.sh') . ' ' . escapeshellarg($this->sandbox() . '/main.php');
@@ -84,7 +106,10 @@ class TestOfTracer extends TestCase
         $this->assertTrue(is_file($this->sandbox() . '/dumpfile.xt'));
     }
 
-    public function testCanParseTracefile()
+    /**
+     * @return void
+     */
+    public function testCanParseTracefile(): void
     {
         chdir($this->sandbox());
         $command = escapeshellcmd($this->bindir() . '/trace.sh') . ' ' . escapeshellarg($this->sandbox() . '/main.php');
@@ -97,7 +122,10 @@ class TestOfTracer extends TestCase
         $this->assertTrue($sigs->has('callit'));
     }
 
-    public function testCanParseClassArg()
+    /**
+     * @return void
+     */
+    public function testCanParseClassArg(): void
     {
         chdir($this->sandbox());
         $command = escapeshellcmd($this->bindir() . '/trace.sh') . ' ' . escapeshellarg($this->sandbox() . '/main.php');

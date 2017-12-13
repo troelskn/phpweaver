@@ -86,7 +86,10 @@ class DocCommentEditorTransformer implements TransformerInterface
         }
     }
 
-    public function getOutput()
+    /**
+     * @return string
+     */
+    public function getOutput(): string
     {
         $this->flushBuffers();
 

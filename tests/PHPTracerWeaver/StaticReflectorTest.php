@@ -5,7 +5,10 @@ use PHPUnit\Framework\TestCase;
 
 class TestOfStaticReflector extends TestCase
 {
-    public function testCanScanSources()
+    /**
+     * @return void
+     */
+    public function testCanScanSources(): void
     {
         $reflector = new StaticReflector();
         $reflector->scanString('<?php class Foo implements Bar, Doink {}');
@@ -14,7 +17,10 @@ class TestOfStaticReflector extends TestCase
         $this->assertSame(['Bar'], $reflector->ancestors('Zip'));
     }
 
-    public function testCanCollateSame()
+    /**
+     * @return void
+     */
+    public function testCanCollateSame(): void
     {
         $reflector = new StaticReflector();
         $reflector->scanString('<?php class Foo extends Bar {}');
@@ -22,7 +28,10 @@ class TestOfStaticReflector extends TestCase
         $this->assertSame('Foo', $reflector->collate('Foo', 'Foo'));
     }
 
-    public function testCanCollateDirectInheritance()
+    /**
+     * @return void
+     */
+    public function testCanCollateDirectInheritance(): void
     {
         $reflector = new StaticReflector();
         $reflector->scanString('<?php class Foo extends Bar {}');
@@ -30,7 +39,10 @@ class TestOfStaticReflector extends TestCase
         $this->assertSame('Bar', $reflector->collate('Foo', 'Zip'));
     }
 
-    public function testCanCollateChildToParent()
+    /**
+     * @return void
+     */
+    public function testCanCollateChildToParent(): void
     {
         $reflector = new StaticReflector();
         $reflector->scanString('<?php class Foo {}');
@@ -38,7 +50,10 @@ class TestOfStaticReflector extends TestCase
         $this->assertSame('Foo', $reflector->collate('Foo', 'Bar'));
     }
 
-    public function testCanCollateParentToChild()
+    /**
+     * @return void
+     */
+    public function testCanCollateParentToChild(): void
     {
         $reflector = new StaticReflector();
         $reflector->scanString('<?php class Foo {}');

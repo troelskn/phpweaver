@@ -8,7 +8,7 @@ class TokenStreamParser
      *
      * @return TokenStream
      */
-    public function scan(string $source)
+    public function scan(string $source): TokenStream
     {
         //todo: track indentation
         $stream = new TokenStream();

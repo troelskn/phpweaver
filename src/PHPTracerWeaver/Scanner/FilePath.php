@@ -10,7 +10,10 @@ class FilePath implements FileAccessInterface
         $this->pathname = $pathname;
     }
 
-    public function getContents()
+    /**
+     * @return string
+     */
+    public function getContents(): string
     {
         if (!is_file($this->getPathname())) {
             throw new Exception('Not a file or not readable');
@@ -19,7 +22,10 @@ class FilePath implements FileAccessInterface
         return file_get_contents($this->getPathname());
     }
 
-    public function getPathname()
+    /**
+     * @return string
+     */
+    public function getPathname(): string
     {
         return realpath($this->pathname);
     }

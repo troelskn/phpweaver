@@ -3,6 +3,7 @@
 use PHPTracerWeaver\Scanner\FunctionBodyScanner;
 use PHPTracerWeaver\Scanner\FunctionParametersScanner;
 use PHPTracerWeaver\Scanner\ModifiersScanner;
+use PHPTracerWeaver\Scanner\ScannerInterface;
 use PHPTracerWeaver\Scanner\ScannerMultiplexer;
 use PHPTracerWeaver\Scanner\TokenBuffer;
 use PHPTracerWeaver\Scanner\TokenStreamParser;
@@ -12,7 +13,13 @@ use PHPUnit\Framework\TestCase;
 
 class TestOfDocCommentEditorTransformer extends TestCase
 {
-    public function scan($source, $editor = null)
+    /**
+     * @param string               $source
+     * @param PassthruBufferEditor $editor
+     *
+     * @return ScannerInterface
+     */
+    public function scan(string $source, PassthruBufferEditor $editor = null): ScannerInterface
     {
         $editor = $editor ? $editor : new PassthruBufferEditor();
         $scanner = new ScannerMultiplexer();
@@ -29,14 +36,20 @@ class TestOfDocCommentEditorTransformer extends TestCase
         return $transformer;
     }
 
-    public function testInputReturnsOutput()
+    /**
+     * @return void
+     */
+    public function testInputReturnsOutput(): void
     {
         $source = '<?php /** Lorem Ipsum */' . "\n" . 'function bar($x) {}' . "\n" . 'function zim($y) {}';
         $transformer = $this->scan($source);
         $this->assertSame($source, $transformer->getOutput());
     }
 
-    public function testInvokesEditorOnFunction()
+    /**
+     * @return void
+     */
+    public function testInvokesEditorOnFunction(): void
     {
         $source = '<?php' . "\n" . 'function bar($x) {}';
         $mockEditor = new MockPassthruBufferEditor();
@@ -45,7 +58,10 @@ class TestOfDocCommentEditorTransformer extends TestCase
         $this->assertSame('function bar($x) ', $mockEditor->buffer->toText());
     }
 
-    public function testInvokesEditorOnFunctionModifiers()
+    /**
+     * @return void
+     */
+    public function testInvokesEditorOnFunctionModifiers(): void
     {
         $source = '<?php' . "\n" . 'class Foo { abstract function bar($x) {} }';
         $mockEditor = new MockPassthruBufferEditor();
@@ -54,7 +70,10 @@ class TestOfDocCommentEditorTransformer extends TestCase
         $this->assertSame('abstract function bar($x) ', $mockEditor->buffer->toText());
     }
 
-    public function testDoesntInvokeEditorOnClassModifiers()
+    /**
+     * @return void
+     */
+    public function testDoesntInvokeEditorOnClassModifiers(): void
     {
         $source = '<?php' . "\n" . 'abstract class Foo {}';
         $mockEditor = new MockPassthruBufferEditor();
@@ -62,7 +81,10 @@ class TestOfDocCommentEditorTransformer extends TestCase
         $this->assertNull($mockEditor->buffer);
     }
 
-    public function testInvokesEditorOnDocblock()
+    /**
+     * @return void
+     */
+    public function testInvokesEditorOnDocblock(): void
     {
         $source = '<?php' . "\n" . '/** Lorem Ipsum */' . "\n" . 'function bar($x) {}';
         $mockEditor = new MockPassthruBufferEditor();

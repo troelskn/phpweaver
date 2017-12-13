@@ -9,9 +9,13 @@ class StaticReflector implements ClassCollatorInterface
 {
     /** @var ScannerMultiplexer */
     protected $scanner;
+    /** @var string[] */
     protected $names = [];
+    /** @var array[] */
     protected $typemap = [];
+    /** @var string[] */
     protected $collateCache = [];
+    /** @var string[] */
     protected $ancestorsCache = [];
 
     public function __construct()
@@ -23,7 +27,13 @@ class StaticReflector implements ClassCollatorInterface
         $inheritanceScanner->notifyOnImplements([$this, 'logSupertype']);
     }
 
-    public function logSupertype($class, $super)
+    /**
+     * @param string $class
+     * @param string $super
+     *
+     * @return void
+     */
+    public function logSupertype(string $class, string $super): void
     {
         $this->names[strtolower($super)] = $super;
         $this->names[strtolower($class)] = $class;
@@ -37,12 +47,22 @@ class StaticReflector implements ClassCollatorInterface
         }
     }
 
-    public function scanFile($file)
+    /**
+     * @param string $file
+     *
+     * @return void
+     */
+    public function scanFile(string $file): void
     {
         $this->scanString(file_get_contents($file));
     }
 
-    public function scanString($phpSource)
+    /**
+     * @param string $phpSource
+     *
+     * @return void
+     */
+    public function scanString(string $phpSource): void
     {
         $this->collateCache = [];
         $this->ancestorsCache = [];
@@ -51,12 +71,20 @@ class StaticReflector implements ClassCollatorInterface
         $tokenStream->iterate($this->scanner);
     }
 
-    public function export()
+    /**
+     * @return array[]
+     */
+    public function export(): array
     {
         return $this->typemap;
     }
 
-    protected function symbolsToNames($symbols = [])
+    /**
+     * @param string[] $symbols
+     *
+     * @return string[]
+     */
+    protected function symbolsToNames(array $symbols = []): array
     {
         $names = [];
         foreach ($symbols as $symbol) {
@@ -66,14 +94,24 @@ class StaticReflector implements ClassCollatorInterface
         return $names;
     }
 
-    public function ancestors($class)
+    /**
+     * @param string $class
+     *
+     * @return string[]
+     */
+    public function ancestors(string $class): array
     {
         $class = strtolower($class);
 
         return $this->symbolsToNames(isset($this->typemap[$class]) ? $this->typemap[$class] : []);
     }
 
-    public function ancestorsAndSelf($class)
+    /**
+     * @param string $class
+     *
+     * @return string[]
+     */
+    public function ancestorsAndSelf(string $class): array
     {
         $class = strtolower($class);
 
@@ -82,7 +120,12 @@ class StaticReflector implements ClassCollatorInterface
         return $this->symbolsToNames($symbols);
     }
 
-    public function allAncestors($class)
+    /**
+     * @param string $class
+     *
+     * @return string[]
+     */
+    public function allAncestors(string $class): array
     {
         $class = strtolower($class);
         if (isset($this->ancestorsCache[$class])) {
@@ -97,7 +140,12 @@ class StaticReflector implements ClassCollatorInterface
         return $result;
     }
 
-    public function allAncestorsAndSelf($class)
+    /**
+     * @param string $class
+     *
+     * @return string[]
+     */
+    public function allAncestorsAndSelf(string $class): array
     {
         if (!isset($this->names[strtolower($class)])) {
             return $this->allAncestors($class);
@@ -114,7 +162,7 @@ class StaticReflector implements ClassCollatorInterface
      *
      * @return string
      */
-    public function collate($first, $second)
+    public function collate(string $first, string $second): string
     {
         $first = strtolower($first);
         $second = strtolower($second);

@@ -3,6 +3,7 @@
 /** Scans for doc-comments */
 class DocBlockScanner implements ScannerInterface
 {
+    /** @var ?string */
     protected $lastDocBlock;
     /** @var int */
     protected $state = 0;
@@ -17,7 +18,12 @@ class DocBlockScanner implements ScannerInterface
         $this->parametersScanner = $parametersScanner;
     }
 
-    public function accept(Token $token)
+    /**
+     * @param Token $token
+     *
+     * @return void
+     */
+    public function accept(Token $token): void
     {
         if ($token->isA(T_DOC_COMMENT)) {
             $this->lastDocBlock = $token->getText();
@@ -46,7 +52,10 @@ class DocBlockScanner implements ScannerInterface
         return 1 === $this->state;
     }
 
-    public function getCurrentDocBlock()
+    /**
+     * @return ?string
+     */
+    public function getCurrentDocBlock(): ?string
     {
         return $this->lastDocBlock;
     }

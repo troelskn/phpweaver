@@ -2,12 +2,19 @@
 
 class FunctionArgument
 {
+    /** @var int */
     protected $id;
+    /** @var string|null */
     protected $name;
     /** @var string */
     protected $type;
 
-    public function __construct($id, $name = null, $type = '???')
+    /**
+     * @param int    $id
+     * @param string $name
+     * @param string $type
+     */
+    public function __construct(int $id, string $name = null, string $type = '???')
     {
         if ('null' === $type) {
             $type = '???';
@@ -18,37 +25,64 @@ class FunctionArgument
         $this->type = $type;
     }
 
-    public function getId()
+    /**
+     * @return ?int
+     */
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setId($id)
+    /**
+     * @param int $id
+     *
+     * @return void
+     */
+    public function setId(?int $id): void
     {
         $this->id = $id;
     }
 
-    public function getName()
+    /**
+     * @return ?string
+     */
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setName($name)
+    /**
+     * @param string $name
+     *
+     * @return void
+     */
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
 
-    public function isUndefined()
+    /**
+     * @return bool
+     */
+    public function isUndefined(): bool
     {
         return '???' === $this->type;
     }
 
-    public function getType()
+    /**
+     * @return string
+     */
+    public function getType(): string
     {
         return $this->type;
     }
 
-    public function setType($type)
+    /**
+     * @param string $type
+     *
+     * @return void
+     */
+    public function setType(string $type): void
     {
         $this->type = $type;
     }

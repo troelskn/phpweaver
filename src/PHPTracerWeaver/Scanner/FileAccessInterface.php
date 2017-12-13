@@ -3,7 +3,13 @@
 /** provides access to a file */
 interface FileAccessInterface
 {
-    public function getContents();
+    /**
+     * @return string
+     */
+    public function getContents(): string;
 
-    public function getPathname();
+    /**
+     * @return string
+     */
+    public function getPathname(): string;
 }

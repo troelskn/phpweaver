@@ -4,22 +4,39 @@ use PHPTracerWeaver\Reflector\ClassCollatorInterface;
 
 class Signatures
 {
-    protected $signatures_array = [];
+    /** @var FunctionSignature[] */
+    protected $signaturesArray = [];
+    /** @var ClassCollatorInterface */
     protected $collator;
 
+    /**
+     * @param ClassCollatorInterface $collator
+     */
     public function __construct(ClassCollatorInterface $collator)
     {
         $this->collator = $collator;
     }
 
-    public function has($func, $class = '')
+    /**
+     * @param string $func
+     * @param string $class
+     *
+     * @return bool
+     */
+    public function has(string $func, string $class = ''): bool
     {
         $name = strtolower($class ? ($class . '->' . $func) : $func);
 
         return isset($this->signatures_array[$name]);
     }
 
-    public function get($func, $class = '')
+    /**
+     * @param string $func
+     * @param string $class
+     *
+     * @return FunctionSignature
+     */
+    public function get(string $func, string $class = ''): FunctionSignature
     {
         if (!$func) {
             throw new Exception('Illegal identifier: {' . "$func, $class" . '}');
@@ -32,7 +49,10 @@ class Signatures
         return $this->signatures_array[$name];
     }
 
-    public function export()
+    /**
+     * @return array[]
+     */
+    public function export(): array
     {
         $out = [];
         foreach ($this->signatures_array as $name => $functionSignature) {

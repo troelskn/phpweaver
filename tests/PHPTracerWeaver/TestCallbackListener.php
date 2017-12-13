@@ -2,13 +2,20 @@
 
 class TestCallbackListener
 {
+    /** @var array[] */
     protected $results = [];
 
-    public function results()
+    /**
+     * @return array[]
+     */
+    public function results(): array
     {
         return $this->results;
     }
 
+    /**
+     * @return mixed[]
+     */
     public function one()
     {
         if (1 !== count($this->results)) {
@@ -18,7 +25,12 @@ class TestCallbackListener
         return $this->results[0];
     }
 
-    public function call()
+    /**
+     * @param mixed $params
+     *
+     * @return void
+     */
+    public function call(...$params): void
     {
         $this->results[] = func_get_args();
     }

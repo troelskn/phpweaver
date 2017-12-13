@@ -6,7 +6,10 @@ use PHPUnit\Framework\TestCase;
 
 class TestOfClassScanner extends TestCase
 {
-    public function testCanTrackCurrentClass()
+    /**
+     * @return void
+     */
+    public function testCanTrackCurrentClass(): void
     {
         $this->markTestSkipped('Partial php is no longer parsable.');
         $scanner = new ClassScanner();
@@ -16,7 +19,10 @@ class TestOfClassScanner extends TestCase
         $this->assertSame('Foo', $scanner->getCurrentClass());
     }
 
-    public function testForgetsClassWhenScopeEnds()
+    /**
+     * @return void
+     */
+    public function testForgetsClassWhenScopeEnds(): void
     {
         $scanner = new ClassScanner();
         $tokenizer = new TokenStreamParser();
@@ -25,7 +31,10 @@ class TestOfClassScanner extends TestCase
         $this->assertNull($scanner->getCurrentClass());
     }
 
-    public function testForgetsClassWhenScopeEndsWithinNestedScopes()
+    /**
+     * @return void
+     */
+    public function testForgetsClassWhenScopeEndsWithinNestedScopes(): void
     {
         $scanner = new ClassScanner();
         $tokenizer = new TokenStreamParser();

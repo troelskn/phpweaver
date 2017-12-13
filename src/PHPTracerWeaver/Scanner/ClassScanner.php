@@ -5,29 +5,53 @@ class ClassScanner implements ScannerInterface
 {
     /** @var int */
     protected $currentClassScope = 0;
+    /** @var string */
     protected $currentClass;
     /** @var int */
     protected $state = 0;
+    /** @var ?callable */
     protected $onClassBegin;
+    /** @var ?callable */
     protected $onClassEnd;
+    /** @var ?callable */
     protected $onClassname;
 
-    public function notifyOnClassBegin($callback)
+    /**
+     * @param ?callable $callback
+     *
+     * @return void
+     */
+    public function notifyOnClassBegin(?callable $callback): void
     {
         $this->onClassBegin = $callback;
     }
 
-    public function notifyOnClassEnd($callback)
+    /**
+     * @param ?callable $callback
+     *
+     * @return void
+     */
+    public function notifyOnClassEnd(?callable $callback): void
     {
         $this->onClassEnd = $callback;
     }
 
-    public function notifyOnClassName($callback)
+    /**
+     * @param ?callable $callback
+     *
+     * @return void
+     */
+    public function notifyOnClassName(?callable $callback): void
     {
         $this->onClassname = $callback;
     }
 
-    public function accept(Token $token)
+    /**
+     * @param Token $token
+     *
+     * @return void
+     */
+    public function accept(Token $token): void
     {
         if ($token->isA(T_INTERFACE) || $token->isA(T_CLASS)) {
             $this->state = 1;
@@ -66,7 +90,10 @@ class ClassScanner implements ScannerInterface
         }
     }
 
-    public function getCurrentClass()
+    /**
+     * @return ?string
+     */
+    public function getCurrentClass(): ?string
     {
         return $this->currentClass;
     }

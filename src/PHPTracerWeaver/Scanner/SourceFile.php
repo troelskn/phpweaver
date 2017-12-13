@@ -5,6 +5,7 @@ class SourceFile
 {
     /** @var TokenStream */
     protected $tokenStream;
+    /** @var string */
     protected $hash;
     /** @var FileAccessInterface */
     protected $path;

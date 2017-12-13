@@ -8,7 +8,10 @@ use PHPUnit\Framework\TestCase;
 
 class TestOfClassExtendsScanner extends TestCase
 {
-    public function testCanTrackSingleExtends()
+    /**
+     * @return void
+     */
+    public function testCanTrackSingleExtends(): void
     {
         $scanner = new ScannerMultiplexer();
         $classScanner = $scanner->appendScanner(new ClassScanner());
@@ -21,7 +24,10 @@ class TestOfClassExtendsScanner extends TestCase
         $this->assertSame(['Foo', 'Bar'], $listener->one());
     }
 
-    public function testCanTrackSingleImplements()
+    /**
+     * @return void
+     */
+    public function testCanTrackSingleImplements(): void
     {
         $scanner = new ScannerMultiplexer();
         $classScanner = $scanner->appendScanner(new ClassScanner());
@@ -34,7 +40,10 @@ class TestOfClassExtendsScanner extends TestCase
         $this->assertSame(['Foo', 'Bar'], $listener->one());
     }
 
-    public function testCanTrackMultipleImplements()
+    /**
+     * @return void
+     */
+    public function testCanTrackMultipleImplements(): void
     {
         $scanner = new ScannerMultiplexer();
         $classScanner = $scanner->appendScanner(new ClassScanner());
