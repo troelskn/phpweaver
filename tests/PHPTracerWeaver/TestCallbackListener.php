@@ -32,6 +32,6 @@ class TestCallbackListener
      */
     public function call(...$params): void
     {
-        $this->results[] = func_get_args();
+        $this->results[] = $params;
     }
 }
