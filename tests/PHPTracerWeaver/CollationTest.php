@@ -4,6 +4,8 @@ use PHPUnit\Framework\TestCase;
 
 class TestOfCollation extends TestCase
 {
+    private $curdir;
+
     public function bindir()
     {
         return __DIR__ . '/../..';

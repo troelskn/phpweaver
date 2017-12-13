@@ -73,11 +73,10 @@ class TokenStreamParser
         $stream = new TokenStream();
         $depth = 0;
         foreach (token_get_all($source, true) as $token) {
-            if (is_array($token)) {
-                [$token, $text] = $token;
-            } elseif (is_string($token)) {
-                $text = $token;
-                $token = -1;
+            $text = $token;
+            $token = -1;
+            if (is_array($text)) {
+                [$token, $text] = $text;
             }
             if (T_CURLY_OPEN === $token || T_DOLLAR_OPEN_CURLY_BRACES === $token || '{' === $text) {
                 ++$depth;
@@ -189,7 +188,7 @@ class FilePath implements FileAccess
             throw new Exception('Not a file or not readable');
         }
 
-        return get_file_contents($this->getPathname());
+        return file_get_contents($this->getPathname());
     }
 
     public function getPathname()
@@ -432,6 +431,7 @@ class ModifiersScanner implements Scanner
 /** Scans for function name + body */
 class FunctionBodyScanner implements Scanner
 {
+    protected $current_class_scope;
     protected $name;
     protected $state = 0;
 

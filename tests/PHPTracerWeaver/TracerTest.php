@@ -4,6 +4,8 @@ use PHPUnit\Framework\TestCase;
 
 class TestOfTracer extends TestCase
 {
+    private $curdir;
+
     public function bindir()
     {
         return __DIR__ . '/../..';

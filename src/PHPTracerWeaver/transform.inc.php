@@ -96,6 +96,7 @@ class TracerDocBlockEditor implements BufferEditor
     protected $signatures;
     protected $class_scanner;
     protected $function_body_scanner;
+    protected $parameters_scanner;
 
     public function __construct(Signatures $signatures, ClassScanner $class_scanner, FunctionBodyScanner $function_body_scanner, FunctionParametersScanner $parameters_scanner)
     {
@@ -118,7 +119,7 @@ class TracerDocBlockEditor implements BufferEditor
                 $seenArgument->collateWith($type);
                 $longestType = max(mb_strlen($seenArgument->getType()), $longestType);
                 $params[$name] = $seenArgument->getType();
-                $key++;
+                ++$key;
             }
 
             $doc = "\n";

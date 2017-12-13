@@ -32,6 +32,7 @@ class XtraceTraceReader
             // Trace end
             if (preg_match('~TRACE END   \[([0-9 :-]+)\]~', $line, $match)) {
                 $handler->traceEnd($match[1]);
+
                 return;
             }
 
@@ -61,7 +62,7 @@ class XtraceTraceReader
                 continue;
             }
 
-            throw new Exception("Could not parse line " . $lineNo . ': ' . $line ."\n");
+            throw new Exception('Could not parse line ' . $lineNo . ': ' . $line . "\n");
         }
 
         $handler->traceEnd();
@@ -126,7 +127,7 @@ class XtraceTraceSignatureLogger
 {
     /** @var Signatures */
     protected $signatures;
-    /** @var StaticReflector */
+    /** @var StaticReflector|null */
     protected $reflector;
     /** @var array */
     protected $includes = [];
