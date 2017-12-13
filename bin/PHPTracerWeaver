@@ -1,10 +1,11 @@
-#!/usr/bin/php
+#!/usr/bin/env php
 <?php
-require_once 'signature.inc.php';
-require_once 'xtrace.inc.php';
-require_once 'scanner.inc.php';
-require_once 'transform.inc.php';
-require_once 'reflector.inc.php';
+
+if (PHP_SAPI !== 'cli') {
+    echo 'Warning: Composer should be invoked via the CLI version of PHP, not the '.PHP_SAPI.' SAPI'.PHP_EOL;
+}
+
+require __DIR__.'/../src/bootstrap.php';
 
 if (__FILE__ === realpath($_SERVER['SCRIPT_FILENAME'])) {
     error_reporting(E_ALL | E_STRICT);

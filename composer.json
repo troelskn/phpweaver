@@ -1,0 +1,13 @@
+{
+    "name": "ajenbo/php-tracer-weaver",
+    "description": "A tool for analysing parameter types in PHP code, using a combination of static and runtime analysis",
+    "type": "project",
+    "license": "MIT",
+    "require": {
+        "php": "^7.1",
+        "ext-xdebug": "*"
+    },
+    "autoload-dev": {
+        "classmap": ["src/PHPTracerWeaver"]
+    }
+}
