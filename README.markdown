@@ -3,8 +3,8 @@ php-tracer-weaver
 [![Build Status](https://travis-ci.org/AJenbo/php-tracer-weaver.svg?branch=master)](https://travis-ci.org/AJenbo/php-tracer-weaver)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/cc2ad72a9e4c47a9bbc84037a29857a8)](https://www.codacy.com/app/AJenbo/php-tracer-weaver?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=AJenbo/php-tracer-weaver&amp;utm_campaign=Badge_Grade)
 [![Maintainability](https://api.codeclimate.com/v1/badges/412a2f0203c7ed255bee/maintainability)](https://codeclimate.com/github/AJenbo/php-tracer-weaver/maintainability)
-[![codebeat badge](https://codebeat.co/badges/f3b44ddd-5251-4801-bf87-b1bf61a7420f)](https://codebeat.co/projects/github-com-ajenbo-php-tracer-weaver-master)
 [![BCH compliance](https://bettercodehub.com/edge/badge/AJenbo/php-tracer-weaver?branch=master)](https://bettercodehub.com/)
+[![Coverage Status](https://coveralls.io/repos/github/AJenbo/php-tracer-weaver/badge.svg?branch=master)](https://coveralls.io/github/AJenbo/php-tracer-weaver?branch=master)
 
 **php-tracer-weaver** is a tool for analysing parameter types in PHP code, using a combination of static and runtime analysis. It relies on the [xdebug extension](http://www.xdebug.org/docs/execution_trace) to trace function calls. The result of the analysis can then be used to generate docblock comments, with the proper type annotations.
 
