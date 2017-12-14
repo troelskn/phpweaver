@@ -49,10 +49,12 @@ class TraceReader
 
             // runtime-generated functions?
             if (preg_match('~^([.\d]+)\s+(\d+)(\s+)-> ([^(]+)\((.*)\)(?:\'d)?\s+([^:]+):([0-9]+)$~', $line, $match)) {
+                $depth = (strlen($match[3]) - 3) / 2;
+                $handler->closeVoidReturns($depth);
                 $handler->functionCall([
                     'time'         => $match[1],
                     'memory_usage' => $match[2],
-                    'depth'        => (strlen($match[3]) - 3) / 2,
+                    'depth'        => $depth,
                     'function'     => $match[4],
                     'arguments'    => $match[5],
                     'filename'     => $match[6],
@@ -64,7 +66,8 @@ class TraceReader
             // Return value
             if (preg_match('~^[.\d]+\s+\d+(\s+)>=> (.+)$~', $line, $match)) {
                 $depth = (strlen($match[1]) - 4) / 2;
-                $handler->returnValue($depth, $match[2]);
+                $handler->closeVoidReturns($depth + 1);
+                $handler->returnValue($match[2]);
                 continue;
             }
 
@@ -76,6 +79,6 @@ class TraceReader
             throw new Exception('Could not parse line ' . $lineNo . ': ' . $line . PHP_EOL);
         }
 
-        $handler->traceEnd();
+        $handler->closeVoidReturns(0);
     }
 }

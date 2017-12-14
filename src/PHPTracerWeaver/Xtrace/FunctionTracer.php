@@ -8,6 +8,8 @@ class FunctionTracer
     protected $stack = [];
     /** @var string[] */
     protected $internalFunctions;
+    /** @var int */
+    private $currentDepth = 0;
 
     /**
      * @param TraceSignatureLogger $handler
@@ -39,7 +41,6 @@ class FunctionTracer
      */
     public function traceEnd(string $time = null): void
     {
-        $this->returnValue(0);
     }
 
     /**
@@ -49,31 +50,42 @@ class FunctionTracer
      */
     public function functionCall(array $trace): void
     {
+        $this->currentDepth = $trace['depth'];
         $this->stack[] = $trace;
     }
 
     /**
-     * @param int    $depth
+     * Close any function that was implicilty closed by given depth
+     *
+     * @param int $depth
+     *
+     * @return void
+     */
+    public function closeVoidReturns(int $depth): void
+    {
+        while ($this->stack && $depth <= $this->currentDepth) {
+            $this->returnValue();
+        }
+    }
+
+    /**
+     * Match a return value with the function call and log it
+     *
+     * Note: The optimizer will remove unused retun values making them look like VOID returns
+     *
      * @param string $value
      *
      * @return void
      */
-    public function returnValue(int $depth, string $value = 'VOID'): void
+    public function returnValue(string $value = 'VOID'): void
     {
         $functionCall = array_pop($this->stack);
-
-        $previousCall = end($this->stack);
-        if ($previousCall && $depth < $previousCall['depth']) {
-            $this->returnValue($previousCall['depth']);
-        }
+        echo($functionCall['function'] . ' >=> ' . $value . PHP_EOL);
 
         $functionCall['returnValue'] = $value;
         if (!in_array($functionCall['function'], $this->internalFunctions, true)) {
             $this->handler->log($functionCall);
         }
-
-        if ($previousCall && $depth === $previousCall['depth']) {
-            $this->returnValue($previousCall['depth']);
-        }
+        $this->currentDepth = end($this->stack)['depth'] ?? 0;
     }
 }
