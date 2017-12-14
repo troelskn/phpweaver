@@ -1,9 +1,13 @@
-<?php
+<?php namespace Example;
 
 class Foo
 {
-    function dims($param1, $param2 = null)
+    private $obj;
+
+    public function method1($param1, $param2 = null)
     {
-        return 42;
+        $this->obj = $param1;
+
+        return $param2 ?: 42;
     }
 }
