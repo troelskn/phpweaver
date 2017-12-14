@@ -53,7 +53,9 @@ class TracerDocBlockEditor implements BufferEditorInterface
      */
     public function generateDoc(string $func, string $class = '', array $params = [], string $namespace = ''): ?string
     {
-        if (!$this->signatures->has($func, $class, $namespace)) {
+        if ((!$params && ('__construct' === $func || '__destruct' === $func))
+            || !$this->signatures->has($func, $class, $namespace)
+        ) {
             return null;
         }
 
