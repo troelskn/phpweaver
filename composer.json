@@ -1,5 +1,5 @@
 {
-    "name": "ajenbo/php-tracer-weaver",
+    "name": "troelskn/php-tracer-weaver",
     "description": "A tool for analysing parameter types in PHP code, using a combination of static and runtime analysis",
     "type": "project",
     "license": "MIT",
