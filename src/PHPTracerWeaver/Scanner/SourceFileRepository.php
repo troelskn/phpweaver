@@ -37,6 +37,6 @@ class SourceFileRepository
      */
     protected function load(FileAccessInterface $path): SourceFile
     {
-        return new SourceFile($path, $this->parser->scan($path->getContents(), $path->getPathname()));
+        return new SourceFile($path, $this->parser->scan($path->getContents()));
     }
 }
