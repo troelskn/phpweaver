@@ -108,6 +108,14 @@ class FunctionArgument
         $tmp[$type] = 0;
 
         ksort($tmp);
+
+        // Falsable to bool
+        if (isset($tmp['false']) && (isset($tmp['bool']) || 1 === count($tmp))) {
+            unset($tmp['false']);
+            $tmp['bool'] = 0;
+        }
+
+        // Null should always be the last type
         if (isset($tmp['null'])) {
             unset($tmp['null']);
             $tmp['null'] = 0; // Always have null as the last option

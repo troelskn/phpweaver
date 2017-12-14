@@ -67,13 +67,13 @@ class FunctionTracer
     /**
      * Match a return value with the function call and log it
      *
-     * Note: The optimizer will remove unused retun values making them look like VOID returns
+     * Note: The optimizer will remove unused retun values making them look like void returns
      *
      * @param string $value
      *
      * @return void
      */
-    public function returnValue(string $value = 'VOID'): void
+    public function returnValue(string $value = 'void'): void
     {
         $functionCall = array_pop($this->stack);
 
