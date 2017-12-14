@@ -44,7 +44,7 @@ class StaticReflector implements ClassCollatorInterface
         if (!isset($this->typemap[$class])) {
             $this->typemap[$class] = [];
         }
-        if (!in_array($super, $this->typemap[$class])) {
+        if (!in_array($super, $this->typemap[$class], true)) {
             $this->typemap[$class][] = $super;
         }
     }

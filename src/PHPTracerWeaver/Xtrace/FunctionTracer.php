@@ -68,7 +68,7 @@ class FunctionTracer
         }
 
         $functionCall['returnValue'] = $value;
-        if (!in_array($functionCall['function'], $this->internalFunctions)) {
+        if (!in_array($functionCall['function'], $this->internalFunctions, true)) {
             $this->handler->log($functionCall);
         }
 
