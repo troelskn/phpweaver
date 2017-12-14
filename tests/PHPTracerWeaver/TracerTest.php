@@ -88,7 +88,7 @@ class TracerTest extends TestCase
     public function testCanExecuteSandboxCodeWithInstrumentation(): void
     {
         chdir($this->sandbox());
-        $command = escapeshellcmd($this->bindir() . '/trace.sh') . ' ' . escapeshellarg($this->sandbox() . '/main.php');
+        $command = escapeshellcmd($this->bindir() . '/bin/trace.sh') . ' ' . escapeshellarg($this->sandbox() . '/main.php');
         $output = shell_exec($command);
         $this->assertRegExp('~\(completed\)~', $output);
         $this->assertRegExp('~TRACE COMPLETE\n$~', $output);
@@ -100,7 +100,7 @@ class TracerTest extends TestCase
     public function testInstrumentationCreatesTracefile(): void
     {
         chdir($this->sandbox());
-        $command = escapeshellcmd($this->bindir() . '/trace.sh') . ' ' . escapeshellarg($this->sandbox() . '/main.php');
+        $command = escapeshellcmd($this->bindir() . '/bin/trace.sh') . ' ' . escapeshellarg($this->sandbox() . '/main.php');
         shell_exec($command);
         $this->assertTrue(is_file($this->sandbox() . '/dumpfile.xt'));
     }
@@ -111,7 +111,7 @@ class TracerTest extends TestCase
     public function testCanParseTracefile(): void
     {
         chdir($this->sandbox());
-        $command = escapeshellcmd($this->bindir() . '/trace.sh') . ' ' . escapeshellarg($this->sandbox() . '/main.php');
+        $command = escapeshellcmd($this->bindir() . '/bin/trace.sh') . ' ' . escapeshellarg($this->sandbox() . '/main.php');
         shell_exec($command);
         $sigs = new Signatures(new DummyClassCollator());
         $this->assertFalse($sigs->has('callit'));
@@ -127,7 +127,7 @@ class TracerTest extends TestCase
     public function testCanParseClassArg(): void
     {
         chdir($this->sandbox());
-        $command = escapeshellcmd($this->bindir() . '/trace.sh') . ' ' . escapeshellarg($this->sandbox() . '/main.php');
+        $command = escapeshellcmd($this->bindir() . '/bin/trace.sh') . ' ' . escapeshellarg($this->sandbox() . '/main.php');
         shell_exec($command);
         $sigs = new Signatures(new DummyClassCollator());
         $trace = new TraceReader(new SplFileObject($this->sandbox() . '/dumpfile.xt'));

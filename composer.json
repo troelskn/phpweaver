@@ -5,7 +5,8 @@
     "license": "MIT",
     "keywords": ["phpdoc", "phpDocumentor", "documentation", "analyzer", "generator", "docblock"],
     "bin": [
-        "bin/PHPTracerWeaver"
+        "bin/php-tracer-weaver",
+        "bin/trace.sh"
     ],
     "require": {
         "php": "^7.1",

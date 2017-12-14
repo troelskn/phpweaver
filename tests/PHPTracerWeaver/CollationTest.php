@@ -70,7 +70,7 @@ class CollationTest extends TestCase
     public function testCanCollateClasses(): void
     {
         chdir($this->sandbox());
-        $command = escapeshellcmd($this->bindir() . '/trace.sh') . ' ' . escapeshellarg($this->sandbox() . '/main.php');
+        $command = escapeshellcmd($this->bindir() . '/bin/trace.sh') . ' ' . escapeshellarg($this->sandbox() . '/main.php');
         shell_exec($command);
         $reflector = new StaticReflector();
         $sigs = new Signatures($reflector);

@@ -1,4 +1,4 @@
 #!/bin/sh
-../trace.sh controller.php
-../bin/PHPTracerWeaver Foo.php > Foo.out.php
+../bin/trace.sh controller.php
+../bin/php-tracer-weaver Foo.php > Foo.out.php
 diff Foo.php Foo.out.php
