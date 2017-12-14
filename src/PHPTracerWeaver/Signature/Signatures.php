@@ -26,6 +26,10 @@ class Signatures
      */
     public function has(string $func, string $class = ''): bool
     {
+        if (!$func) {
+            throw new Exception('Illegal identifier: {' . "$func, $class" . '}');
+        }
+
         $name = strtolower($class ? ($class . '->' . $func) : $func);
 
         return isset($this->signaturesArray[$name]);

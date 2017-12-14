@@ -6,7 +6,7 @@ class FunctionBodyScanner implements ScannerInterface
     /** @var int */
     protected $currentClassScope;
     /** @var string */
-    protected $name;
+    protected $name = '';
     /** @var int */
     protected $state = 0;
 
@@ -39,9 +39,9 @@ class FunctionBodyScanner implements ScannerInterface
     }
 
     /**
-     * @return ?string
+     * @return string
      */
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }

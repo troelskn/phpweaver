@@ -6,7 +6,7 @@ class ClassScanner implements ScannerInterface
     /** @var int */
     protected $currentClassScope = 0;
     /** @var string */
-    protected $currentClass;
+    protected $currentClass = '';
     /** @var int */
     protected $state = 0;
     /** @var ?callable */
@@ -81,7 +81,7 @@ class ClassScanner implements ScannerInterface
 
         if (3 === $this->state && $token->getDepth() === $this->currentClassScope) {
             $this->state = 0;
-            $this->currentClass = null;
+            $this->currentClass = '';
             if (is_callable($this->onClassEnd)) {
                 call_user_func($this->onClassEnd);
             }
@@ -91,9 +91,9 @@ class ClassScanner implements ScannerInterface
     }
 
     /**
-     * @return ?string
+     * @return string
      */
-    public function getCurrentClass(): ?string
+    public function getCurrentClass(): string
     {
         return $this->currentClass;
     }
