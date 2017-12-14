@@ -3,6 +3,7 @@
     "description": "A tool for analysing parameter types in PHP code, using a combination of static and runtime analysis",
     "type": "project",
     "license": "MIT",
+    "keywords": ["phpdoc", "phpDocumentor", "documentation", "analyzer", "generator", "docblock"],
     "bin": [
         "bin/PHPTracerWeaver"
     ],
