@@ -1,5 +1,6 @@
 <?php namespace PHPTracerWeaver\Transform;
 
+use PHPTracerWeaver\Exceptions\Exception;
 use PHPTracerWeaver\Scanner\ClassScanner;
 use PHPTracerWeaver\Scanner\FunctionBodyScanner;
 use PHPTracerWeaver\Scanner\FunctionParametersScanner;
@@ -93,11 +94,17 @@ class TracerDocBlockEditor implements BufferEditorInterface
             return;
         }
 
-        if (!$buffer->getFirstToken()->isA(T_DOC_COMMENT)) {
-            $buffer->prepend(new Token("\n    ", -1, $buffer->getFirstToken()->getDepth()));
-            $buffer->prepend(new Token("\n    /**\n     */", T_DOC_COMMENT, $buffer->getFirstToken()->getDepth()));
+        $firstToken = $buffer->getFirstToken();
+        if (null === $firstToken) {
+            throw new Exception('Failed to find insert point for phpDoc');
         }
 
+        if (!$firstToken->isA(T_DOC_COMMENT)) {
+            $buffer->prepend(new Token("\n    ", -1, $firstToken->getDepth()));
+            $buffer->prepend(new Token("\n    /**\n     */", T_DOC_COMMENT, $firstToken->getDepth()));
+        }
+
+        /** @var Token */
         $current = $buffer->getFirstToken();
         $newToken = new Token($text, $current->getToken(), $current->getDepth());
         $buffer->replaceToken($current, $newToken);
