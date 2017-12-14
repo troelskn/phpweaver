@@ -107,13 +107,13 @@ class FunctionArgument
         $tmp = array_flip($tmp);
         $tmp[$type] = 0;
 
-        ksort($tmp);
-
         // Falsable to bool
         if (isset($tmp['false']) && (isset($tmp['bool']) || 1 === count($tmp))) {
             unset($tmp['false']);
             $tmp['bool'] = 0;
         }
+
+        ksort($tmp);
 
         // Null should always be the last type
         if (isset($tmp['null'])) {
