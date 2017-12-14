@@ -9,13 +9,11 @@ class ScannerMultiplexer implements ScannerInterface
     /**
      * @param ScannerInterface $scanner
      *
-     * @return ScannerInterface
+     * @return void
      */
-    public function appendScanner(ScannerInterface $scanner): ScannerInterface
+    public function appendScanner(ScannerInterface $scanner): void
     {
         $this->scanners[] = $scanner;
-
-        return $scanner;
     }
 
     /**

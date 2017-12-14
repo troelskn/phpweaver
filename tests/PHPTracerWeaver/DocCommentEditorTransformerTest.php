@@ -3,7 +3,6 @@
 use PHPTracerWeaver\Scanner\FunctionBodyScanner;
 use PHPTracerWeaver\Scanner\FunctionParametersScanner;
 use PHPTracerWeaver\Scanner\ModifiersScanner;
-use PHPTracerWeaver\Scanner\ScannerInterface;
 use PHPTracerWeaver\Scanner\ScannerMultiplexer;
 use PHPTracerWeaver\Scanner\TokenBuffer;
 use PHPTracerWeaver\Scanner\TokenStreamParser;
@@ -17,18 +16,25 @@ class DocCommentEditorTransformerTest extends TestCase
      * @param string               $source
      * @param PassthruBufferEditor $editor
      *
-     * @return ScannerInterface
+     * @return DocCommentEditorTransformer
      */
-    public function scan(string $source, PassthruBufferEditor $editor = null): ScannerInterface
+    public function scan(string $source, PassthruBufferEditor $editor = null): DocCommentEditorTransformer
     {
         $editor = $editor ? $editor : new PassthruBufferEditor();
         $scanner = new ScannerMultiplexer();
-        $parametersScanner = $scanner->appendScanner(new FunctionParametersScanner());
-        $functionBodyScanner = $scanner->appendScanner(new FunctionBodyScanner());
-        $modifiersScanner = $scanner->appendScanner(new ModifiersScanner());
-        $transformer = $scanner->appendScanner(
-            new DocCommentEditorTransformer($functionBodyScanner, $modifiersScanner, $parametersScanner, $editor)
+        $parametersScanner = new FunctionParametersScanner();
+        $scanner->appendScanner($parametersScanner);
+        $functionBodyScanner = new FunctionBodyScanner();
+        $scanner->appendScanner($functionBodyScanner);
+        $modifiersScanner = new ModifiersScanner();
+        $scanner->appendScanner($modifiersScanner);
+        $transformer = new DocCommentEditorTransformer(
+            $functionBodyScanner,
+            $modifiersScanner,
+            $parametersScanner,
+            $editor
         );
+        $scanner->appendScanner($transformer);
         $tokenizer = new TokenStreamParser();
         $tokenStream = $tokenizer->scan($source);
         $tokenStream->iterate($scanner);
@@ -90,7 +96,9 @@ class DocCommentEditorTransformerTest extends TestCase
         $mockEditor = new MockPassthruBufferEditor();
         $this->scan($source, $mockEditor);
         $this->assertInstanceOf(TokenBuffer::class, $mockEditor->buffer);
-        $this->assertTrue($mockEditor->buffer->getFirstToken()->isA(T_DOC_COMMENT));
+        $token = $mockEditor->buffer->getFirstToken();
+        assert(null !== $token);
+        $this->assertTrue($token->isA(T_DOC_COMMENT));
         $this->assertSame('/** Lorem Ipsum */' . "\n" . 'function bar($x) ', $mockEditor->buffer->toText());
     }
 }

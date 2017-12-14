@@ -49,14 +49,17 @@ if (is_file($traceFilename)) {
 
 // transform file
 $scanner = new ScannerMultiplexer();
-$parametersScanner = $scanner->appendScanner(new FunctionParametersScanner());
-$functionBodyScanner = $scanner->appendScanner(new FunctionBodyScanner());
-$modifiersScanner = $scanner->appendScanner(new ModifiersScanner());
-$classScanner = $scanner->appendScanner(new ClassScanner());
+$parametersScanner = new FunctionParametersScanner();
+$scanner->appendScanner($parametersScanner);
+$functionBodyScanner = new FunctionBodyScanner();
+$scanner->appendScanner($functionBodyScanner);
+$modifiersScanner = new ModifiersScanner();
+$scanner->appendScanner($modifiersScanner);
+$classScanner = new ClassScanner();
+$scanner->appendScanner($classScanner);
 $editor = new TracerDocBlockEditor($sigs, $classScanner, $functionBodyScanner, $parametersScanner);
-$transformer = $scanner->appendScanner(
-    new DocCommentEditorTransformer($functionBodyScanner, $modifiersScanner, $parametersScanner, $editor)
-);
+$transformer = new DocCommentEditorTransformer($functionBodyScanner, $modifiersScanner, $parametersScanner, $editor);
+$scanner->appendScanner($transformer);
 $tokenizer = new TokenStreamParser();
 $tokenStream = $tokenizer->scan(file_get_contents($fileToWeave));
 $tokenStream->iterate($scanner);
