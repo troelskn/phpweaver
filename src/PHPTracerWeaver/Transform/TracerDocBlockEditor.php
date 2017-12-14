@@ -2,9 +2,9 @@
 
 use PHPTracerWeaver\Exceptions\Exception;
 use PHPTracerWeaver\Scanner\ClassScanner;
-use PHPTracerWeaver\Scanner\NamespaceScanner;
 use PHPTracerWeaver\Scanner\FunctionBodyScanner;
 use PHPTracerWeaver\Scanner\FunctionParametersScanner;
+use PHPTracerWeaver\Scanner\NamespaceScanner;
 use PHPTracerWeaver\Scanner\Token;
 use PHPTracerWeaver\Scanner\TokenBuffer;
 use PHPTracerWeaver\Signature\Signatures;
@@ -28,7 +28,7 @@ class TracerDocBlockEditor implements BufferEditorInterface
      * @param ClassScanner              $classScanner
      * @param FunctionBodyScanner       $functionBodyScanner
      * @param FunctionParametersScanner $parametersScanner
-     * @param NamespaceScanner $namespaceScanner
+     * @param NamespaceScanner          $namespaceScanner
      */
     public function __construct(
         Signatures $signatures,

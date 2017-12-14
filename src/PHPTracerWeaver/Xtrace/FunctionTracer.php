@@ -51,7 +51,7 @@ class FunctionTracer
     }
 
     /**
-     * Close any function that was implicilty closed by given depth
+     * Close any function that was implicilty closed by given depth.
      *
      * @param int $depth
      *
@@ -65,7 +65,7 @@ class FunctionTracer
     }
 
     /**
-     * Match a return value with the function call and log it
+     * Match a return value with the function call and log it.
      *
      * Note: The optimizer will remove unused retun values making them look like void returns
      *
