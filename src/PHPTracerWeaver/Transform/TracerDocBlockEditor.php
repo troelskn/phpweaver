@@ -2,6 +2,7 @@
 
 use PHPTracerWeaver\Exceptions\Exception;
 use PHPTracerWeaver\Scanner\ClassScanner;
+use PHPTracerWeaver\Scanner\NamespaceScanner;
 use PHPTracerWeaver\Scanner\FunctionBodyScanner;
 use PHPTracerWeaver\Scanner\FunctionParametersScanner;
 use PHPTracerWeaver\Scanner\Token;
@@ -19,23 +20,28 @@ class TracerDocBlockEditor implements BufferEditorInterface
     protected $functionBodyScanner;
     /** @var FunctionParametersScanner */
     protected $parametersScanner;
+    /** @var NamespaceScanner */
+    protected $namespaceScanner;
 
     /**
      * @param Signatures                $signatures
      * @param ClassScanner              $classScanner
      * @param FunctionBodyScanner       $functionBodyScanner
      * @param FunctionParametersScanner $parametersScanner
+     * @param NamespaceScanner $namespaceScanner
      */
     public function __construct(
         Signatures $signatures,
         ClassScanner $classScanner,
         FunctionBodyScanner $functionBodyScanner,
-        FunctionParametersScanner $parametersScanner
+        FunctionParametersScanner $parametersScanner,
+        NamespaceScanner $namespaceScanner
     ) {
         $this->signatures = $signatures;
         $this->classScanner = $classScanner;
         $this->functionBodyScanner = $functionBodyScanner;
         $this->parametersScanner = $parametersScanner;
+        $this->namespaceScanner = $namespaceScanner;
     }
 
     /**
@@ -45,13 +51,13 @@ class TracerDocBlockEditor implements BufferEditorInterface
      *
      * @return ?string
      */
-    public function generateDoc(string $func, string $class = '', array $params = []): ?string
+    public function generateDoc(string $func, string $class = '', array $params = [], string $namespace = ''): ?string
     {
-        if (!$this->signatures->has($func, $class)) {
+        if (!$this->signatures->has($func, $class, $namespace)) {
             return null;
         }
 
-        $signature = $this->signatures->get($func, $class);
+        $signature = $this->signatures->get($func, $class, $namespace);
 
         $key = 0;
         $longestType = 0;
@@ -88,7 +94,8 @@ class TracerDocBlockEditor implements BufferEditorInterface
         $text = $this->generateDoc(
             $this->functionBodyScanner->getName(),
             $this->classScanner->getCurrentClass(),
-            $this->parametersScanner->getCurrentSignatureAsTypeMap()
+            $this->parametersScanner->getCurrentSignatureAsTypeMap(),
+            $this->namespaceScanner->getCurrentNamespace()
         );
         if (null === $text) {
             return;

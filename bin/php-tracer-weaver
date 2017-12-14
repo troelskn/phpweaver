@@ -3,6 +3,7 @@
 
 use PHPTracerWeaver\Reflector\StaticReflector;
 use PHPTracerWeaver\Scanner\ClassScanner;
+use PHPTracerWeaver\Scanner\NamespaceScanner;
 use PHPTracerWeaver\Scanner\FunctionBodyScanner;
 use PHPTracerWeaver\Scanner\FunctionParametersScanner;
 use PHPTracerWeaver\Scanner\ModifiersScanner;
@@ -57,7 +58,9 @@ $modifiersScanner = new ModifiersScanner();
 $scanner->appendScanner($modifiersScanner);
 $classScanner = new ClassScanner();
 $scanner->appendScanner($classScanner);
-$editor = new TracerDocBlockEditor($sigs, $classScanner, $functionBodyScanner, $parametersScanner);
+$namespaceScanner = new NamespaceScanner();
+$scanner->appendScanner($namespaceScanner);
+$editor = new TracerDocBlockEditor($sigs, $classScanner, $functionBodyScanner, $parametersScanner, $namespaceScanner);
 $transformer = new DocCommentEditorTransformer($functionBodyScanner, $modifiersScanner, $parametersScanner, $editor);
 $scanner->appendScanner($transformer);
 $tokenizer = new TokenStreamParser();
