@@ -82,9 +82,9 @@ class TokenBuffer
     }
 
     /**
-     * @return ?self
+     * @return self
      */
-    public function flush(): ?self
+    public function flush(): self
     {
         if (!$this->super) {
             return $this;

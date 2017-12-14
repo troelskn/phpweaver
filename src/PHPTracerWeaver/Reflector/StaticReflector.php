@@ -15,7 +15,7 @@ class StaticReflector implements ClassCollatorInterface
     protected $typemap = [];
     /** @var string[] */
     protected $collateCache = [];
-    /** @var string[] */
+    /** @var array[] */
     protected $ancestorsCache = [];
 
     public function __construct()
