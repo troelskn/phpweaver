@@ -76,7 +76,6 @@ class FunctionTracer
     public function returnValue(string $value = 'VOID'): void
     {
         $functionCall = array_pop($this->stack);
-        echo($functionCall['function'] . ' >=> ' . $value . PHP_EOL);
 
         $functionCall['returnValue'] = $value;
         if (!in_array($functionCall['function'], $this->internalFunctions, true)) {
