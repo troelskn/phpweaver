@@ -35,14 +35,15 @@ class TraceReader
             }
 
             // Trace start
-            if (preg_match('~TRACE START \[([0-9 :-]+)\]~', $line, $match)) {
-                $handler->traceStart($match[1]);
+            if (preg_match('~TRACE START \[[0-9 :-]+\]~', $line, $match)) {
+                $handler->traceStart();
                 continue;
             }
 
             // Trace end
-            if (preg_match('~TRACE END   \[([0-9 :-]+)\]~', $line, $match)) {
-                $handler->traceEnd($match[1]);
+            if (preg_match('~TRACE END   \[[0-9 :-]+\]~', $line, $match)) {
+                $handler->closeVoidReturns(0);
+                $handler->traceEnd();
 
                 return;
             }

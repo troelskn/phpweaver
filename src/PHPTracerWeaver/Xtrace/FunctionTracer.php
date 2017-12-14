@@ -26,20 +26,16 @@ class FunctionTracer
     }
 
     /**
-     * @param string $time
-     *
      * @return void
      */
-    public function traceStart(string $time): void
+    public function traceStart(): void
     {
     }
 
     /**
-     * @param string|null $time
-     *
      * @return void
      */
-    public function traceEnd(string $time = null): void
+    public function traceEnd(): void
     {
     }
 
