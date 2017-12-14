@@ -1,5 +1,5 @@
 exclude:
-- /.phan/*
+- /.phan/.*
 - /examples/.*
 component_depth: 3
 languages:
