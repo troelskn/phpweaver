@@ -21,8 +21,10 @@ class StaticReflector implements ClassCollatorInterface
     public function __construct()
     {
         $this->scanner = new ScannerMultiplexer();
-        $classScanner = $this->scanner->appendScanner(new ClassScanner());
-        $inheritanceScanner = $this->scanner->appendScanner(new ClassExtendsScanner($classScanner));
+        $classScanner = new ClassScanner();
+        $this->scanner->appendScanner($classScanner);
+        $inheritanceScanner = new ClassExtendsScanner($classScanner);
+        $this->scanner->appendScanner($inheritanceScanner);
         $inheritanceScanner->notifyOnExtends([$this, 'logSupertype']);
         $inheritanceScanner->notifyOnImplements([$this, 'logSupertype']);
     }
