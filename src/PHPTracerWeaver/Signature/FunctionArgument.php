@@ -4,15 +4,15 @@ class FunctionArgument
 {
     /** @var int */
     protected $id;
-    /** @var string|null */
+    /** @var ?string */
     protected $name;
     /** @var string */
     protected $type;
 
     /**
-     * @param int    $id
-     * @param string $name
-     * @param string $type
+     * @param int         $id
+     * @param string|null $name
+     * @param string      $type
      */
     public function __construct(int $id, string $name = null, string $type = '???')
     {
@@ -38,7 +38,7 @@ class FunctionArgument
      *
      * @return void
      */
-    public function setId(?int $id): void
+    public function setId(int $id): void
     {
         $this->id = $id;
     }
@@ -56,7 +56,7 @@ class FunctionArgument
      *
      * @return void
      */
-    public function setName(?string $name): void
+    public function setName(string $name): void
     {
         $this->name = $name;
     }
