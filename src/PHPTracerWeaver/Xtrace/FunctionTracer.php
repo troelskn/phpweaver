@@ -21,7 +21,7 @@ class FunctionTracer
 
         $this->internalFunctions = array_merge(
             $definedFunctions['internal'],
-            ['include', 'include_once', 'require', 'require_once']
+            ['{main}', 'include', 'include_once', 'require', 'require_once']
         );
     }
 
