@@ -98,11 +98,11 @@ class TraceSignatureLogger
         if (preg_match('~^class (\w+)~', $returnValue, $match)) {
             return $match[1];
         }
-        if (preg_match('~^[.0-9]+$~', $returnValue)) {
-            return 'float';
-        }
         if (preg_match('~^[0-9]+$~', $returnValue)) {
             return 'int';
+        }
+        if (preg_match('~^[.0-9]+$~', $returnValue)) {
+            return 'float';
         }
 
         return $returnValue;
