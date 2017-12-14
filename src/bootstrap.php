@@ -10,9 +10,14 @@
  * file that was distributed with this source code.
  */
 
-function includeIfExists(string $file): bool
+/**
+ * @param string $file
+ *
+ * @return ?object
+ */
+function includeIfExists(string $file)
 {
-    return file_exists($file) ? include $file : false;
+    return file_exists($file) ? include $file : null;
 }
 
 if ((!$loader = includeIfExists(__DIR__ . '/../vendor/autoload.php'))
