@@ -15,7 +15,7 @@ class FunctionTracer
     public function __construct(TraceSignatureLogger $handler)
     {
         $this->handler = $handler;
-        $definedFunctions = get_defined_functions();
+        $definedFunctions = get_defined_functions(false);
 
         $this->internalFunctions = array_merge(
             $definedFunctions['internal'],
