@@ -5,9 +5,13 @@ use PHPTracerWeaver\Exceptions\Exception;
 /** default implementation for FileAccess */
 class FilePath implements FileAccessInterface
 {
+    /** @var string */
     protected $pathname;
 
-    public function __construct($pathname)
+    /**
+     * @param string $pathname
+     */
+    public function __construct(string $pathname)
     {
         $this->pathname = $pathname;
     }
