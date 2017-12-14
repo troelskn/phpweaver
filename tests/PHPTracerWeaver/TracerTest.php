@@ -8,7 +8,7 @@ use PHPTracerWeaver\Xtrace\TraceSignatureLogger;
 use PHPUnit\Framework\TestCase;
 use SplFileObject;
 
-class TestOfTracer extends TestCase
+class TracerTest extends TestCase
 {
     /** @var string */
     private $curdir;

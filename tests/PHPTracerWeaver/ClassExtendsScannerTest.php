@@ -6,7 +6,7 @@ use PHPTracerWeaver\Scanner\ScannerMultiplexer;
 use PHPTracerWeaver\Scanner\TokenStreamParser;
 use PHPUnit\Framework\TestCase;
 
-class TestOfClassExtendsScanner extends TestCase
+class ClassExtendsScannerTest extends TestCase
 {
     /**
      * @return void
@@ -14,9 +14,11 @@ class TestOfClassExtendsScanner extends TestCase
     public function testCanTrackSingleExtends(): void
     {
         $scanner = new ScannerMultiplexer();
-        $classScanner = $scanner->appendScanner(new ClassScanner());
-        $inheritanceScanner = $scanner->appendScanner(new ClassExtendsScanner($classScanner));
-        $listener = new TestCallbackListener();
+        $classScanner = new ClassScanner();
+        $scanner->appendScanner($classScanner);
+        $inheritanceScanner = new ClassExtendsScanner($classScanner);
+        $scanner->appendScanner($inheritanceScanner);
+        $listener = new CallbackListener();
         $inheritanceScanner->notifyOnExtends([$listener, 'call']);
         $tokenizer = new TokenStreamParser();
         $tokenStream = $tokenizer->scan('<?php class Foo extends Bar {}');
@@ -30,9 +32,11 @@ class TestOfClassExtendsScanner extends TestCase
     public function testCanTrackSingleImplements(): void
     {
         $scanner = new ScannerMultiplexer();
-        $classScanner = $scanner->appendScanner(new ClassScanner());
-        $inheritanceScanner = $scanner->appendScanner(new ClassExtendsScanner($classScanner));
-        $listener = new TestCallbackListener();
+        $classScanner = new ClassScanner();
+        $scanner->appendScanner($classScanner);
+        $inheritanceScanner = new ClassExtendsScanner($classScanner);
+        $scanner->appendScanner($inheritanceScanner);
+        $listener = new CallbackListener();
         $inheritanceScanner->notifyOnImplements([$listener, 'call']);
         $tokenizer = new TokenStreamParser();
         $tokenStream = $tokenizer->scan('<?php class Foo implements Bar {}');
@@ -46,9 +50,11 @@ class TestOfClassExtendsScanner extends TestCase
     public function testCanTrackMultipleImplements(): void
     {
         $scanner = new ScannerMultiplexer();
-        $classScanner = $scanner->appendScanner(new ClassScanner());
-        $inheritanceScanner = $scanner->appendScanner(new ClassExtendsScanner($classScanner));
-        $listener = new TestCallbackListener();
+        $classScanner = new ClassScanner();
+        $scanner->appendScanner($classScanner);
+        $inheritanceScanner = new ClassExtendsScanner($classScanner);
+        $scanner->appendScanner($inheritanceScanner);
+        $listener = new CallbackListener();
         $inheritanceScanner->notifyOnImplements([$listener, 'call']);
         $tokenizer = new TokenStreamParser();
         $tokenStream = $tokenizer->scan('<?php class Foo implements Bar, Doink {}');

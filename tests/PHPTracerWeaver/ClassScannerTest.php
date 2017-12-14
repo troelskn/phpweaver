@@ -4,7 +4,7 @@ use PHPTracerWeaver\Scanner\ClassScanner;
 use PHPTracerWeaver\Scanner\TokenStreamParser;
 use PHPUnit\Framework\TestCase;
 
-class TestOfClassScanner extends TestCase
+class ClassScannerTest extends TestCase
 {
     /**
      * @return void
@@ -28,7 +28,7 @@ class TestOfClassScanner extends TestCase
         $tokenizer = new TokenStreamParser();
         $tokenStream = $tokenizer->scan('<?php class Foo { function bar($x) {} }');
         $tokenStream->iterate($scanner);
-        $this->assertNull($scanner->getCurrentClass());
+        $this->assertSame('', $scanner->getCurrentClass());
     }
 
     /**
@@ -40,6 +40,6 @@ class TestOfClassScanner extends TestCase
         $tokenizer = new TokenStreamParser();
         $tokenStream = $tokenizer->scan('<?php while (true) { class Foo { function bar($x) {} } }');
         $tokenStream->iterate($scanner);
-        $this->assertNull($scanner->getCurrentClass());
+        $this->assertSame('', $scanner->getCurrentClass());
     }
 }

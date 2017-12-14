@@ -2,7 +2,7 @@
 
 use PHPTracerWeaver\Exceptions\Exception;
 
-class TestCallbackListener
+class CallbackListener
 {
     /** @var array[] */
     protected $results = [];
@@ -28,7 +28,7 @@ class TestCallbackListener
     }
 
     /**
-     * @param mixed $params
+     * @param mixed... $params
      *
      * @return void
      */

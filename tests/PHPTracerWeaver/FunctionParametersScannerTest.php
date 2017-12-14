@@ -4,7 +4,7 @@ use PHPTracerWeaver\Scanner\FunctionParametersScanner;
 use PHPTracerWeaver\Scanner\TokenStreamParser;
 use PHPUnit\Framework\TestCase;
 
-class TestOfFunctionParametersScanner extends TestCase
+class FunctionParametersScannerTest extends TestCase
 {
     /**
      * @return void

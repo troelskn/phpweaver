@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
  *   use docblock comments for parameter types
  *   merge with existing docblock comments.
  */
-class TestOfTokenizer extends TestCase
+class TokenizerTest extends TestCase
 {
     /**
      * @return void

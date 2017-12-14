@@ -8,7 +8,7 @@ use PHPTracerWeaver\Xtrace\TraceSignatureLogger;
 use PHPUnit\Framework\TestCase;
 use SplFileObject;
 
-class TestOfCollation extends TestCase
+class CollationTest extends TestCase
 {
     /** @var string */
     private $curdir;

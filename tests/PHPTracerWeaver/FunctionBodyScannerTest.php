@@ -4,7 +4,7 @@ use PHPTracerWeaver\Scanner\FunctionBodyScanner;
 use PHPTracerWeaver\Scanner\TokenStreamParser;
 use PHPUnit\Framework\TestCase;
 
-class TestOfFunctionBodyScanner extends TestCase
+class FunctionBodyScannerTest extends TestCase
 {
     /**
      * @return void

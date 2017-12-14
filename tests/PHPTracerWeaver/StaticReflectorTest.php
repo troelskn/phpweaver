@@ -3,7 +3,7 @@
 use PHPTracerWeaver\Reflector\StaticReflector;
 use PHPUnit\Framework\TestCase;
 
-class TestOfStaticReflector extends TestCase
+class StaticReflectorTest extends TestCase
 {
     /**
      * @return void

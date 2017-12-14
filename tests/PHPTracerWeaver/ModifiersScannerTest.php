@@ -4,7 +4,7 @@ use PHPTracerWeaver\Scanner\ModifiersScanner;
 use PHPTracerWeaver\Scanner\TokenStreamParser;
 use PHPUnit\Framework\TestCase;
 
-class TestOfModifiersScanner extends TestCase
+class ModifiersScannerTest extends TestCase
 {
     /**
      * @return void

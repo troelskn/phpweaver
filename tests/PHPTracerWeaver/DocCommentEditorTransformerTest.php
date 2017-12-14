@@ -11,7 +11,7 @@ use PHPTracerWeaver\Transform\DocCommentEditorTransformer;
 use PHPTracerWeaver\Transform\PassthruBufferEditor;
 use PHPUnit\Framework\TestCase;
 
-class TestOfDocCommentEditorTransformer extends TestCase
+class DocCommentEditorTransformerTest extends TestCase
 {
     /**
      * @param string               $source
