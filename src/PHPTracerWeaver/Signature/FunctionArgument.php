@@ -74,6 +74,10 @@ class FunctionArgument
      */
     public function getType(): string
     {
+        if ('false' === $this->type) { // Not falsable unioun type
+            return 'bool';
+        }
+
         return !$this->isUndefined() ? $this->type : 'mixed';
     }
 
