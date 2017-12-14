@@ -101,7 +101,7 @@ class TracerTest extends TestCase
     {
         chdir($this->sandbox());
         $command = escapeshellcmd($this->bindir() . '/trace.sh') . ' ' . escapeshellarg($this->sandbox() . '/main.php');
-        $output = shell_exec($command);
+        shell_exec($command);
         $this->assertTrue(is_file($this->sandbox() . '/dumpfile.xt'));
     }
 

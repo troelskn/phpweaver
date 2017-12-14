@@ -6,7 +6,7 @@ class FunctionParametersScanner implements ScannerInterface
     /** @var array[] */
     protected $signature = [];
     /** @var int */
-    protected $paren_count = 0;
+    protected $parenCount = 0;
     /** @var int */
     protected $state = 0;
     /** @var ?callable */
@@ -46,7 +46,7 @@ class FunctionParametersScanner implements ScannerInterface
         } elseif (1 === $this->state && '(' === $token->getText()) {
             $this->signature = [];
             $this->signature[] = [$token->getText(), $token->getToken()];
-            $this->paren_count = 1;
+            $this->parenCount = 1;
             $this->state = 2;
             if (is_callable($this->onSignatureBegin)) {
                 call_user_func($this->onSignatureBegin);
@@ -54,11 +54,11 @@ class FunctionParametersScanner implements ScannerInterface
         } elseif (2 === $this->state) {
             $this->signature[] = [$token->getText(), $token->getToken()];
             if ('(' === $token->getText()) {
-                ++$this->paren_count;
+                ++$this->parenCount;
             } elseif (')' === $token->getText()) {
-                --$this->paren_count;
+                --$this->parenCount;
             }
-            if (0 === $this->paren_count) {
+            if (0 === $this->parenCount) {
                 $this->state = 0;
                 if (is_callable($this->onSignatureEnd)) {
                     call_user_func($this->onSignatureEnd);

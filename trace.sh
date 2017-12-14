@@ -19,5 +19,5 @@ then
 fi
 
 echo Running script with instrumentation: $@
-php -d xdebug.auto_trace=1 -d xdebug.trace_options=1 -d xdebug.trace_output_dir=`pwd` -d xdebug.trace_output_name=dumpfile -d xdebug.trace_format=0 -d xdebug.collect_params=1 -d xdebug.collect_return=1 "$@"
+php -d xdebug.auto_trace=1 -d xdebug.trace_options=1 -d xdebug.trace_output_dir=$(pwd) -d xdebug.trace_output_name=dumpfile -d xdebug.trace_format=0 -d xdebug.collect_params=1 -d xdebug.collect_return=1 "$@"
 echo "TRACE COMPLETE"
