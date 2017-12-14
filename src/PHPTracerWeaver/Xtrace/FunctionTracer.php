@@ -33,7 +33,7 @@ class FunctionTracer
     }
 
     /**
-     * @param string $time
+     * @param string|null $time
      *
      * @return void
      */

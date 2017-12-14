@@ -13,8 +13,8 @@ class TraceSignatureLogger
     protected $includes = [];
 
     /**
-     * @param Signatures      $signatures
-     * @param StaticReflector $reflector
+     * @param Signatures           $signatures
+     * @param StaticReflector|null $reflector
      */
     public function __construct(Signatures $signatures, StaticReflector $reflector = null)
     {

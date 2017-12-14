@@ -13,8 +13,8 @@ use PHPUnit\Framework\TestCase;
 class DocCommentEditorTransformerTest extends TestCase
 {
     /**
-     * @param string               $source
-     * @param PassthruBufferEditor $editor
+     * @param string                    $source
+     * @param PassthruBufferEditor|null $editor
      *
      * @return DocCommentEditorTransformer
      */
