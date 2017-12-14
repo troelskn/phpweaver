@@ -21,7 +21,7 @@ class FilePath implements FileAccessInterface
             throw new Exception('Not a file or not readable');
         }
 
-        return file_get_contents($this->getPathname());
+        return file_get_contents($this->getPathname()) ?: '';
     }
 
     /**

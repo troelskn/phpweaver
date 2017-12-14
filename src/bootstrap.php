@@ -10,7 +10,7 @@
  * file that was distributed with this source code.
  */
 
-function includeIfExists($file)
+function includeIfExists(string $file): bool
 {
     return file_exists($file) ? include $file : false;
 }

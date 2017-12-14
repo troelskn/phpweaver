@@ -4,7 +4,7 @@
 class FunctionBodyScanner implements ScannerInterface
 {
     /** @var int */
-    protected $currentClassScope;
+    protected $currentClassScope = 0;
     /** @var string */
     protected $name = '';
     /** @var int */

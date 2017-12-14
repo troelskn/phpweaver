@@ -5,7 +5,7 @@ use PHPTracerWeaver\Transform\PassthruBufferEditor;
 
 class MockPassthruBufferEditor extends PassthruBufferEditor
 {
-    /** @var TokenBuffer */
+    /** @var TokenBuffer|null */
     public $buffer;
 
     /**

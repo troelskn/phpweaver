@@ -11,7 +11,7 @@ use SplFileObject;
 class TracerTest extends TestCase
 {
     /** @var string */
-    private $curdir;
+    private $curdir = '';
 
     /**
      * @return string
@@ -34,7 +34,7 @@ class TracerTest extends TestCase
      */
     public function setUp()
     {
-        $this->curdir = getcwd();
+        $this->curdir = getcwd() ?: '';
         $dirSandbox = $this->sandbox();
         mkdir($dirSandbox);
         $sourceInclude = '<?php' . "\n" .

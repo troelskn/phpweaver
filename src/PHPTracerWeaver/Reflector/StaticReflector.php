@@ -56,7 +56,7 @@ class StaticReflector implements ClassCollatorInterface
      */
     public function scanFile(string $file): void
     {
-        $this->scanString(file_get_contents($file));
+        $this->scanString(file_get_contents($file) ?: '');
     }
 
     /**

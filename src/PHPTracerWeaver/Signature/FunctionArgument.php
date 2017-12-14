@@ -26,9 +26,9 @@ class FunctionArgument
     }
 
     /**
-     * @return ?int
+     * @return int
      */
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
@@ -74,7 +74,7 @@ class FunctionArgument
      */
     public function getType(): string
     {
-        return $this->type;
+        return !$this->isUndefined() ? $this->type : 'mixed';
     }
 
     /**
