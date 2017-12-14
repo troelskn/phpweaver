@@ -70,8 +70,7 @@ class TracerDocBlockEditor implements BufferEditorInterface
             ++$key;
         }
 
-        $doc = "\n"; // TODO do not add an empty line if at the top of the class
-        $doc .= "    /**\n";
+        $doc = "/**\n";
         foreach ($params as $name => $type) {
             $doc .= '     * @param ' . $type . str_repeat(' ', $longestType - mb_strlen($type) + 1) . $name . "\n";
         }
