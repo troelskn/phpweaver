@@ -13,7 +13,7 @@ Usage
 
 The basic usage of tracer-weaver is to write a piece of code (If you have unit tests/examples, they would be a good candidate), that utilises the code to manipulate. Run this example with the tracer, then use the weaver to generate docblocks from the output of the tracer.
 
-See under `examples/` for some basic examples.
+See under `example/` for some basic examples.
 
 The project consists of two main tools:
 
