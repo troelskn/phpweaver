@@ -75,10 +75,12 @@ class TracerDocBlockEditor implements BufferEditorInterface
         foreach ($params as $name => $type) {
             $doc .= '     * @param ' . $type . str_repeat(' ', $longestType - mb_strlen($type) + 1) . $name . "\n";
         }
-        if ($params) {
-            $doc .= "     *\n";
+        if ('__construct' !== $func && '__destruct' !== $func) {
+            if ($params) {
+                $doc .= "     *\n";
+            }
+            $doc .= '     * @return ' . $signature->getReturnType() . "\n";
         }
-        $doc .= '     * @return ' . $signature->getReturnType() . "\n";
         $doc .= '     */';
 
         return $doc;
