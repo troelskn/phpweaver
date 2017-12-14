@@ -11,7 +11,7 @@
     <rule ref="rulesets/codesize.xml/NPathComplexity"/>
     <rule ref="rulesets/codesize.xml/ExcessiveMethodLength">
         <properties>
-            <property name="minimum" value="16"/>
+            <property name="minimum" value="31"/>
             <property name="ignore-whitespace" value="true"/>
         </properties>
     </rule>
