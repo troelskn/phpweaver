@@ -4,6 +4,7 @@ use PHPTracerWeaver\Scanner\FunctionBodyScanner;
 use PHPTracerWeaver\Scanner\FunctionParametersScanner;
 use PHPTracerWeaver\Scanner\ModifiersScanner;
 use PHPTracerWeaver\Scanner\ScannerMultiplexer;
+use PHPTracerWeaver\Scanner\Token;
 use PHPTracerWeaver\Scanner\TokenBuffer;
 use PHPTracerWeaver\Scanner\TokenStreamParser;
 use PHPTracerWeaver\Transform\DocCommentEditorTransformer;
@@ -60,7 +61,7 @@ class DocCommentEditorTransformerTest extends TestCase
         $source = '<?php' . "\n" . 'function bar($x) {}';
         $mockEditor = new MockPassthruBufferEditor();
         $this->scan($source, $mockEditor);
-        $this->assertInstanceOf(TokenBuffer::class, $mockEditor->buffer);
+        assert($mockEditor->buffer instanceof TokenBuffer);
         $this->assertSame('function bar($x) ', $mockEditor->buffer->toText());
     }
 
@@ -72,7 +73,7 @@ class DocCommentEditorTransformerTest extends TestCase
         $source = '<?php' . "\n" . 'class Foo { abstract function bar($x) {} }';
         $mockEditor = new MockPassthruBufferEditor();
         $this->scan($source, $mockEditor);
-        $this->assertInstanceOf(TokenBuffer::class, $mockEditor->buffer);
+        assert($mockEditor->buffer instanceof TokenBuffer);
         $this->assertSame('abstract function bar($x) ', $mockEditor->buffer->toText());
     }
 
@@ -95,9 +96,9 @@ class DocCommentEditorTransformerTest extends TestCase
         $source = '<?php' . "\n" . '/** Lorem Ipsum */' . "\n" . 'function bar($x) {}';
         $mockEditor = new MockPassthruBufferEditor();
         $this->scan($source, $mockEditor);
-        $this->assertInstanceOf(TokenBuffer::class, $mockEditor->buffer);
+        assert($mockEditor->buffer instanceof TokenBuffer);
         $token = $mockEditor->buffer->getFirstToken();
-        assert(null !== $token);
+        assert($token instanceof Token);
         $this->assertTrue($token->isA(T_DOC_COMMENT));
         $this->assertSame('/** Lorem Ipsum */' . "\n" . 'function bar($x) ', $mockEditor->buffer->toText());
     }
