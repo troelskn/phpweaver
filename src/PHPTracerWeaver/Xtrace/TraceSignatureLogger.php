@@ -100,7 +100,7 @@ class TraceSignatureLogger
             return $typeAliases[$type];
         }
 
-        $typeTransforms = ['~^(array) \(.+\)$~', '~^class (\S+)~', '~^(resource)\(\d+\)~'];
+        $typeTransforms = ['~^(array) \(.*\)$~', '~^class (\S+)~', '~^(resource)\(\d+\)~'];
         foreach ($typeTransforms as $regex) {
             if (preg_match($regex, $type, $match)) {
                 return $match[1];
