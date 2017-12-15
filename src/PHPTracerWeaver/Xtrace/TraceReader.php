@@ -49,7 +49,7 @@ class TraceReader
             }
 
             // runtime-generated functions?
-            if (preg_match('~^([.\d]+)\s+(\d+)(\s+)-> ([^(]+)\((.*)\)(?:\'d)?\s+([^:]+):([0-9]+)$~', $line, $match)) {
+            if (preg_match('~^([.\d]+)\s+(\d+)(\s+)-> ([^(]+)\((.*)\) ([^:]+).*:(\d+)$~', $line, $match)) {
                 $depth = (strlen($match[3]) - 3) / 2;
                 $handler->closeVoidReturns($depth);
                 $handler->functionCall([
