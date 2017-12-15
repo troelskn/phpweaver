@@ -106,10 +106,10 @@ class TraceSignatureLogger
                 return $match[1];
             }
         }
-        if (preg_match('~^\d+$~', $type) || preg_match('~^\'\d+\'$~', $type)) {
+        if (preg_match('~^-?\d+$~', $type) || preg_match('~^-?\'\d+\'$~', $type)) {
             return 'int';
         }
-        if (preg_match('~^\d+\.\d+$~', $type) || preg_match('~^\'\d+\.\d+\'$~', $type)) {
+        if (preg_match('~^-?\d+\.\d+$~', $type) || preg_match('~^-?\'\d+\.\d+\'$~', $type)) {
             return 'float';
         }
 
