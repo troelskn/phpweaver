@@ -65,6 +65,14 @@ EOT
         );
     }
 
+    /**
+     * Run the weave process
+     *
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return int
+     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $traceFilename = $input->getArgument('tracefile');
@@ -72,7 +80,6 @@ EOT
         $overwrite = $input->getOption('overwrite');
 
         $this->output = new SymfonyStyle($input, $output);
-
 
         $filesToWave = $this->getFilesToProcess($pathToWeave);
 
@@ -82,6 +89,13 @@ EOT
         return self::RETURN_CODE_OK;
     }
 
+    /**
+     * Fetch array of file names to process
+     *
+     * @param string $pathToWeave
+     *
+     * @return array
+     */
     private function getFilesToProcess(string $pathToWeave): array
     {
         $filesToWave = [];
@@ -94,7 +108,9 @@ EOT
             }
 
             return $filesToWave;
-        } elseif (!is_file($pathToWeave)) {
+        }
+
+        if (!is_file($pathToWeave)) {
             throw new Exception('Path (' . $pathToWeave . ') isn\'t readable');
         }
 
@@ -103,6 +119,13 @@ EOT
         return $filesToWave;
     }
 
+    /**
+     * Parse the trace file.
+     *
+     * @param string $traceFilename
+     *
+     * @return Signatures
+     */
     private function parseTrace(string $traceFilename): Signatures
     {
         $reflector = new StaticReflector();
@@ -123,9 +146,19 @@ EOT
             $handler->closeVoidReturns(0);
             $this->progressBarEnd();
         }
+
         return $sigs;
     }
 
+    /**
+     * Process files and insert phpDoc.
+     *
+     * @param array      $filesToWeave
+     * @param Signatures $sigs
+     * @param bool       $overwrite
+     *
+     * @return void
+     */
     private function transformFiles(array $filesToWeave, Signatures $sigs, bool $overwrite): void
     {
         $this->progressBarStart(count($filesToWeave));
@@ -145,6 +178,13 @@ EOT
         $this->progressBarEnd();
     }
 
+    /**
+     * Initialize the php parser.
+     *
+     * @param Signatures $sigs
+     *
+     * @return void
+     */
     private function setupFileProcesser(Signatures $sigs): void
     {
         $this->scanner = new ScannerMultiplexer();
@@ -180,7 +220,14 @@ EOT
         $this->tokenizer = new TokenStreamParser();
     }
 
-    private function progressBarStart(int $steps)
+    /**
+     * Start a progressbar on the ouput
+     *
+     * @param int $steps
+     *
+     * @return void
+     */
+    private function progressBarStart(int $steps): void
     {
         if (!$steps) {
             return;
@@ -196,7 +243,16 @@ EOT
         $this->nextUpdate = microtime(true) + self::REFRESH_RATE_INTERVAL;
     }
 
-    private function progressBarAdvance()
+    /**
+     * Advance the progress bare by steps.
+     *
+     * Rate limited to avoid performance issues.
+     *
+     * @param int $steps
+     *
+     * @return void
+     */
+    private function progressBarAdvance(int $steps = 1): void
     {
         if (!$this->progressBar) {
             return;
@@ -213,7 +269,12 @@ EOT
         $this->nextUpdate = microtime(true) + self::REFRESH_RATE_INTERVAL;
     }
 
-    private function progressBarEnd()
+    /**
+     * Set the progress to 100% and start a new blank line on the output.
+     *
+     * @return void
+     */
+    private function progressBarEnd(): void
     {
         if (!$this->progressBar) {
             return;
