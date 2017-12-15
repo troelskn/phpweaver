@@ -95,7 +95,7 @@ class TraceSignatureLogger
      */
     public function parseReturnType(string $type): string
     {
-        $typeAliases = ['TRUE' => 'bool', 'FALSE' => 'false', 'NULL' => 'null', 'void' => 'void', '???' => '???'];
+        $typeAliases = ['TRUE' => 'bool', 'FALSE' => 'false', 'NULL' => 'null', 'void' => 'void', '*uninitialized*' => '???'];
         if (isset($typeAliases[$type])) {
             return $typeAliases[$type];
         }
