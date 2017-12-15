@@ -28,8 +28,14 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class WeaveCommand extends Command
 {
-    const RETURN_CODE_OK    = 0;
+    const RETURN_CODE_OK = 0;
     const RETURN_CODE_ERROR = 1;
+    const REFRESH_RATE_INTERVAL = 0.033333334; // 30hz
+
+    /** @var int */
+    private $nextSteps = 0;
+    /** @var float */
+    private $nextUpdate = 0.0;
 
     /**
      * Set up command parameteres and help message.
@@ -185,6 +191,9 @@ EOT
 
         $this->progressBar->setFormat('%current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s%');
         $this->progressBar->start($steps);
+
+        $this->nextSteps = 0;
+        $this->nextUpdate = microtime(true) + self::REFRESH_RATE_INTERVAL;
     }
 
     private function progressBarAdvance()
@@ -193,7 +202,15 @@ EOT
             return;
         }
 
-        $this->progressBar->advance();
+        $this->nextSteps += $steps;
+
+        if (microtime(true) <= $this->nextUpdate) {
+            return;
+        }
+
+        $this->progressBar->advance($this->nextSteps);
+        $this->nextSteps = 0;
+        $this->nextUpdate = microtime(true) + self::REFRESH_RATE_INTERVAL;
     }
 
     private function progressBarEnd()
