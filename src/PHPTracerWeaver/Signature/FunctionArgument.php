@@ -119,6 +119,12 @@ class FunctionArgument
 
         ksort($tmp);
 
+        // False should always be the last type
+        if (isset($tmp['false'])) {
+            unset($tmp['false']);
+            $tmp['false'] = 0; // Always have false as the last option
+        }
+
         // Null should always be the last type
         if (isset($tmp['null'])) {
             unset($tmp['null']);
