@@ -57,17 +57,24 @@ EOT
         $phpscript = $input->getArgument('phpscript');
         $options = $input->getArgument('options');
 
-        if (!$append && is_file($tracefile)) {
-            unlink($tracefile);
+        $command = 'php';
+
+        $params = [
+            '-d xdebug.auto_trace'               => 1,
+            '-d xdebug.trace_options'            => (int) $append,
+            '-d xdebug.trace_output_dir'         => getcwd(),
+            '-d xdebug.trace_output_name'        => $tracefile,
+            '-d xdebug.trace_format'             => 0,
+            '-d xdebug.collect_params'           => 1,
+            '-d xdebug.collect_return'           => 1,
+        ];
+        foreach ($params as $param => $value) {
+            $command .= ' ' . $param . '=' . $value;
         }
+        $command .= ' ' . $phpscript . $options;
 
         $output->writeln('Running script with instrumentation: ' . $phpscript . $options);
-        passthru(
-            'php -d xdebug.auto_trace=1 -d xdebug.trace_options=1 -d xdebug.trace_output_dir="' . getcwd()
-                . '" -d xdebug.trace_output_name=' . $tracefile
-                . ' -d xdebug.trace_format=0 -d xdebug.collect_params=1 -d xdebug.collect_return=1 '
-                . $phpscript . $options
-        );
+        passthru($command);
         $output->writeln('TRACE COMPLETE');
 
         return self::RETURN_CODE_OK;
