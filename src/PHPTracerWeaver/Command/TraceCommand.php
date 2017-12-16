@@ -60,6 +60,7 @@ EOT
         $command = 'php';
 
         $params = [
+            '-d xdebug.collect_includes'         => 0,
             '-d xdebug.auto_trace'               => 1,
             '-d xdebug.trace_options'            => (int) $append,
             '-d xdebug.trace_output_dir'         => getcwd(),
@@ -67,6 +68,8 @@ EOT
             '-d xdebug.trace_format'             => 0,
             '-d xdebug.collect_params'           => 1,
             '-d xdebug.collect_return'           => 1,
+            '-d xdebug.var_display_max_data'     => 20, // Max length of numbers
+            '-d xdebug.var_display_max_depth'    => 0,
         ];
         foreach ($params as $param => $value) {
             $command .= ' ' . $param . '=' . $value;
