@@ -160,20 +160,24 @@ EOT
      */
     private function transformFiles(array $filesToWeave, Signatures $sigs, bool $overwrite): void
     {
-        $this->progressBarStart(count($filesToWeave));
+        if ($overwrite) {
+            $this->progressBarStart(count($filesToWeave));
+        }
+
         foreach ($filesToWeave as $fileToWeave) {
             $this->setupFileProcesser($sigs);
             $tokenStream = $this->tokenizer->scan(file_get_contents($fileToWeave));
             $tokenStream->iterate($this->scanner);
-            $this->progressBarAdvance();
 
             if ($overwrite) {
+                $this->progressBarAdvance();
                 file_put_contents($fileToWeave, $this->transformer->getOutput());
                 continue;
             }
 
             echo $this->transformer->getOutput();
         }
+
         $this->progressBarEnd();
     }
 
