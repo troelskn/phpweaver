@@ -1,8 +1,10 @@
 #!/usr/bin/env php
 <?php
 
-use Symfony\Component\Console\Application;
+
+use PHPTracerWeaver\Command\TraceCommand;
 use PHPTracerWeaver\Command\WeaveCommand;
+use Symfony\Component\Console\Application;
 
 require __DIR__ . '/../src/bootstrap.php';
 
@@ -15,6 +17,7 @@ $application = new Application();
 $application->setName('PHP Trace Weaver');
 $application->setVersion('dev'); // TODO get tag/commit
 
+$application->add(new TraceCommand());
 $application->add(new WeaveCommand());
 
 $application->run();
