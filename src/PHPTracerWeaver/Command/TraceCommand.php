@@ -65,7 +65,7 @@ EOT
             '-d xdebug.trace_options'            => (int) $append,
             '-d xdebug.trace_output_dir'         => getcwd(),
             '-d xdebug.trace_output_name'        => $tracefile,
-            '-d xdebug.trace_format'             => 0,
+            '-d xdebug.trace_format'             => 1,
             '-d xdebug.collect_params'           => 3, // Track full input value format (same as return format)
             '-d xdebug.collect_return'           => 1,
             '-d xdebug.var_display_max_data'     => 20, // Max length of numbers

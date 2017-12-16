@@ -1,8 +1,5 @@
 <?php namespace PHPTracerWeaver\Xtrace;
 
-use PHPTracerWeaver\Exceptions\Exception;
-use SplFileObject;
-
 /**
  * Class for parsing xdebug function trace files.
  */
@@ -20,65 +17,34 @@ class TraceReader
     }
 
     /**
-     * Process a trace line
+     * Process a trace line.
      *
-     * @param int            $lineNo
-     * @param string         $line
+     * @param string $line
      *
      * @return void
      */
-    public function processLine(int $lineNo, string $line): void
+    public function processLine(string $line): void
     {
-        $line = trim($line);
+        $entry = str_getcsv($line, "\t");
 
-        // Blank line
-        if (!$line) {
-            return;
+        if (!isset($entry[2])) {
+            return; // Header or footer
         }
 
-        // Trace start
-        if (preg_match('~TRACE START \[[0-9 :-]+\]~', $line, $match)) {
-            $this->handler->traceStart();
-            return;
+        switch ($entry[2]) {
+            case '0':
+                if ('0' === $entry[6]) {
+                    return; // Internal function
+                }
+
+                $this->handler->functionCall($entry[1], $entry[5], array_slice($entry, 11));
+                break;
+            case '1':
+                $this->handler->markCallAsExited($entry[1]);
+                break;
+            case 'R':
+                $this->handler->returnValue($entry[1], $entry[5]);
+                break;
         }
-
-        // Trace end
-        if (preg_match('~TRACE END   \[[0-9 :-]+\]~', $line, $match)) {
-            $this->handler->closeVoidReturns(0);
-            $this->handler->traceEnd();
-
-            return;
-        }
-
-        // runtime-generated functions?
-        if (preg_match('~^([.\d]+)\s+(\d+)(\s+)-> ([^(]+)\((.*)\) ([^:]+).*:(\d+)$~', $line, $match)) {
-            $depth = (strlen($match[3]) - 3) / 2;
-            $this->handler->closeVoidReturns($depth);
-            $this->handler->functionCall([
-                'time'         => $match[1],
-                'memory_usage' => $match[2],
-                'depth'        => $depth,
-                'function'     => $match[4],
-                'arguments'    => $match[5],
-                'filename'     => $match[6],
-                'linenumber'   => $match[7],
-            ]);
-            return;
-        }
-
-        // Return value
-        if (preg_match('~^[.\d]+\s+\d+(\s+)>=> (.+)$~', $line, $match)) {
-            $depth = (strlen($match[1]) - 4) / 2;
-            $this->handler->closeVoidReturns($depth + 1);
-            $this->handler->returnValue($match[2]);
-            return;
-        }
-
-        // dunno what this is?
-        if (preg_match('~^[.\d]+\s+\d+$~', $line, $match)) {
-            return;
-        }
-
-        throw new Exception('Could not parse line ' . $lineNo . ': ' . $line . PHP_EOL);
     }
 }

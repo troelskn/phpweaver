@@ -138,12 +138,11 @@ EOT
 
             $traceFile->setFlags(SplFileObject::READ_AHEAD);
             $this->progressBarStart(iterator_count($traceFile));
-            foreach ($traceFile as $lineNo => $line) {
-                $trace->processLine($lineNo, $line);
+            foreach ($traceFile as $line) {
+                $trace->processLine($line);
                 $this->progressBarAdvance();
             }
 
-            $handler->closeVoidReturns(0);
             $this->progressBarEnd();
         }
 

@@ -1,17 +1,12 @@
 <?php namespace PHPTracerWeaver\Xtrace;
 
 use PHPTracerWeaver\Exceptions\Exception;
-use PHPTracerWeaver\Reflector\StaticReflector;
 use PHPTracerWeaver\Signature\Signatures;
 
 class TraceSignatureLogger
 {
     /** @var Signatures */
     protected $signatures;
-    /** @var StaticReflector|null */
-    protected $reflector;
-    /** @var bool[] */
-    protected $includes = [];
     /** @var string[] */
     protected $typeMapping = [
         'TRUE'            => 'bool',
@@ -23,13 +18,11 @@ class TraceSignatureLogger
     ];
 
     /**
-     * @param Signatures           $signatures
-     * @param StaticReflector|null $reflector
+     * @param Signatures $signatures
      */
-    public function __construct(Signatures $signatures, StaticReflector $reflector = null)
+    public function __construct(Signatures $signatures)
     {
         $this->signatures = $signatures;
-        $this->reflector = $reflector;
     }
 
     /**
@@ -39,13 +32,6 @@ class TraceSignatureLogger
      */
     public function log(array $trace): void
     {
-        if ($this->reflector) {
-            $filename = $trace['filename'] ?? '';
-            if (!isset($this->includes[$filename]) && is_file($filename)) {
-                $this->reflector->scanFile($filename);
-            }
-            $this->includes[$filename] = true;
-        }
         $sig = $this->signatures->get($trace['function']);
         $sig->blend(
             $this->parseArguments($trace['arguments']),
@@ -54,18 +40,14 @@ class TraceSignatureLogger
     }
 
     /**
-     * @param string $asString
+     * @param string[] $arguments
      *
      * @return string[]
      */
-    public function parseArguments(string $asString): array
+    public function parseArguments(array $arguments): array
     {
-        if (!$asString) {
-            return [];
-        }
-
         $types = [];
-        foreach (explode(', ', $asString) as $type) {
+        foreach ($arguments as $type) {
             $types[] = $this->parseType($type);
         }
 

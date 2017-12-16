@@ -7,9 +7,7 @@ class FunctionTracer
     /** @var array[] */
     protected $stack = [];
     /** @var string[] */
-    protected $internalFunctions;
-    /** @var int */
-    private $currentDepth = 0;
+    protected $internalFunctions = ['{main}', 'eval', 'include', 'include_once', 'require', 'require_once'];
 
     /**
      * @param TraceSignatureLogger $handler
@@ -17,26 +15,6 @@ class FunctionTracer
     public function __construct(TraceSignatureLogger $handler)
     {
         $this->handler = $handler;
-        $definedFunctions = get_defined_functions(false);
-
-        $this->internalFunctions = array_merge(
-            $definedFunctions['internal'],
-            ['{main}', 'eval', 'include', 'include_once', 'require', 'require_once']
-        );
-    }
-
-    /**
-     * @return void
-     */
-    public function traceStart(): void
-    {
-    }
-
-    /**
-     * @return void
-     */
-    public function traceEnd(): void
-    {
     }
 
     /**
@@ -44,24 +22,33 @@ class FunctionTracer
      *
      * @return void
      */
-    public function functionCall(array $trace): void
+    public function functionCall(int $id, string $function, array $arguments): void
     {
-        $this->currentDepth = $trace['depth'];
-        $this->stack[] = $trace;
+        $this->closeVoidReturn();
+
+        if (in_array($function, $this->internalFunctions, true)) {
+            return;
+        }
+
+        $this->stack[$id] = ['function' => $function, 'arguments' => $arguments, 'exited' => false];
     }
 
     /**
-     * Close any function that was implicilty closed by given depth.
+     * Set exit to true for the given call id.
      *
-     * @param int $depth
+     * @param int $id
      *
      * @return void
      */
-    public function closeVoidReturns(int $depth): void
+    public function markCallAsExited(int $id): void
     {
-        while ($this->stack && $depth <= $this->currentDepth) {
-            $this->returnValue();
+        $this->closeVoidReturn();
+
+        if (!isset($this->stack[$id])) {
+            return;
         }
+
+        $this->stack[$id]['exited'] = true;
     }
 
     /**
@@ -69,18 +56,33 @@ class FunctionTracer
      *
      * Note: The optimizer will remove unused retun values making them look like void returns
      *
+     * @param int    $id
      * @param string $value
      *
      * @return void
      */
-    public function returnValue(string $value = 'void'): void
+    public function returnValue(int $id, string $value = 'void'): void
     {
-        $functionCall = array_pop($this->stack);
+        if (!isset($this->stack[$id])) {
+            return;
+        }
+
+        $functionCall = $this->stack[$id];
+        unset($this->stack[$id]);
 
         $functionCall['returnValue'] = $value;
-        if (!in_array($functionCall['function'], $this->internalFunctions, true)) {
-            $this->handler->log($functionCall);
+        $this->handler->log($functionCall);
+    }
+
+    /**
+     * Set void as return type for prvious call if it has already exitede.
+     *
+     * @return void
+     */
+    private function closeVoidReturn(): void
+    {
+        if (!empty(end($this->stack)['exited'])) {
+            $this->returnValue(key($this->stack));
         }
-        $this->currentDepth = end($this->stack)['depth'] ?? 0;
     }
 }
