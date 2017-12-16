@@ -23,6 +23,7 @@ class TraceCommand extends Command
             ->addArgument('phpscript', InputArgument::REQUIRED, 'A PHP script to execute and trace')
             ->addArgument('options', InputArgument::OPTIONAL, 'The PHP script is launched with these options')
             ->addOption('tracefile', null, InputOption::VALUE_OPTIONAL, 'Where to save trace', 'dumpfile')
+            ->addOption('append', null, InputOption::VALUE_NONE, 'Append to an existing tracefile')
             ->setHelp(<<<EOT
 The <info>%command.name%</info> command will execute a PHP script at save the trace data to a file:
 
@@ -52,10 +53,11 @@ EOT
         $this->output = $output;
 
         $tracefile = $input->getOption('tracefile');
+        $append = $input->getOption('append');
         $phpscript = $input->getArgument('phpscript');
         $options = $input->getArgument('options');
 
-        if (is_file($tracefile)) {
+        if (!$append && is_file($tracefile)) {
             unlink($tracefile);
         }
 
