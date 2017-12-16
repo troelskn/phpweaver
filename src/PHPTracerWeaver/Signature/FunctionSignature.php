@@ -31,9 +31,6 @@ class FunctionSignature
         foreach ($arguments as $id => $type) {
             $arg = $this->getArgumentById($id);
             $arg->collateWith($type);
-            if (!$arg->getName()) {
-                $arg->setName($id);
-            }
         }
 
         if ($returnType) {
