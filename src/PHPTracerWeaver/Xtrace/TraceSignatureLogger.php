@@ -109,7 +109,7 @@ class TraceSignatureLogger
         if (preg_match('~^-?\d+$~', $type) || preg_match('~^-?\'\d+\'$~', $type)) {
             return 'int';
         }
-        if (preg_match('~^-?\d+\.\d+$~', $type) || preg_match('~^-?\'\d+\.\d+\'$~', $type)) {
+        if (preg_match('~^-?\d+\.\d+(?:E\d+)?$~', $type) || preg_match('~^-?\'\d+\.\d+(?:E\d+)?\'$~', $type)) {
             return 'float';
         }
 
