@@ -12,6 +12,15 @@ class TraceSignatureLogger
     protected $reflector;
     /** @var bool[] */
     protected $includes = [];
+    /** @var string[] */
+    protected $typeMapping = [
+        'TRUE'            => 'bool',
+        'FALSE'           => 'false', // Falsable or tbd. bool
+        'NULL'            => 'null',
+        'void'            => 'void',
+        '???'             => '???',
+        '*uninitialized*' => '???',
+    ];
 
     /**
      * @param Signatures           $signatures
@@ -40,7 +49,7 @@ class TraceSignatureLogger
         $sig = $this->signatures->get($trace['function']);
         $sig->blend(
             $this->parseArguments($trace['arguments']),
-            $this->parseReturnType($trace['returnValue'])
+            $this->parseType($trace['returnValue'])
         );
     }
 
@@ -55,49 +64,23 @@ class TraceSignatureLogger
             return [];
         }
 
-        // todo: resources ..
         $types = [];
         foreach (explode(', ', $asString) as $type) {
-            $types[] = $this->parseArgumentType($type);
+            $types[] = $this->parseType($type);
         }
 
         return $types;
     }
 
     /**
-     * Convert trace trypes to php types names.
-     *
      * @param string $type
      *
      * @return string
      */
-    private function parseArgumentType(string $type): string
+    public function parseType(string $type): string
     {
-        $typeAliases = ['long' => 'int', 'double' => 'float', 'true' => 'bool', 'false' => 'bool', 'null' => 'null', '???' => '???'];
-        if (isset($typeAliases[$type])) {
-            return $typeAliases[$type];
-        }
-
-        $typeTransforms = ['~^(string)\(\d+\)$~', '~^(array)\(\d+\)$~', '~^class (\S+)~', '~^(resource)\(\d+\)~'];
-        foreach ($typeTransforms as $regex) {
-            if (preg_match($regex, $type, $match)) {
-                return $match[1];
-            }
-        }
-
-        throw new Exception('Unknown argument type: ' . $type);
-    }
-
-    /**
-     * @param string $type
-     *
-     * @return string
-     */
-    public function parseReturnType(string $type): string
-    {
-        $typeAliases = ['TRUE' => 'bool', 'FALSE' => 'false', 'NULL' => 'null', 'void' => 'void', '*uninitialized*' => '???'];
-        if (isset($typeAliases[$type])) {
-            return $typeAliases[$type];
+        if (isset($this->typeMapping[$type])) {
+            return $this->typeMapping[$type];
         }
 
         $typeTransforms = ['~^(array) \(.*\)$~', '~^class (\S+)~', '~^(resource)\(\d+\)~'];
