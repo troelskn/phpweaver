@@ -67,7 +67,7 @@ class TraceSignatureLogger
             return $this->typeMapping[$type];
         }
 
-        $typeTransforms = ['~^(array) \(.*\)$~u', '~^class (\S+)~u', '~^(resource)\(\d+\)~u'];
+        $typeTransforms = ['~^(array) \(.*\)$~', '~^class (\S+)~', '~^(resource)\(\d+\)~u'];
         foreach ($typeTransforms as $regex) {
             if (preg_match($regex, $type, $match)) {
                 if ('array' === $match[1]) {
