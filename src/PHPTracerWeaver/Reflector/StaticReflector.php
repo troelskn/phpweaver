@@ -2,6 +2,7 @@
 
 use PHPTracerWeaver\Scanner\ClassExtendsScanner;
 use PHPTracerWeaver\Scanner\ClassScanner;
+use PHPTracerWeaver\Scanner\NamespaceScanner;
 use PHPTracerWeaver\Scanner\ScannerMultiplexer;
 use PHPTracerWeaver\Scanner\TokenStreamParser;
 
@@ -21,9 +22,11 @@ class StaticReflector implements ClassCollatorInterface
     public function __construct()
     {
         $this->scanner = new ScannerMultiplexer();
+        $namespaceScanner = new NamespaceScanner();
         $classScanner = new ClassScanner();
-        $this->scanner->appendScanner($classScanner);
         $inheritanceScanner = new ClassExtendsScanner($classScanner);
+        $this->scanner->appendScanner($namespaceScanner);
+        $this->scanner->appendScanner($classScanner);
         $this->scanner->appendScanner($inheritanceScanner);
         $inheritanceScanner->notifyOnExtends([$this, 'logSupertype']);
         $inheritanceScanner->notifyOnImplements([$this, 'logSupertype']);

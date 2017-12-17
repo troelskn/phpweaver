@@ -105,7 +105,6 @@ class TraceSignatureLogger
         if (empty($match[1])) {
             return 'array';
         }
-        var_dump($match[1]);
 
         $subTypes = [];
 
@@ -116,7 +115,6 @@ class TraceSignatureLogger
             $subTypes[$this->parseType($rawSubType)] = true;
         }
 
-        var_dump($rawSubTypes, $subTypes);
         $type = implode('|', array_keys($subTypes));
         if (count($subTypes) > 1) {
             $type = '(' . $type . ')';

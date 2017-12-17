@@ -66,7 +66,7 @@ EOT
     }
 
     /**
-     * Run the weave process
+     * Run the weave process.
      *
      * @param InputInterface  $input
      * @param OutputInterface $output
@@ -90,7 +90,7 @@ EOT
     }
 
     /**
-     * Fetch array of file names to process
+     * Fetch array of file names to process.
      *
      * @param string $pathToWeave
      *
@@ -224,7 +224,7 @@ EOT
     }
 
     /**
-     * Start a progressbar on the ouput
+     * Start a progressbar on the ouput.
      *
      * @param int $steps
      *
