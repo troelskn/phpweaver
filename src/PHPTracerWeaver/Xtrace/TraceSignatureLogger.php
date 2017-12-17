@@ -15,6 +15,7 @@ class TraceSignatureLogger
         'void'            => 'void',
         '???'             => '???',
         '*uninitialized*' => '???',
+        '...'             => 'array',
     ];
 
     /**
