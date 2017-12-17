@@ -69,7 +69,8 @@ EOT
             '-d xdebug.collect_params'           => 3, // Track full input value format (same as return format)
             '-d xdebug.collect_return'           => 1,
             '-d xdebug.var_display_max_data'     => 20, // Max length of numbers
-            '-d xdebug.var_display_max_depth'    => 0,
+            '-d xdebug.var_display_max_children' => 5, // Analyse the 5 first elements when determining array sub-type
+            '-d xdebug.var_display_max_depth'    => 1, // 1 depth of array (and classes) to analyze array sub-type
         ];
         foreach ($params as $param => $value) {
             $command .= ' ' . $param . '=' . $value;

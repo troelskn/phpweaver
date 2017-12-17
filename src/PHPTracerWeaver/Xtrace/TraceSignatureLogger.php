@@ -6,9 +6,9 @@ use PHPTracerWeaver\Signature\Signatures;
 class TraceSignatureLogger
 {
     /** @var Signatures */
-    protected $signatures;
+    private $signatures;
     /** @var string[] */
-    protected $typeMapping = [
+    private $typeMapping = [
         'TRUE'            => 'bool',
         'FALSE'           => 'false', // Falsable or tbd. bool
         'NULL'            => 'null',
@@ -44,7 +44,7 @@ class TraceSignatureLogger
      *
      * @return string[]
      */
-    public function parseArguments(array $arguments): array
+    private function parseArguments(array $arguments): array
     {
         $types = [];
         foreach ($arguments as $type) {
@@ -57,6 +57,8 @@ class TraceSignatureLogger
     /**
      * @param string $type
      *
+     * @throws Exception
+     *
      * @return string
      */
     public function parseType(string $type): string
@@ -65,16 +67,20 @@ class TraceSignatureLogger
             return $this->typeMapping[$type];
         }
 
-        $typeTransforms = ['~^(array) \(.*\)$~', '~^class (\S+)~', '~^(resource)\(\d+\)~'];
+        $typeTransforms = ['~^(array) \(.*\)$~u', '~^class (\S+)~u', '~^(resource)\(\d+\)~u'];
         foreach ($typeTransforms as $regex) {
             if (preg_match($regex, $type, $match)) {
+                if ('array' === $match[1]) {
+                    return $this->getArrayType($type);
+                }
+
                 return $match[1];
             }
         }
-        if (preg_match('~^-?\d+$~', $type) || preg_match('~^-?\'\d+\'$~', $type)) {
+        if (preg_match('~^-?\d+$~u', $type) || preg_match('~^-?\'\d+\'$~u', $type)) {
             return 'int';
         }
-        if (preg_match('~^-?\d+\.\d+(?:E[-+]\d+)?$~', $type) || preg_match('~^-?\'\d+\.\d+(?:E[-+]\d+)?\'$~', $type)) {
+        if (preg_match('~^-?\d+\.\d+(?:E[-+]\d+)?$~u', $type) || preg_match('~^-?\'\d+\.\d+(?:E[-+]\d+)?\'$~u', $type)) {
             return 'float';
         }
 
@@ -82,6 +88,40 @@ class TraceSignatureLogger
             return 'string';
         }
 
-        throw new Exception('Unknown return type: ' . $type);
+        throw new Exception('Unknown type: ' . $type);
+    }
+
+    /**
+     * @param string $type
+     *
+     * @todo
+     *
+     * @return string
+     */
+    public function getArrayType(string $type): string
+    {
+        // Remove array wrapper
+        preg_match('~^array \((.*?)(?:, )?\.{0,3}\)$~u', $type, $match);
+        if (empty($match[1])) {
+            return 'array';
+        }
+        var_dump($match[1]);
+
+        $subTypes = [];
+
+        // Find each string|int key followed by double arrow, taking \' into account
+        $rawSubTypes = preg_split('~(?:, |^)(?:(?:\'.+?(?:(?<!\\\\)\')+)|\d) => ~u', $match[1]);
+        unset($rawSubTypes[0]); // Remove split at first key
+        foreach ($rawSubTypes as $rawSubType) {
+            $subTypes[$this->parseType($rawSubType)] = true;
+        }
+
+        var_dump($rawSubTypes, $subTypes);
+        $type = implode('|', array_keys($subTypes));
+        if (count($subTypes) > 1) {
+            $type = '(' . $type . ')';
+        }
+
+        return $type . '[]';
     }
 }

@@ -6,23 +6,22 @@ class FunctionArgument
     protected $id;
     /** @var ?string */
     protected $name;
-    /** @var string */
-    protected $type;
+    /** @var \ArrayObject<string, true> */
+    protected $types = [];
 
     /**
      * @param int         $id
      * @param string|null $name
      * @param string      $type
      */
-    public function __construct(int $id, string $name = null, string $type = '???')
+    public function __construct(int $id, string $name = null, string $type = null)
     {
-        if ('null' === $type) {
-            $type = '???';
-        }
-
         $this->id = $id;
         $this->name = $name;
-        $this->type = $type;
+
+        if (null !== $type) {
+            $this->types[] = $type;
+        }
     }
 
     /**
@@ -66,7 +65,7 @@ class FunctionArgument
      */
     public function isUndefined(): bool
     {
-        return '???' === $this->type;
+        return !$this->types;
     }
 
     /**
@@ -74,21 +73,42 @@ class FunctionArgument
      */
     public function getType(): string
     {
-        if ('false' === $this->type) { // Not falsable unioun type
-            return 'bool';
+        if ($this->isUndefined()) {
+            return 'mixed';
         }
 
-        return !$this->isUndefined() ? $this->type : 'mixed';
+        $types = $this->types;
+
+        // Falsable to bool
+        if (isset($types['false']) && (isset($types['bool']) || 1 === count($types))) {
+            unset($types['false']);
+            $types['bool'] = true;
+        }
+
+        $types = $this->orderTypes($types);
+
+        $types = array_keys($types);
+
+        return implode('|', $types);
     }
 
-    /**
-     * @param string $type
-     *
-     * @return void
-     */
-    public function setType(string $type): void
+    private function orderTypes(array $types): array
     {
-        $this->type = $type;
+        ksort($types);
+
+        // False should always be at the end
+        if (isset($types['false'])) {
+            unset($types['false']);
+            $types['false'] = true;
+        }
+
+        // Null should always be at the end
+        if (isset($types['null'])) {
+            unset($types['null']);
+            $types['null'] = true;
+        }
+
+        return $types;
     }
 
     /**
@@ -98,42 +118,11 @@ class FunctionArgument
      */
     public function collateWith(string $type): void
     {
-        if ('???' === $this->type) {
-            $this->type = $type;
-        }
-
-        if ($type === $this->type || '???' === $type || '' === $type) {
+        if ('???' === $type) {
             return;
         }
 
-        $tmp = explode('|', $this->type);
-        $tmp = array_filter($tmp);
-        $tmp = array_flip($tmp);
-        $tmp[$type] = 0;
-
-        // Falsable to bool
-        if (isset($tmp['false']) && (isset($tmp['bool']) || 1 === count($tmp))) {
-            unset($tmp['false']);
-            $tmp['bool'] = 0;
-        }
-
-        ksort($tmp);
-
-        // False should always be the last type
-        if (isset($tmp['false'])) {
-            unset($tmp['false']);
-            $tmp['false'] = 0; // Always have false as the last option
-        }
-
-        // Null should always be the last type
-        if (isset($tmp['null'])) {
-            unset($tmp['null']);
-            $tmp['null'] = 0; // Always have null as the last option
-        }
-
-        $tmp = array_keys($tmp);
-
-        $this->type = implode('|', $tmp);
+        $this->types[$type] = true;
     }
 
     /**
