@@ -114,6 +114,7 @@ class TraceSignatureLogger
         foreach ($rawSubTypes as $rawSubType) {
             $subTypes[$this->parseType($rawSubType)] = true;
         }
+        ksort($subTypes);
 
         $type = implode('|', array_keys($subTypes));
         if (count($subTypes) > 1) {
