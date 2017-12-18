@@ -13,12 +13,12 @@
 >
     <testsuites>
         <testsuite name="Weaver Test Suite">
-            <directory>./tests/PHPTracerWeaver/</directory>
+            <directory>./tests/PHPWeaver/</directory>
         </testsuite>
     </testsuites>
     <filter>
         <whitelist>
-            <directory>./src/PHPTracerWeaver/</directory>
+            <directory>./src/PHPWeaver/</directory>
         </whitelist>
     </filter>
 </phpunit>

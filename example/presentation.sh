@@ -1,4 +1,5 @@
 #!/bin/sh
-../bin/trace.sh controller.php
-../bin/php-tracer-weaver Foo.php > Foo.out.php
+../bin/phpweaver trace controller.php
+cp Foo.php Foo.out.php
+../bin/phpweaver weave Foo.out.php --overwrite
 diff Foo.php Foo.out.php
