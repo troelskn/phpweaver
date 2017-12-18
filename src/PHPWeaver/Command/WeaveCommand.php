@@ -46,8 +46,8 @@ class WeaveCommand extends Command
     {
         $this->setName('weave')
             ->setDescription('Analyze trace and generate phpDoc in target files')
-            ->addArgument('path', InputArgument::REQUIRED, 'Path to folder or files to be process')
-            ->addArgument('tracefile', InputArgument::OPTIONAL, 'Trace file to analyze', 'dumpfile.xt')
+            ->addArgument('path', InputArgument::REQUIRED | InputArgument::IS_ARRAY, 'Path to folder or files to be process')
+            ->addOption('tracefile', null, InputOption::VALUE_OPTIONAL, 'Trace file to analyze', 'dumpfile')
             ->addOption('overwrite', null, InputOption::VALUE_NONE, 'Update files inplace instead of printing the result')
             ->setHelp(<<<EOT
 The <info>%command.name%</info> command will analyze function signatures and update there phpDoc:
@@ -60,7 +60,7 @@ By default the resulting code will be printed to the terminal, to update the org
 
 By default it will look for the tracefile in the current directory, but you can also specify a path:
 
-    <info>%command.full_name% src/ tests/tracefile.xt</info>
+    <info>%command.full_name% src/ tests/tracefile</info>
 EOT
         );
     }
@@ -75,15 +75,15 @@ EOT
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $traceFilename = $input->getArgument('tracefile');
-        $pathToWeave = $input->getArgument('path');
+        $pathsToWeave = $input->getArgument('path');
+        $tracefile = $input->getOption('tracefile') . '.xt';
         $overwrite = $input->getOption('overwrite');
 
         $this->output = new SymfonyStyle($input, $output);
 
-        $filesToWave = $this->getFilesToProcess($pathToWeave);
+        $filesToWave = $this->getFilesToProcess($pathsToWeave);
 
-        $sigs = $this->parseTrace($traceFilename);
+        $sigs = $this->parseTrace($tracefile);
         $this->transformFiles($filesToWave, $sigs, $overwrite);
 
         return self::RETURN_CODE_OK;
@@ -92,29 +92,31 @@ EOT
     /**
      * Fetch array of file names to process.
      *
-     * @param string $pathToWeave
+     * @param array $pathsToWeave
      *
      * @return array
      */
-    private function getFilesToProcess(string $pathToWeave): array
+    private function getFilesToProcess(array $pathsToWeave): array
     {
         $filesToWave = [];
 
-        if (is_dir($pathToWeave)) {
-            $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($pathToWeave));
-            $fileIterator = new RegexIterator($iterator, '/^.+\.php$/i', RecursiveRegexIterator::GET_MATCH);
-            foreach ($fileIterator as $file) {
-                $filesToWave[] = $file[0];
+        foreach ($pathsToWeave as $pathToWeave) {
+            if (is_dir($pathToWeave)) {
+                $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($pathToWeave));
+                $fileIterator = new RegexIterator($iterator, '/^.+\.php$/i', RecursiveRegexIterator::GET_MATCH);
+                foreach ($fileIterator as $file) {
+                    $filesToWave[] = $file[0];
+                }
+
+                continue;
             }
 
-            return $filesToWave;
-        }
+            if (!is_file($pathToWeave)) {
+                throw new Exception('Path (' . $pathToWeave . ') isn\'t readable');
+            }
 
-        if (!is_file($pathToWeave)) {
-            throw new Exception('Path (' . $pathToWeave . ') isn\'t readable');
+            $filesToWave[] = $pathToWeave;
         }
-
-        $filesToWave[] = $pathToWeave;
 
         return $filesToWave;
     }
@@ -122,16 +124,16 @@ EOT
     /**
      * Parse the trace file.
      *
-     * @param string $traceFilename
+     * @param string $tracefile
      *
      * @return Signatures
      */
-    private function parseTrace(string $traceFilename): Signatures
+    private function parseTrace(string $tracefile): Signatures
     {
         $reflector = new StaticReflector();
         $sigs = new Signatures($reflector);
-        if (is_file($traceFilename)) {
-            $traceFile = new SplFileObject($traceFilename);
+        if (is_file($tracefile)) {
+            $traceFile = new SplFileObject($tracefile);
             $collector = new TraceSignatureLogger($sigs, $reflector);
             $handler = new FunctionTracer($collector, $reflector);
             $trace = new TraceReader($handler);
