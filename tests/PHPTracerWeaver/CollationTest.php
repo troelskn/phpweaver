@@ -1,5 +1,6 @@
 <?php namespace PHPTracerWeaver\Test;
 
+use PHPTracerWeaver\Command\TraceCommand;
 use PHPTracerWeaver\Reflector\StaticReflector;
 use PHPTracerWeaver\Signature\Signatures;
 use PHPTracerWeaver\Xtrace\FunctionTracer;
@@ -7,6 +8,7 @@ use PHPTracerWeaver\Xtrace\TraceReader;
 use PHPTracerWeaver\Xtrace\TraceSignatureLogger;
 use PHPUnit\Framework\TestCase;
 use SplFileObject;
+use Symfony\Component\Console\Tester\CommandTester;
 
 class CollationTest extends TestCase
 {
@@ -70,13 +72,15 @@ class CollationTest extends TestCase
     public function testCanCollateClasses(): void
     {
         chdir($this->sandbox());
-        $command = escapeshellcmd($this->bindir() . '/bin/trace.sh') . ' ' . escapeshellarg($this->sandbox() . '/main.php');
-        shell_exec($command);
+        $commandTester = new CommandTester(new TraceCommand());
+        $commandTester->execute(['phpscript' => $this->sandbox() . '/main.php']);
         $reflector = new StaticReflector();
         $sigs = new Signatures($reflector);
-        $trace = new TraceReader(new SplFileObject($this->sandbox() . '/dumpfile.xt'));
         $collector = new TraceSignatureLogger($sigs, $reflector);
-        $trace->process(new FunctionTracer($collector));
+        $trace = new TraceReader(new FunctionTracer($collector));
+        foreach (new SplFileObject($this->sandbox() . '/dumpfile.xt') as $line) {
+            $trace->processLine($line);
+        }
         $this->assertSame('Bar|Cuux', $sigs->get('do_stuff')->getArgumentById(0)->getType());
     }
 }

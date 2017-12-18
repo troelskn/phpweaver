@@ -1,5 +1,6 @@
 <?php namespace PHPTracerWeaver\Test;
 
+use PHPTracerWeaver\Command\TraceCommand;
 use PHPTracerWeaver\Reflector\DummyClassCollator;
 use PHPTracerWeaver\Signature\Signatures;
 use PHPTracerWeaver\Xtrace\FunctionTracer;
@@ -7,6 +8,7 @@ use PHPTracerWeaver\Xtrace\TraceReader;
 use PHPTracerWeaver\Xtrace\TraceSignatureLogger;
 use PHPUnit\Framework\TestCase;
 use SplFileObject;
+use Symfony\Component\Console\Tester\CommandTester;
 
 class TracerTest extends TestCase
 {
@@ -52,8 +54,7 @@ class TracerTest extends TestCase
         file_put_contents($dirSandbox . '/include.php', $sourceInclude);
         $sourceMain = '<?php' . "\n" .
         'require_once "include.php";' . "\n" .
-        'callit(new Foo(42));' . "\n" .
-        'echo "(completed)\n";';
+        'callit(new Foo(42));';
         file_put_contents($dirSandbox . '/main.php', $sourceMain);
     }
 
@@ -78,8 +79,8 @@ class TracerTest extends TestCase
     public function testCanExecuteSandboxCode(): void
     {
         chdir($this->sandbox());
-        $output = shell_exec('php ' . escapeshellarg($this->sandbox() . '/main.php'));
-        $this->assertSame("(completed)\n", $output);
+        exec('php ' . escapeshellarg($this->sandbox() . '/main.php'), $output, $return_var);
+        $this->assertSame(0, $return_var);
     }
 
     /**
@@ -88,9 +89,9 @@ class TracerTest extends TestCase
     public function testCanExecuteSandboxCodeWithInstrumentation(): void
     {
         chdir($this->sandbox());
-        $command = escapeshellcmd($this->bindir() . '/bin/trace.sh') . ' ' . escapeshellarg($this->sandbox() . '/main.php');
-        $output = shell_exec($command);
-        $this->assertRegExp('~\(completed\)~', $output);
+        $commandTester = new CommandTester(new TraceCommand());
+        $commandTester->execute(['phpscript' => $this->sandbox() . '/main.php']);
+        $output = $commandTester->getDisplay();
         $this->assertRegExp('~TRACE COMPLETE\n$~', $output);
     }
 
@@ -100,8 +101,8 @@ class TracerTest extends TestCase
     public function testInstrumentationCreatesTracefile(): void
     {
         chdir($this->sandbox());
-        $command = escapeshellcmd($this->bindir() . '/bin/trace.sh') . ' ' . escapeshellarg($this->sandbox() . '/main.php');
-        shell_exec($command);
+        $commandTester = new CommandTester(new TraceCommand());
+        $commandTester->execute(['phpscript' => $this->sandbox() . '/main.php']);
         $this->assertTrue(is_file($this->sandbox() . '/dumpfile.xt'));
     }
 
@@ -111,13 +112,15 @@ class TracerTest extends TestCase
     public function testCanParseTracefile(): void
     {
         chdir($this->sandbox());
-        $command = escapeshellcmd($this->bindir() . '/bin/trace.sh') . ' ' . escapeshellarg($this->sandbox() . '/main.php');
-        shell_exec($command);
+        $commandTester = new CommandTester(new TraceCommand());
+        $commandTester->execute(['phpscript' => $this->sandbox() . '/main.php']);
         $sigs = new Signatures(new DummyClassCollator());
         $this->assertFalse($sigs->has('callit'));
-        $trace = new TraceReader(new SplFileObject($this->sandbox() . '/dumpfile.xt'));
         $collector = new TraceSignatureLogger($sigs);
-        $trace->process(new FunctionTracer($collector));
+        $trace = new TraceReader(new FunctionTracer($collector));
+        foreach (new SplFileObject($this->sandbox() . '/dumpfile.xt') as $line) {
+            $trace->processLine($line);
+        }
         $this->assertTrue($sigs->has('callit'));
     }
 
@@ -127,12 +130,14 @@ class TracerTest extends TestCase
     public function testCanParseClassArg(): void
     {
         chdir($this->sandbox());
-        $command = escapeshellcmd($this->bindir() . '/bin/trace.sh') . ' ' . escapeshellarg($this->sandbox() . '/main.php');
-        shell_exec($command);
+        $commandTester = new CommandTester(new TraceCommand());
+        $commandTester->execute(['phpscript' => $this->sandbox() . '/main.php']);
         $sigs = new Signatures(new DummyClassCollator());
-        $trace = new TraceReader(new SplFileObject($this->sandbox() . '/dumpfile.xt'));
         $collector = new TraceSignatureLogger($sigs);
-        $trace->process(new FunctionTracer($collector));
+        $trace = new TraceReader(new FunctionTracer($collector));
+        foreach (new SplFileObject($this->sandbox() . '/dumpfile.xt') as $line) {
+            $trace->processLine($line);
+        }
         $this->assertSame('Foo', $sigs->get('callit')->getArgumentById(0)->getType());
     }
 }
