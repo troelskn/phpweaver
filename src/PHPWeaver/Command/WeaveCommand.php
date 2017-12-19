@@ -63,7 +63,11 @@ By default the resulting code will be printed to the terminal, to update the org
 
 By default it will look for the tracefile in the current directory, but you can also specify a path:
 
-    <info>%command.full_name% src/ tests/tracefile</info>
+    <info>%command.full_name% src/ --tracefile tests/tracefile</info>
+
+You can specify multiple paths to process, this way the trace file will only have to be processed once:
+
+    <info>%command.full_name% app/ public/index.php tests/</info>
 EOT
         );
     }
