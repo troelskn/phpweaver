@@ -280,7 +280,7 @@ EOT
     }
 
     /**
-     * Set the progress to 100% and start a new blank line on the output.
+     * Set the progress to 100% and clear it from the output.
      *
      * @return void
      */
@@ -291,7 +291,7 @@ EOT
         }
 
         $this->progressBar->finish();
+        $this->progressBar->clear();
         $this->progressBar = null;
-        $this->output->text('');
     }
 }
