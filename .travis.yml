@@ -1,0 +1,21 @@
+language: php
+
+php:
+  - 7.1
+  - 7.2
+
+install:
+  - composer install
+
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+
+script: vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+
+after_success:
+  - travis_retry php vendor/bin/php-coveralls
+  - bash <(curl -s https://codecov.io/bash)
+  - php vendor/bin/codacycoverage clover build/logs/clover.xml
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
