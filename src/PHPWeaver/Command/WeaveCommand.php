@@ -20,6 +20,7 @@ use RecursiveRegexIterator;
 use RegexIterator;
 use SplFileObject;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -36,6 +37,8 @@ class WeaveCommand extends Command
     private $nextSteps = 0;
     /** @var float */
     private $nextUpdate = 0.0;
+    /** @var ProgressBar */
+    private $progressBar;
 
     /**
      * Set up command parameteres and help message.
@@ -139,7 +142,7 @@ EOT
             $trace = new TraceReader($handler);
 
             $traceFile->setFlags(SplFileObject::READ_AHEAD);
-            $this->progressBarStart(iterator_count($traceFile));
+            $this->progressBarStart(iterator_count($traceFile), '<info>Parsing tracefile …</info>');
             foreach ($traceFile as $line) {
                 $trace->processLine($line);
                 $this->progressBarAdvance();
@@ -163,7 +166,7 @@ EOT
     private function transformFiles(array $filesToWeave, Signatures $sigs, bool $overwrite): void
     {
         if ($overwrite) {
-            $this->progressBarStart(count($filesToWeave));
+            $this->progressBarStart(count($filesToWeave), '<info>Updating source files …</info>');
         }
 
         foreach ($filesToWeave as $fileToWeave) {
@@ -228,11 +231,12 @@ EOT
     /**
      * Start a progressbar on the ouput.
      *
-     * @param int $steps
+     * @param int    $steps
+     * @param string $message
      *
      * @return void
      */
-    private function progressBarStart(int $steps): void
+    private function progressBarStart(int $steps, string $message): void
     {
         if (!$steps) {
             return;
@@ -241,7 +245,8 @@ EOT
         $this->progressBar = $this->output->createProgressBar();
         $this->progressBar->setBarWidth(50);
 
-        $this->progressBar->setFormat('%current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s%');
+        $this->progressBar->setMessage($message);
+        $this->progressBar->setFormat("%current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s%\n%message%");
         $this->progressBar->start($steps);
 
         $this->nextSteps = 0;
