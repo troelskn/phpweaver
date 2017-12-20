@@ -1,12 +1,12 @@
 <?php namespace PHPWeaver\Test;
 
+use PHPUnit\Framework\TestCase;
 use PHPWeaver\Command\TraceCommand;
 use PHPWeaver\Reflector\StaticReflector;
 use PHPWeaver\Signature\Signatures;
 use PHPWeaver\Xtrace\FunctionTracer;
 use PHPWeaver\Xtrace\TraceReader;
 use PHPWeaver\Xtrace\TraceSignatureLogger;
-use PHPUnit\Framework\TestCase;
 use SplFileObject;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -74,10 +74,8 @@ class CollationTest extends TestCase
         chdir($this->sandbox());
         $commandTester = new CommandTester(new TraceCommand());
         $commandTester->execute(['phpscript' => $this->sandbox() . '/main.php']);
-        $reflector = new StaticReflector();
-        $sigs = new Signatures($reflector);
-        $collector = new TraceSignatureLogger($sigs, $reflector);
-        $trace = new TraceReader(new FunctionTracer($collector));
+        $sigs = new Signatures(new StaticReflector());
+        $trace = new TraceReader(new FunctionTracer(new TraceSignatureLogger($sigs)));
         foreach (new SplFileObject($this->sandbox() . '/dumpfile.xt') as $line) {
             $trace->processLine($line);
         }

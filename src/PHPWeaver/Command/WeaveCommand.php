@@ -1,5 +1,6 @@
 <?php namespace PHPWeaver\Command;
 
+use PHPWeaver\Exceptions\Exception;
 use PHPWeaver\Reflector\StaticReflector;
 use PHPWeaver\Scanner\ClassScanner;
 use PHPWeaver\Scanner\FunctionBodyScanner;
@@ -37,8 +38,16 @@ class WeaveCommand extends Command
     private $nextSteps = 0;
     /** @var float */
     private $nextUpdate = 0.0;
-    /** @var ProgressBar */
+    /** @var ?SymfonyStyle */
+    private $output;
+    /** @var ?ProgressBar */
     private $progressBar;
+    /** @var ?TokenStreamParser */
+    private $tokenizer;
+    /** @var ?ScannerMultiplexer */
+    private $scanner;
+    /** @var ?DocCommentEditorTransformer */
+    private $transformer;
 
     /**
      * Set up command parameteres and help message.
@@ -131,13 +140,10 @@ EOT
      */
     private function parseTrace(string $tracefile): Signatures
     {
-        $reflector = new StaticReflector();
-        $sigs = new Signatures($reflector);
+        $sigs = new Signatures(new StaticReflector());
         if (is_file($tracefile)) {
             $traceFile = new SplFileObject($tracefile);
-            $collector = new TraceSignatureLogger($sigs, $reflector);
-            $handler = new FunctionTracer($collector, $reflector);
-            $trace = new TraceReader($handler);
+            $trace = new TraceReader(new FunctionTracer(new TraceSignatureLogger($sigs)));
 
             $traceFile->setFlags(SplFileObject::READ_AHEAD);
             $this->progressBarStart(iterator_count($traceFile), '<info>Parsing tracefile …</info>');

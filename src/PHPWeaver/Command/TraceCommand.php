@@ -50,8 +50,6 @@ EOT
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->output = $output;
-
         $tracefile = $input->getOption('tracefile');
         $append = $input->getOption('append');
         $phpscript = $input->getArgument('phpscript');
