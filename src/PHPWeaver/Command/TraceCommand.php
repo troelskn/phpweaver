@@ -33,7 +33,7 @@ You can specify parameteres to be passed to the script as the secound argument:
 
     <info>%command.full_name% vendor/bin/phpunit ' -c tests/phpunit.xml'</info>
 
-By default the trace will besaved to dumpfile.xt, but you can also specify a path (.xt is automattically appended):
+By default the trace will be saved to dumpfile.xt, but you can also specify a path (.xt is automattically appended):
 
     <info>%command.full_name% vendor/bin/phpunit --tracefile=traces/unitest</info>
 EOT

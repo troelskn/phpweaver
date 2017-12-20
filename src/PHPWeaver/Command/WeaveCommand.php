@@ -61,7 +61,7 @@ By default the resulting code will be printed to the terminal, to update the org
 
     <info>%command.full_name% src/ --overwrite</info>
 
-By default it will look for the tracefile in the current directory, but you can also specify a path:
+By default it will look for the tracefile in the current directory, but you can also specify a path (.xt is automattically appended):
 
     <info>%command.full_name% src/ --tracefile tests/tracefile</info>
 
