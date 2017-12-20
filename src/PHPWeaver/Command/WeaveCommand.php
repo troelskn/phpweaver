@@ -51,15 +51,10 @@ class WeaveCommand extends Command
             ->setDescription('Analyze trace and generate phpDoc in target files')
             ->addArgument('path', InputArgument::REQUIRED | InputArgument::IS_ARRAY, 'Path to folder or files to be process')
             ->addOption('tracefile', null, InputOption::VALUE_OPTIONAL, 'Trace file to analyze', 'dumpfile')
-            ->addOption('overwrite', null, InputOption::VALUE_NONE, 'Update files inplace instead of printing the result')
             ->setHelp(<<<EOT
 The <info>%command.name%</info> command will analyze function signatures and update there phpDoc:
 
     <info>%command.full_name% src/</info>
-
-By default the resulting code will be printed to the terminal, to update the orginal file you can specify <comment>--overwrite</comment>:
-
-    <info>%command.full_name% src/ --overwrite</info>
 
 By default it will look for the tracefile in the current directory, but you can also specify a path (.xt is automattically appended):
 
@@ -84,14 +79,13 @@ EOT
     {
         $pathsToWeave = $input->getArgument('path');
         $tracefile = $input->getOption('tracefile') . '.xt';
-        $overwrite = $input->getOption('overwrite');
 
         $this->output = new SymfonyStyle($input, $output);
 
         $filesToWave = $this->getFilesToProcess($pathsToWeave);
 
         $sigs = $this->parseTrace($tracefile);
-        $this->transformFiles($filesToWave, $sigs, $overwrite);
+        $this->transformFiles($filesToWave, $sigs);
 
         return self::RETURN_CODE_OK;
     }
@@ -163,28 +157,21 @@ EOT
      *
      * @param array      $filesToWeave
      * @param Signatures $sigs
-     * @param bool       $overwrite
      *
      * @return void
      */
-    private function transformFiles(array $filesToWeave, Signatures $sigs, bool $overwrite): void
+    private function transformFiles(array $filesToWeave, Signatures $sigs): void
     {
-        if ($overwrite) {
-            $this->progressBarStart(count($filesToWeave), '<info>Updating source files …</info>');
-        }
+        $this->progressBarStart(count($filesToWeave), '<info>Updating source files …</info>');
 
         foreach ($filesToWeave as $fileToWeave) {
             $this->setupFileProcesser($sigs);
             $tokenStream = $this->tokenizer->scan(file_get_contents($fileToWeave));
             $tokenStream->iterate($this->scanner);
 
-            if ($overwrite) {
-                $this->progressBarAdvance();
-                file_put_contents($fileToWeave, $this->transformer->getOutput());
-                continue;
-            }
+            file_put_contents($fileToWeave, $this->transformer->getOutput());
 
-            echo $this->transformer->getOutput();
+            $this->progressBarAdvance();
         }
 
         $this->progressBarEnd();
