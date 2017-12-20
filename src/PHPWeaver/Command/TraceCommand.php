@@ -31,7 +31,7 @@ The <info>%command.name%</info> command will execute a PHP script at save the tr
 
 You can specify parameteres to be passed to the script as the secound argument:
 
-    <info>%command.full_name% vendor/bin/phpunit ' -c tests/phpunit.xml'</info>
+    <info>%command.full_name% vendor/bin/phpunit -- '-c tests/phpunit.xml'</info>
 
 By default the trace will be saved to dumpfile.xt, but you can also specify a path (.xt is automattically appended):
 
@@ -75,9 +75,9 @@ EOT
         foreach ($params as $param => $value) {
             $command .= ' ' . $param . '=' . $value;
         }
-        $command .= ' ' . $phpscript . $options;
+        $command .= ' ' . $phpscript . ' ' . $options;
 
-        $output->writeln('Running script with instrumentation: ' . $phpscript . $options);
+        $output->writeln('Running script with instrumentation: ' . $phpscript . ' ' . $options);
         passthru($command);
         $output->writeln('TRACE COMPLETE');
 
