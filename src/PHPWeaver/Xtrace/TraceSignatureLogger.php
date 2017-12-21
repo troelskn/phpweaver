@@ -58,6 +58,8 @@ class TraceSignatureLogger
     /**
      * @param string $type
      *
+     * @todo fuzzy type detection (float or int in string)
+     *
      * @throws Exception
      *
      * @return string
@@ -78,10 +80,12 @@ class TraceSignatureLogger
                 return $match[1];
             }
         }
-        if (preg_match('~^-?\d+$~u', $type) || preg_match('~^-?\'\d+\'$~u', $type)) {
-            return 'int';
-        }
-        if (preg_match('~^-?\d+\.\d+(?:E[-+]\d+)?$~u', $type) || preg_match('~^-?\'\d+\.\d+(?:E[-+]\d+)?\'$~u', $type)) {
+
+        if (is_numeric($type)) {
+            if (preg_match('~^-?\d+$~u', $type)) {
+                return 'int';
+            }
+
             return 'float';
         }
 
