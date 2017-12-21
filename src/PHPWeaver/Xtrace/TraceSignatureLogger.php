@@ -97,30 +97,61 @@ class TraceSignatureLogger
     }
 
     /**
-     * @param string $type
+     * Determin the array sub-type.
      *
-     * @todo
+     * @param string $arrayType
      *
      * @return string
      */
-    public function getArrayType(string $type): string
+    public function getArrayType(string $arrayType): string
+    {
+        $subTypes = [];
+        $elementTypes = $this->getArrayElements($arrayType);
+        foreach ($elementTypes as $elementType) {
+            $subTypes[$this->parseType($elementType)] = true;
+        }
+
+        return $this->formatArrayType($subTypes);
+    }
+
+    /**
+     * Extract the array elements from an array trace.
+     *
+     * @param string $type
+     *
+     * @return array
+     */
+    private function getArrayElements(string $type): array
     {
         // Remove array wrapper
         preg_match('~^array \((.*?)(?:, )?\.{0,3}\)$~u', $type, $match);
         if (empty($match[1])) {
-            return 'array';
+            return [];
         }
-
-        $subTypes = [];
 
         // Find each string|int key followed by double arrow, taking \' into account
         $rawSubTypes = preg_split('~(?:, |^)(?:(?:\'.+?(?:(?<!\\\\)\')+)|\d) => ~u', $match[1]);
         unset($rawSubTypes[0]); // Remove split at first key
-        foreach ($rawSubTypes as $rawSubType) {
-            $subTypes[$this->parseType($rawSubType)] = true;
-        }
-        ksort($subTypes);
 
+        return array_values($rawSubTypes);
+    }
+
+    /**
+     * Format an array of types as an array with a sub-type.
+     *
+     * @todo Find common class/interface/trait for object types
+     *
+     * @param array $subTypes
+     *
+     * @return string
+     */
+    private function formatArrayType(array $subTypes): string
+    {
+        if (!$subTypes) {
+            return 'array';
+        }
+
+        ksort($subTypes);
         $type = implode('|', array_keys($subTypes));
         if (count($subTypes) > 1) {
             $type = '(' . $type . ')';
