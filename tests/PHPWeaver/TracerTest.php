@@ -1,12 +1,12 @@
 <?php namespace PHPWeaver\Test;
 
+use PHPUnit\Framework\TestCase;
 use PHPWeaver\Command\TraceCommand;
 use PHPWeaver\Reflector\DummyClassCollator;
 use PHPWeaver\Signature\Signatures;
 use PHPWeaver\Xtrace\FunctionTracer;
 use PHPWeaver\Xtrace\TraceReader;
 use PHPWeaver\Xtrace\TraceSignatureLogger;
-use PHPUnit\Framework\TestCase;
 use SplFileObject;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -79,8 +79,9 @@ class TracerTest extends TestCase
     public function testCanExecuteSandboxCode(): void
     {
         chdir($this->sandbox());
-        exec('php ' . escapeshellarg($this->sandbox() . '/main.php'), $output, $return_var);
-        $this->assertSame(0, $return_var);
+        exec('php ' . escapeshellarg($this->sandbox() . '/main.php'), $output, $returnVar);
+        $this->assertEmpty($output);
+        $this->assertSame(0, $returnVar);
     }
 
     /**
