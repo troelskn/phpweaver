@@ -58,7 +58,11 @@ class WeaveCommand extends Command
     {
         $this->setName('weave')
             ->setDescription('Analyze trace and generate phpDoc in target files')
-            ->addArgument('path', InputArgument::REQUIRED | InputArgument::IS_ARRAY, 'Path to folder or files to be process')
+            ->addArgument(
+                'path',
+                InputArgument::REQUIRED | InputArgument::IS_ARRAY,
+                'Path to folder or files to be process'
+            )
             ->addOption('tracefile', null, InputOption::VALUE_OPTIONAL, 'Trace file to analyze', 'dumpfile')
             ->setHelp(<<<EOT
 The <info>%command.name%</info> command will analyze function signatures and update there phpDoc:
