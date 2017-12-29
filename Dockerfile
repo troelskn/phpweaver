@@ -20,13 +20,18 @@ RUN curl --silent --show-error https://getcomposer.org/installer | php
 
 RUN mv composer.phar /usr/local/bin/composer
 
-# app
-COPY . /usr/src/app
+# global app setup
+RUN mkdir -p /usr/src/app
 
 WORKDIR /usr/src/app
 
-RUN composer install
+COPY ./composer.* /usr/src/app/
+
+RUN COMPOSER_ALLOW_SUPERUSER=1 composer install
 
 RUN echo 'alias phpunit="vendor/phpunit/phpunit/phpunit"' >> /root/.bashrc
+
+# mount current app
+COPY . /usr/src/app
 
 ENTRYPOINT ["/bin/bash"]

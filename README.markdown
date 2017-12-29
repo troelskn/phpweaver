@@ -39,3 +39,15 @@ Sample usage:
     bin/php-tracer-weaver somelibrary.php somelibrary.php
 
 The same dumpfile can be used to weave multiple files, by calling `weave.php` for each.
+
+Running tests
+---
+
+There is a Dockerfile for getting an environment up and running. First install docker somehow, then issue:
+
+    docker build -t phpweaver .
+    docker run -it phpweaver
+
+This will log you in to the machine. Run tests with:
+
+    phpunit
