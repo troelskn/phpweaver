@@ -1,6 +1,8 @@
 # docker pull php
 # docker built -it phpweaver .
 # docker run -it phpweaver
+# OR
+# docker run -it --mount type=bind,source="$(pwd)",target=/usr/src/app phpweaver
 FROM php:7.1-cli
 
 # ubuntu packages
@@ -29,7 +31,8 @@ COPY ./composer.* /usr/src/app/
 
 RUN COMPOSER_ALLOW_SUPERUSER=1 composer install
 
-RUN echo 'alias phpunit="vendor/phpunit/phpunit/phpunit"' >> /root/.bashrc
+RUN echo 'export PATH=$PATH:./vendor/bin' >> /root/.bashrc
+RUN echo 'COMPOSER_ALLOW_SUPERUSER=1 composer install' >> /root/.bashrc
 
 # mount current app
 COPY . /usr/src/app

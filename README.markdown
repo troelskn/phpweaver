@@ -51,3 +51,9 @@ There is a Dockerfile for getting an environment up and running. First install d
 This will log you in to the machine. Run tests with:
 
     phpunit
+
+For development, you will probably want to mount the repo into the container, so run it like this:
+
+    docker run -it --mount type=bind,source="$(pwd)",target=/usr/src/app phpweaver
+
+Any changes you make inside the container will now be reflected on your host system.
