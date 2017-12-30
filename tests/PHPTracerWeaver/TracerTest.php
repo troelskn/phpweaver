@@ -89,7 +89,7 @@ class TracerTest extends TestCase
     {
         chdir($this->sandbox());
         $command = escapeshellcmd($this->bindir() . '/bin/trace.sh') . ' ' . escapeshellarg($this->sandbox() . '/main.php');
-        $output = shell_exec($command);
+        $output = (string)shell_exec($command);
         $this->assertRegExp('~\(completed\)~', $output);
         $this->assertRegExp('~TRACE COMPLETE\n$~', $output);
     }

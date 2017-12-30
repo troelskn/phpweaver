@@ -33,6 +33,7 @@ class FilePath implements FileAccessInterface
      */
     public function getPathname(): string
     {
+        /** @var string */
         return realpath($this->pathname);
     }
 }

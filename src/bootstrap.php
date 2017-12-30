@@ -17,6 +17,7 @@
  */
 function includeIfExists(string $file)
 {
+	/** @psalm-suppress UnresolvableInclude */
     return file_exists($file) ? include $file : null;
 }
 
