@@ -26,6 +26,7 @@ class TraceReader
      */
     public function process(FunctionTracer $handler): void
     {
+        /** @var string $line */
         foreach ($this->file as $lineNo => $line) {
             $line = trim($line);
 
@@ -51,7 +52,7 @@ class TraceReader
             // runtime-generated functions?
             if (preg_match('~^([.\d]+)\s+(\d+)(\s+)-> ([^(]+)\((.*)\) ([^:]+).*:(\d+)$~', $line, $match)) {
                 $depth = (strlen($match[3]) - 3) / 2;
-                $handler->closeVoidReturns($depth);
+                $handler->closeVoidReturns((int)$depth);
                 $handler->functionCall([
                     'time'         => $match[1],
                     'memory_usage' => $match[2],
@@ -67,7 +68,7 @@ class TraceReader
             // Return value
             if (preg_match('~^[.\d]+\s+\d+(\s+)>=> (.+)$~', $line, $match)) {
                 $depth = (strlen($match[1]) - 4) / 2;
-                $handler->closeVoidReturns($depth + 1);
+                $handler->closeVoidReturns((int)$depth + 1);
                 $handler->returnValue($match[2]);
                 continue;
             }

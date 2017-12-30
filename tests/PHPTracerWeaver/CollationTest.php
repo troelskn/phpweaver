@@ -71,6 +71,7 @@ class CollationTest extends TestCase
     {
         chdir($this->sandbox());
         $command = escapeshellcmd($this->bindir() . '/bin/trace.sh') . ' ' . escapeshellarg($this->sandbox() . '/main.php');
+        /** @psalm-suppress ForbiddenCode */
         shell_exec($command);
         $reflector = new StaticReflector();
         $sigs = new Signatures($reflector);

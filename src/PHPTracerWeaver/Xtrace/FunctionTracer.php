@@ -81,6 +81,7 @@ class FunctionTracer
         if (!in_array($functionCall['function'], $this->internalFunctions, true)) {
             $this->handler->log($functionCall);
         }
+        /** @psalm-suppress PossiblyInvalidArrayAccess */
         $this->currentDepth = end($this->stack)['depth'] ?? 0;
     }
 }
