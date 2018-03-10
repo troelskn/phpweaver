@@ -1,7 +1,6 @@
 #!/usr/bin/env php
 <?php
 
-
 use PHPWeaver\Command\TraceCommand;
 use PHPWeaver\Command\WeaveCommand;
 use Symfony\Component\Console\Application;

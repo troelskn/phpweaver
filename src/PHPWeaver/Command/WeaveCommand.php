@@ -1,5 +1,6 @@
 <?php namespace PHPWeaver\Command;
 
+use Composer\XdebugHandler\XdebugHandler;
 use PHPWeaver\Exceptions\Exception;
 use PHPWeaver\Reflector\StaticReflector;
 use PHPWeaver\Scanner\ClassScanner;
@@ -90,6 +91,11 @@ EOT
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        // Restart if xdebug is loaded, unless the environment variable PHPWEAVER_ALLOW_XDEBUG is set.
+        $xdebug = new XdebugHandler('phpweaver', '--ansi');
+        $xdebug->check();
+        unset($xdebug);
+
         $pathsToWeave = $input->getArgument('path');
         $tracefile = $input->getOption('tracefile') . '.xt';
 
