@@ -12,7 +12,9 @@ before_script:
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
 
-script: vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+script:
+  - vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+  - vendor/bin/psalm
 
 after_success:
   - travis_retry php vendor/bin/php-coveralls

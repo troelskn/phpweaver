@@ -130,6 +130,7 @@ class FunctionArgument
      */
     public function export(): string
     {
+        /** @psalm-suppress PossiblyNullOperand */
         return $this->getName() . ' (' . ($this->isUndefined() ? 'mixed' : $this->getType()) . ')';
     }
 }

@@ -3,7 +3,7 @@
 /** Used by transformers */
 class TokenBuffer
 {
-    /** @var self|null */
+    /** @var static|null */
     protected $super;
     /** @var Token[] */
     protected $tokens = [];

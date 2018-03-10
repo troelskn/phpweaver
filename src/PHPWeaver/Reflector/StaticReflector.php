@@ -136,8 +136,9 @@ class StaticReflector implements ClassCollatorInterface
         if (isset($this->ancestorsCache[$class])) {
             return $this->ancestorsCache[$class];
         }
-        $result = $this->ancestors($class);
-        foreach ($result as $p) {
+        $ancestors = $this->ancestors($class);
+        $result = $ancestors;
+        foreach ($ancestors as $p) {
             $result = array_merge($result, $this->allAncestors($p));
         }
         $this->ancestorsCache[$class] = $result;
