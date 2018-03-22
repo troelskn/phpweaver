@@ -1,16 +1,17 @@
 {
-    "name": "troelskn/php-tracer-weaver",
+    "name": "troelskn/phpweaver",
     "description": "A tool for analysing parameter types in PHP code, using a combination of static and runtime analysis",
     "type": "project",
     "license": "MIT",
     "keywords": ["phpdoc", "phpDocumentor", "documentation", "analyzer", "generator", "docblock"],
     "bin": [
-        "bin/php-tracer-weaver",
-        "bin/trace.sh"
+        "bin/phpweaver"
     ],
     "require": {
         "php": "^7.1",
-        "ext-xdebug": "*"
+        "ext-xdebug": "*",
+        "symfony/console": "^3.4",
+        "composer/xdebug-handler": "^1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^6.5",
@@ -20,12 +21,12 @@
     },
     "autoload": {
         "psr-4": {
-            "PHPTracerWeaver\\": "src/PHPTracerWeaver"
+            "PHPWeaver\\": "src/PHPWeaver"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "PHPTracerWeaver\\Test\\": "tests/PHPTracerWeaver"
+            "PHPWeaver\\Test\\": "tests/PHPWeaver"
         }
     }
 }

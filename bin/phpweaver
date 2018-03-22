@@ -1,0 +1,22 @@
+#!/usr/bin/env php
+<?php
+
+use PHPWeaver\Command\TraceCommand;
+use PHPWeaver\Command\WeaveCommand;
+use Symfony\Component\Console\Application;
+
+require __DIR__ . '/../src/bootstrap.php';
+
+if (PHP_SAPI !== 'cli') {
+    echo 'Warning: PHPWeaver should be invoked via the CLI version of PHP, not the ' . PHP_SAPI . ' SAPI'
+        . PHP_EOL;
+}
+
+$application = new Application();
+$application->setName('PHP Trace Weaver');
+$application->setVersion('dev'); // TODO get tag/commit
+
+$application->add(new TraceCommand());
+$application->add(new WeaveCommand());
+
+$application->run();
