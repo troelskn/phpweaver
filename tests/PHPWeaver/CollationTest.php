@@ -34,7 +34,7 @@ class CollationTest extends TestCase
     /**
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->curdir = getcwd() ?: '';
         $dirSandbox = $this->sandbox();
@@ -55,7 +55,7 @@ class CollationTest extends TestCase
     /**
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         chdir($this->curdir);
         $dirSandbox = $this->sandbox();
