@@ -8,15 +8,9 @@ class FunctionSignature
     protected $arguments = [];
     /** @var FunctionArgument */
     protected $returnType;
-    /** @var ClassCollatorInterface */
-    protected $collator;
 
-    /**
-     * @param ClassCollatorInterface $collator
-     */
-    public function __construct(ClassCollatorInterface $collator)
+    public function __construct()
     {
-        $this->collator = $collator;
         $this->returnType = new FunctionArgument(0);
     }
 

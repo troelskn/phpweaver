@@ -1,6 +1,7 @@
 <?php namespace PHPWeaver\Test;
 
 use PHPWeaver\Scanner\FunctionBodyScanner;
+use Mockery;
 use PHPWeaver\Scanner\FunctionParametersScanner;
 use PHPWeaver\Scanner\ModifiersScanner;
 use PHPWeaver\Scanner\ScannerMultiplexer;
@@ -8,20 +9,21 @@ use PHPWeaver\Scanner\Token;
 use PHPWeaver\Scanner\TokenBuffer;
 use PHPWeaver\Scanner\TokenStreamParser;
 use PHPWeaver\Transform\DocCommentEditorTransformer;
-use PHPWeaver\Transform\PassthruBufferEditor;
+use PHPWeaver\Transform\BufferEditorInterface;
 use PHPUnit\Framework\TestCase;
 
 class DocCommentEditorTransformerTest extends TestCase
 {
     /**
-     * @param string                    $source
-     * @param PassthruBufferEditor|null $editor
+     * @param string                     $source
+     * @param BufferEditorInterface|null $editor
      *
      * @return DocCommentEditorTransformer
      */
-    public function scan(string $source, PassthruBufferEditor $editor = null): DocCommentEditorTransformer
+    public function scan(string $source, BufferEditorInterface $editor = null): DocCommentEditorTransformer
     {
-        $editor = $editor ? $editor : new PassthruBufferEditor();
+        /** @var BufferEditorInterface */
+        $editor = $editor ? $editor : Mockery::spy(BufferEditorInterface::class);
         $scanner = new ScannerMultiplexer();
         $parametersScanner = new FunctionParametersScanner();
         $scanner->appendScanner($parametersScanner);
@@ -50,7 +52,7 @@ class DocCommentEditorTransformerTest extends TestCase
     {
         $source = '<?php /** Lorem Ipsum */' . "\n" . 'function bar($x) {}' . "\n" . 'function zim($y) {}';
         $transformer = $this->scan($source);
-        $this->assertSame($source, $transformer->getOutput());
+        static::assertSame($source, $transformer->getOutput());
     }
 
     /**
@@ -62,7 +64,7 @@ class DocCommentEditorTransformerTest extends TestCase
         $mockEditor = new MockPassthruBufferEditor();
         $this->scan($source, $mockEditor);
         assert($mockEditor->buffer instanceof TokenBuffer);
-        $this->assertSame('function bar($x) ', $mockEditor->buffer->toText());
+        static::assertSame('function bar($x) ', $mockEditor->buffer->toText());
     }
 
     /**
@@ -74,7 +76,7 @@ class DocCommentEditorTransformerTest extends TestCase
         $mockEditor = new MockPassthruBufferEditor();
         $this->scan($source, $mockEditor);
         assert($mockEditor->buffer instanceof TokenBuffer);
-        $this->assertSame('abstract function bar($x) ', $mockEditor->buffer->toText());
+        static::assertSame('abstract function bar($x) ', $mockEditor->buffer->toText());
     }
 
     /**
@@ -85,7 +87,7 @@ class DocCommentEditorTransformerTest extends TestCase
         $source = '<?php' . "\n" . 'abstract class Foo {}';
         $mockEditor = new MockPassthruBufferEditor();
         $this->scan($source, $mockEditor);
-        $this->assertNull($mockEditor->buffer);
+        static::assertNull($mockEditor->buffer);
     }
 
     /**
@@ -99,7 +101,7 @@ class DocCommentEditorTransformerTest extends TestCase
         assert($mockEditor->buffer instanceof TokenBuffer);
         $token = $mockEditor->buffer->getFirstToken();
         assert($token instanceof Token);
-        $this->assertTrue($token->isA(T_DOC_COMMENT));
-        $this->assertSame('/** Lorem Ipsum */' . "\n" . 'function bar($x) ', $mockEditor->buffer->toText());
+        static::assertTrue($token->isA(T_DOC_COMMENT));
+        static::assertSame('/** Lorem Ipsum */' . "\n" . 'function bar($x) ', $mockEditor->buffer->toText());
     }
 }

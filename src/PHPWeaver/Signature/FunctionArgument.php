@@ -4,24 +4,12 @@ class FunctionArgument
 {
     /** @var int */
     protected $id;
-    /** @var ?string */
-    protected $name;
     /** @var array<string, true> */
     protected $types = [];
 
-    /**
-     * @param int         $id
-     * @param string|null $name
-     * @param string      $type
-     */
-    public function __construct(int $id, string $name = null, string $type = null)
+    public function __construct(int $id)
     {
         $this->id = $id;
-        $this->name = $name;
-
-        if (null !== $type) {
-            $this->types[$type] = true;
-        }
     }
 
     /**

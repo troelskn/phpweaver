@@ -14,9 +14,9 @@ class ModifiersScannerTest extends TestCase
         $scanner = new ModifiersScanner();
         $tokenizer = new TokenStreamParser();
         $tokenStream = $tokenizer->scan('<?php class Foo { final static protected function foo() {} }');
-        $this->assertFalse($scanner->isActive());
+        static::assertFalse($scanner->isActive());
         $tokenStream->iterate($scanner);
-        $this->assertFalse($scanner->isActive());
+        static::assertFalse($scanner->isActive());
     }
 
     /**
@@ -28,6 +28,6 @@ class ModifiersScannerTest extends TestCase
         $tokenizer = new TokenStreamParser();
         $tokenStream = $tokenizer->scan('<?php class Foo { final static protected function foo() {} }');
         $tokenStream->iterate($scanner);
-        $this->assertFalse($scanner->isActive());
+        static::assertFalse($scanner->isActive());
     }
 }

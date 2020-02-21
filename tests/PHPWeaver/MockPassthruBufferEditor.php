@@ -1,9 +1,9 @@
 <?php namespace PHPWeaver\Test;
 
 use PHPWeaver\Scanner\TokenBuffer;
-use PHPWeaver\Transform\PassthruBufferEditor;
+use PHPWeaver\Transform\BufferEditorInterface;
 
-class MockPassthruBufferEditor extends PassthruBufferEditor
+class MockPassthruBufferEditor implements BufferEditorInterface
 {
     /** @var TokenBuffer|null */
     public $buffer;

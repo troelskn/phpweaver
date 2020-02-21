@@ -9,10 +9,6 @@ class FunctionParametersScanner implements ScannerInterface
     protected $parenCount = 0;
     /** @var int */
     protected $state = 0;
-    /** @var ?callable */
-    protected $onSignatureBegin;
-    /** @var ?callable */
-    protected $onSignatureEnd;
 
     /**
      * @param Token $token
@@ -28,9 +24,6 @@ class FunctionParametersScanner implements ScannerInterface
             $this->signature[] = $token;
             $this->parenCount = 1;
             $this->state = 2;
-            if (is_callable($this->onSignatureBegin)) {
-                call_user_func($this->onSignatureBegin);
-            }
         } elseif (2 === $this->state) {
             $this->signature[] = $token;
             if ('(' === $token->getText()) {
@@ -40,9 +33,6 @@ class FunctionParametersScanner implements ScannerInterface
             }
             if (0 === $this->parenCount) {
                 $this->state = 0;
-                if (is_callable($this->onSignatureEnd)) {
-                    call_user_func($this->onSignatureEnd);
-                }
             }
         }
     }
@@ -53,19 +43,6 @@ class FunctionParametersScanner implements ScannerInterface
     public function isActive(): bool
     {
         return 0 !== $this->state;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCurrentSignatureAsString(): string
-    {
-        $txt = '';
-        foreach ($this->signature as $struct) {
-            $txt .= $struct[0];
-        }
-
-        return $txt;
     }
 
     /**

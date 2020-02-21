@@ -155,7 +155,7 @@ EOT
      */
     private function parseTrace(string $tracefile): Signatures
     {
-        $sigs = new Signatures(new StaticReflector());
+        $sigs = new Signatures();
         if (is_file($tracefile)) {
             $traceFile = new SplFileObject($tracefile);
             $trace = new TraceReader(new FunctionTracer(new TraceSignatureLogger($sigs)));

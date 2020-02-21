@@ -7,16 +7,6 @@ class Signatures
 {
     /** @var FunctionSignature[] */
     protected $signaturesArray = [];
-    /** @var ClassCollatorInterface */
-    protected $collator;
-
-    /**
-     * @param ClassCollatorInterface $collator
-     */
-    public function __construct(ClassCollatorInterface $collator)
-    {
-        $this->collator = $collator;
-    }
 
     /**
      * @param string $func
@@ -50,7 +40,7 @@ class Signatures
         }
         $name = strtolower($namespace . ($class ? $class . '->' : '') . $func);
         if (!isset($this->signaturesArray[$name])) {
-            $this->signaturesArray[$name] = new FunctionSignature($this->collator);
+            $this->signaturesArray[$name] = new FunctionSignature();
         }
 
         return $this->signaturesArray[$name];

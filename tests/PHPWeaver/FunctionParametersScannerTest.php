@@ -15,6 +15,6 @@ class FunctionParametersScannerTest extends TestCase
         $tokenizer = new TokenStreamParser();
         $tokenStream = $tokenizer->scan('<?php function bar($x) {}');
         $tokenStream->iterate($scanner);
-        $this->assertSame('($x)', $scanner->getCurrentSignatureAsString());
+        static::assertSame(['$x' => '???'], $scanner->getCurrentSignatureAsTypeMap());
     }
 }

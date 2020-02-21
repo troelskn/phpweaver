@@ -9,12 +9,6 @@ class ClassScanner implements ScannerInterface
     protected $currentClass = '';
     /** @var int */
     protected $state = 0;
-    /** @var ?callable */
-    protected $onClassBegin;
-    /** @var ?callable */
-    protected $onClassEnd;
-    /** @var ?callable */
-    protected $onClassname;
 
     /**
      * @param Token $token
@@ -25,9 +19,6 @@ class ClassScanner implements ScannerInterface
     {
         if ($token->isA(T_INTERFACE) || $token->isA(T_CLASS)) {
             $this->state = 1;
-            if (is_callable($this->onClassBegin)) {
-                call_user_func($this->onClassBegin);
-            }
 
             return;
         }
@@ -36,9 +27,6 @@ class ClassScanner implements ScannerInterface
             $this->state = 2;
             $this->currentClass = $token->getText();
             $this->currentClassScope = $token->getDepth();
-            if (is_callable($this->onClassname)) {
-                call_user_func($this->onClassname);
-            }
 
             return;
         }
@@ -52,9 +40,6 @@ class ClassScanner implements ScannerInterface
         if (3 === $this->state && $token->getDepth() === $this->currentClassScope) {
             $this->state = 0;
             $this->currentClass = '';
-            if (is_callable($this->onClassEnd)) {
-                call_user_func($this->onClassEnd);
-            }
 
             return;
         }

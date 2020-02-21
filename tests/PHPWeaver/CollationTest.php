@@ -75,14 +75,12 @@ class CollationTest extends TestCase
         chdir($this->sandbox());
         $commandTester = new CommandTester(new TraceCommand());
         $commandTester->execute(['phpscript' => $this->sandbox() . '/main.php']);
-        $sigs = new Signatures(new StaticReflector());
+        $sigs = new Signatures();
         $trace = new TraceReader(new FunctionTracer(new TraceSignatureLogger($sigs)));
         foreach (new SplFileObject($this->sandbox() . '/dumpfile.xt') as $line) {
-            if (!is_string($line)) {
-                throw new Exception('Unable to read dumpfile.xt');
-            }
+            static::assertIsString($line);
             $trace->processLine($line);
         }
-        $this->assertSame('Bar|Cuux', $sigs->get('do_stuff')->getArgumentById(0)->getType());
+        static::assertSame('Bar|Cuux', $sigs->get('do_stuff')->getArgumentById(0)->getType());
     }
 }

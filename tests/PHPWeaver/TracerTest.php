@@ -80,8 +80,8 @@ class TracerTest extends TestCase
     {
         chdir($this->sandbox());
         exec('php ' . escapeshellarg($this->sandbox() . '/main.php'), $output, $returnVar);
-        $this->assertEmpty($output);
-        $this->assertSame(0, $returnVar);
+        static::assertEmpty($output);
+        static::assertSame(0, $returnVar);
     }
 
     /**
@@ -93,7 +93,7 @@ class TracerTest extends TestCase
         $commandTester = new CommandTester(new TraceCommand());
         $commandTester->execute(['phpscript' => $this->sandbox() . '/main.php']);
         $output = $commandTester->getDisplay();
-        $this->assertRegExp('~TRACE COMPLETE\n$~', $output);
+        static::assertRegExp('~TRACE COMPLETE\n$~', $output);
     }
 
     /**
@@ -104,7 +104,7 @@ class TracerTest extends TestCase
         chdir($this->sandbox());
         $commandTester = new CommandTester(new TraceCommand());
         $commandTester->execute(['phpscript' => $this->sandbox() . '/main.php']);
-        $this->assertTrue(is_file($this->sandbox() . '/dumpfile.xt'));
+        static::assertTrue(is_file($this->sandbox() . '/dumpfile.xt'));
     }
 
     /**
@@ -115,15 +115,15 @@ class TracerTest extends TestCase
         chdir($this->sandbox());
         $commandTester = new CommandTester(new TraceCommand());
         $commandTester->execute(['phpscript' => $this->sandbox() . '/main.php']);
-        $sigs = new Signatures(new DummyClassCollator());
-        $this->assertFalse($sigs->has('callit'));
+        $sigs = new Signatures();
+        static::assertFalse($sigs->has('callit'));
         $collector = new TraceSignatureLogger($sigs);
         $trace = new TraceReader(new FunctionTracer($collector));
         foreach (new SplFileObject($this->sandbox() . '/dumpfile.xt') as $line) {
-            $this->assertIsString($line);
+            static::assertIsString($line);
             $trace->processLine($line);
         }
-        $this->assertTrue($sigs->has('callit'));
+        static::assertTrue($sigs->has('callit'));
     }
 
     /**
@@ -134,13 +134,13 @@ class TracerTest extends TestCase
         chdir($this->sandbox());
         $commandTester = new CommandTester(new TraceCommand());
         $commandTester->execute(['phpscript' => $this->sandbox() . '/main.php']);
-        $sigs = new Signatures(new DummyClassCollator());
+        $sigs = new Signatures();
         $collector = new TraceSignatureLogger($sigs);
         $trace = new TraceReader(new FunctionTracer($collector));
         foreach (new SplFileObject($this->sandbox() . '/dumpfile.xt') as $line) {
-            $this->assertIsString($line);
+            static::assertIsString($line);
             $trace->processLine($line);
         }
-        $this->assertSame('Foo', $sigs->get('callit')->getArgumentById(0)->getType());
+        static::assertSame('Foo', $sigs->get('callit')->getArgumentById(0)->getType());
     }
 }

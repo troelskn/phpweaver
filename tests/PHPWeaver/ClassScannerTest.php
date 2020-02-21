@@ -15,7 +15,7 @@ class ClassScannerTest extends TestCase
         $tokenizer = new TokenStreamParser();
         $tokenStream = $tokenizer->scan('<?php class Foo { function bar($x) {} }');
         $tokenStream->iterate($scanner);
-        $this->assertSame('', $scanner->getCurrentClass());
+        static::assertSame('', $scanner->getCurrentClass());
     }
 
     /**
@@ -27,6 +27,6 @@ class ClassScannerTest extends TestCase
         $tokenizer = new TokenStreamParser();
         $tokenStream = $tokenizer->scan('<?php while (true) { class Foo { function bar($x) {} } }');
         $tokenStream->iterate($scanner);
-        $this->assertSame('', $scanner->getCurrentClass());
+        static::assertSame('', $scanner->getCurrentClass());
     }
 }

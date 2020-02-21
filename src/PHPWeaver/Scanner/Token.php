@@ -55,14 +55,4 @@ class Token
     {
         return $this->getToken() === $type;
     }
-
-    /**
-     * @return bool
-     */
-    public function isCurlyOpen(): bool
-    {
-        $token = $this->getToken();
-
-        return T_CURLY_OPEN === $token || T_DOLLAR_OPEN_CURLY_BRACES === $token || '{' === $this->getText();
-    }
 }

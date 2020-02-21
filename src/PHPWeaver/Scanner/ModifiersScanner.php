@@ -3,10 +3,6 @@
 /** Tracks possible preludes for functions */
 class ModifiersScanner implements ScannerInterface
 {
-    /** @var ?callable */
-    protected $onModifiersBegin;
-    /** @var ?callable */
-    protected $onModifiersEnd;
     /** @var int */
     protected $state = 0;
 
@@ -19,18 +15,12 @@ class ModifiersScanner implements ScannerInterface
     {
         if ($this->isModifyer($token)) {
             $this->state = 1;
-            if (is_callable($this->onModifiersBegin)) {
-                call_user_func($this->onModifiersBegin);
-            }
 
             return;
         }
 
         if ($this->isModifyable($token)) {
             $this->state = 0;
-            if (is_callable($this->onModifiersEnd)) {
-                call_user_func($this->onModifiersEnd);
-            }
 
             return;
         }

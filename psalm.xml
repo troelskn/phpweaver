@@ -12,6 +12,17 @@
     </projectFiles>
 
     <issueHandlers>
+        <UnusedClass>
+            <errorLevel type="suppress">
+                <directory name="src/PHPWeaver/Command" />
+                <directory name="tests/PHPWeaver" />
+            </errorLevel>
+        </UnusedClass>
+        <PossiblyUnusedMethod>
+            <errorLevel type="suppress">
+                <directory name="tests/PHPWeaver" />
+            </errorLevel>
+        </PossiblyUnusedMethod>
         <PropertyNotSetInConstructor>
             <errorLevel type="suppress">
                 <directory name="tests/PHPWeaver" />

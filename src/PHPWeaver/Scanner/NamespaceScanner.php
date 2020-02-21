@@ -3,8 +3,6 @@
 /** Tracks possible preludes for functions */
 class NamespaceScanner implements ScannerInterface
 {
-    /** @var ?callable */
-    protected $onModifiersEnd;
     /** @var int */
     protected $state = 0;
     /** @var string */
@@ -20,18 +18,12 @@ class NamespaceScanner implements ScannerInterface
         if ($token->isA(T_NAMESPACE)) {
             $this->state = 1;
             $this->currentNamespace = '';
-            if (is_callable($this->onModifiersEnd)) {
-                call_user_func($this->onModifiersEnd);
-            }
 
             return;
         }
 
         if (1 === $this->state && $token->isA(T_STRING)) {
             $this->currentNamespace .= $token->getText() . '\\';
-            if (is_callable($this->onModifiersEnd)) {
-                call_user_func($this->onModifiersEnd);
-            }
 
             return;
         }
