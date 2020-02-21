@@ -27,7 +27,7 @@ class TraceSignatureLogger
     }
 
     /**
-     * @param string[] $trace
+     * @param array<string, mixed> $trace
      *
      * @return void
      */

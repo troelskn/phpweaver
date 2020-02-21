@@ -8,6 +8,7 @@ use PHPWeaver\Xtrace\FunctionTracer;
 use PHPWeaver\Xtrace\TraceReader;
 use PHPWeaver\Xtrace\TraceSignatureLogger;
 use SplFileObject;
+use Exception;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class CollationTest extends TestCase
@@ -77,6 +78,9 @@ class CollationTest extends TestCase
         $sigs = new Signatures(new StaticReflector());
         $trace = new TraceReader(new FunctionTracer(new TraceSignatureLogger($sigs)));
         foreach (new SplFileObject($this->sandbox() . '/dumpfile.xt') as $line) {
+            if (!is_string($line)) {
+                throw new Exception('Unable to read dumpfile.xt');
+            }
             $trace->processLine($line);
         }
         $this->assertSame('Bar|Cuux', $sigs->get('do_stuff')->getArgumentById(0)->getType());

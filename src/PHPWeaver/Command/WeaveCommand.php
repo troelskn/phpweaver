@@ -97,14 +97,19 @@ EOT
         unset($xdebug);
 
         $pathsToWeave = $input->getArgument('path');
-        $tracefile = $input->getOption('tracefile') . '.xt';
+        if (!is_array($pathsToWeave))
+            return self::RETURN_CODE_ERROR;
+        $tracefile = $input->getOption('tracefile');
+        if (!is_string($tracefile))
+            return self::RETURN_CODE_ERROR;
+        $tracefile .= '.xt';
 
         $this->output = new SymfonyStyle($input, $output);
 
-        $filesToWave = $this->getFilesToProcess($pathsToWeave);
+        $filesToWeave = $this->getFilesToProcess($pathsToWeave);
 
         $sigs = $this->parseTrace($tracefile);
-        $this->transformFiles($filesToWave, $sigs);
+        $this->transformFiles($filesToWeave, $sigs);
 
         return self::RETURN_CODE_OK;
     }
@@ -118,14 +123,14 @@ EOT
      */
     private function getFilesToProcess(array $pathsToWeave): array
     {
-        $filesToWave = [];
+        $filesToWeave = [];
 
         foreach ($pathsToWeave as $pathToWeave) {
             if (is_dir($pathToWeave)) {
                 $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($pathToWeave));
                 $fileIterator = new RegexIterator($iterator, '/^.+\.php$/i', RecursiveRegexIterator::GET_MATCH);
                 foreach ($fileIterator as $file) {
-                    $filesToWave[] = $file[0];
+                    $filesToWeave[] = $file[0];
                 }
 
                 continue;
@@ -135,10 +140,10 @@ EOT
                 throw new Exception('Path (' . $pathToWeave . ') isn\'t readable');
             }
 
-            $filesToWave[] = $pathToWeave;
+            $filesToWeave[] = $pathToWeave;
         }
 
-        return $filesToWave;
+        return $filesToWeave;
     }
 
     /**
@@ -158,6 +163,9 @@ EOT
             $traceFile->setFlags(SplFileObject::READ_AHEAD);
             $this->progressBarStart(iterator_count($traceFile), '<info>Parsing tracefile …</info>');
             foreach ($traceFile as $line) {
+                if (!is_string($line)) {
+                    throw new Exception('Unable to read trace file');
+                }
                 $trace->processLine($line);
                 $this->progressBarAdvance();
             }
@@ -171,6 +179,8 @@ EOT
     /**
      * Process files and insert phpDoc.
      *
+     * @refactor Avoid need to check if scanner and trasformer where created
+     *
      * @param array      $filesToWeave
      * @param Signatures $sigs
      *
@@ -182,7 +192,15 @@ EOT
 
         foreach ($filesToWeave as $fileToWeave) {
             $this->setupFileProcesser($sigs);
-            $tokenStream = $this->tokenizer->scan(file_get_contents($fileToWeave));
+            if (null === $this->scanner || null === $this->transformer) {
+                throw new Exception('Failed to initialize scanner');
+            }
+            $this->tokenizer = new TokenStreamParser();
+            $fileContent = file_get_contents($fileToWeave);
+            if (false === $fileContent) {
+                throw new Exception('Unable to read source file: ' . $fileToWeave);
+            }
+            $tokenStream = $this->tokenizer->scan($fileContent);
             $tokenStream->iterate($this->scanner);
 
             file_put_contents($fileToWeave, $this->transformer->getOutput());
@@ -231,12 +249,12 @@ EOT
             $namespaceScanner,
             $this->transformer,
         ]);
-
-        $this->tokenizer = new TokenStreamParser();
     }
 
     /**
      * Start a progressbar on the ouput.
+     *
+     * @refactor Avoid need to check if output has been created
      *
      * @param int    $steps
      * @param string $message
@@ -247,6 +265,10 @@ EOT
     {
         if (!$steps) {
             return;
+        }
+
+        if (null === $this->output) {
+            throw new Exception('Output not set');
         }
 
         $this->progressBar = $this->output->createProgressBar();

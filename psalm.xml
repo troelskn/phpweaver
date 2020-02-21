@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <psalm
     name="Example Psalm config with recommended defaults"
-    stopOnFirstError="false"
     useDocblockTypes="true"
     totallyTyped="false"
     useAssertForType="true"
@@ -15,13 +14,13 @@
     <issueHandlers>
         <PropertyNotSetInConstructor>
             <errorLevel type="suppress">
-                <directory name="tests/PHPTracerWeaver" />
+                <directory name="tests/PHPWeaver" />
             </errorLevel>
         </PropertyNotSetInConstructor>
 
         <ForbiddenCode>
             <errorLevel type="suppress">
-                <file name="tests/PHPTracerWeaver/TracerTest.php" />
+                <file name="tests/PHPWeaver/TracerTest.php" />
             </errorLevel>
         </ForbiddenCode>
     </issueHandlers>

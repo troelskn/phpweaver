@@ -6,7 +6,7 @@ class FunctionArgument
     protected $id;
     /** @var ?string */
     protected $name;
-    /** @var \ArrayObject<string, true> */
+    /** @var array<string, true> */
     protected $types = [];
 
     /**
@@ -20,7 +20,7 @@ class FunctionArgument
         $this->name = $name;
 
         if (null !== $type) {
-            $this->types[] = $type;
+            $this->types[$type] = true;
         }
     }
 

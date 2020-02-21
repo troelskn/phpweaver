@@ -1,5 +1,7 @@
 <?php namespace PHPWeaver\Test;
 
+use PHPWeaver\Scanner\ScannerInterface;
+use PHPWeaver\Scanner\Token;
 use PHPWeaver\Scanner\TokenStream;
 use PHPWeaver\Scanner\TokenStreamParser;
 use PHPUnit\Framework\TestCase;
@@ -20,6 +22,16 @@ class TokenizerTest extends TestCase
     {
         $tokenizer = new TokenStreamParser();
         $tokenStream = $tokenizer->scan('<?php function foo($x) {} ?>');
-        $this->assertInstanceOf(TokenStream::class, $tokenStream);
+        $tokenStream->iterate(new class implements ScannerInterface {
+            /** @var int */
+            private $count = 0;
+            public function __destruct () {
+                TokenizerTest::assertSame(12, $this->count);
+            }
+            public function accept(Token $token): void
+            {
+                $this->count++;
+            }
+        });
     }
 }

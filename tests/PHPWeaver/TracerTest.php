@@ -120,6 +120,7 @@ class TracerTest extends TestCase
         $collector = new TraceSignatureLogger($sigs);
         $trace = new TraceReader(new FunctionTracer($collector));
         foreach (new SplFileObject($this->sandbox() . '/dumpfile.xt') as $line) {
+            $this->assertIsString($line);
             $trace->processLine($line);
         }
         $this->assertTrue($sigs->has('callit'));
@@ -137,6 +138,7 @@ class TracerTest extends TestCase
         $collector = new TraceSignatureLogger($sigs);
         $trace = new TraceReader(new FunctionTracer($collector));
         foreach (new SplFileObject($this->sandbox() . '/dumpfile.xt') as $line) {
+            $this->assertIsString($line);
             $trace->processLine($line);
         }
         $this->assertSame('Foo', $sigs->get('callit')->getArgumentById(0)->getType());

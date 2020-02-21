@@ -28,7 +28,7 @@ class CallbackListener
     }
 
     /**
-     * @param mixed... $params
+     * @param mixed ...$params
      *
      * @return void
      */

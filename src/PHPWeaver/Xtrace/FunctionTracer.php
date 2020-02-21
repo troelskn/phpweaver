@@ -4,7 +4,7 @@ class FunctionTracer
 {
     /** @var TraceSignatureLogger */
     protected $handler;
-    /** @var array[] */
+    /** @var array<int, array<string, mixed>> */
     protected $stack = [];
     /** @var string[] */
     protected $internalFunctions = ['{main}', 'eval', 'include', 'include_once', 'require', 'require_once'];
@@ -18,8 +18,7 @@ class FunctionTracer
     }
 
     /**
-     * @param array $trace
-     *
+     * @param array<int, string> $arguments
      * @return void
      */
     public function functionCall(int $id, string $function, array $arguments): void

@@ -52,15 +52,25 @@ EOT
     {
         $tracefile = $input->getOption('tracefile');
         $append = $input->getOption('append');
+        if (!is_bool($append)) {
+            return self::RETURN_CODE_ERROR;
+        }
         $phpscript = $input->getArgument('phpscript');
-        $options = $input->getArgument('options');
+        if (!is_string($phpscript)) {
+            return self::RETURN_CODE_ERROR;
+        }
+        $options = $input->getArgument('options') ?? '';
+        if (!is_string($options)) {
+            return self::RETURN_CODE_ERROR;
+        }
 
         $command = 'php';
 
+        /** @var array<string, int|string|bool> $params */
         $params = [
             '-d xdebug.collect_includes'         => 0,
             '-d xdebug.auto_trace'               => 1,
-            '-d xdebug.trace_options'            => (int) $append,
+            '-d xdebug.trace_options'            => $append,
             '-d xdebug.trace_output_dir'         => getcwd(),
             '-d xdebug.trace_output_name'        => $tracefile,
             '-d xdebug.trace_format'             => 1,
@@ -71,7 +81,7 @@ EOT
             '-d xdebug.var_display_max_depth'    => 1, // 1 depth of array (and classes) to analyze array sub-type
         ];
         foreach ($params as $param => $value) {
-            $command .= ' ' . $param . '=' . $value;
+            $command .= ' ' . $param . '=' . (string)$value;
         }
         $command .= ' ' . $phpscript . ' ' . $options;
 
