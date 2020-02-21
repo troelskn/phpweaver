@@ -17,18 +17,4 @@ class FunctionParametersScannerTest extends TestCase
         $tokenStream->iterate($scanner);
         $this->assertSame('($x)', $scanner->getCurrentSignatureAsString());
     }
-
-    /**
-     * @return void
-     */
-    public function testScannerIsActiveAfterFirstOpeningParen(): void
-    {
-        $this->markTestSkipped('Partial php is no longer parsable.');
-        $scanner = new FunctionParametersScanner();
-        $tokenizer = new TokenStreamParser();
-        $tokenStream = $tokenizer->scan('<?php function bar(');
-        $this->assertFalse($scanner->isActive());
-        $tokenStream->iterate($scanner);
-        $this->assertTrue($scanner->isActive());
-    }
 }

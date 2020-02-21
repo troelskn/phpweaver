@@ -56,6 +56,10 @@ class FunctionArgument
         return implode('|', $types);
     }
 
+    /**
+     * @param array<string, true> $types
+     * @return array<string, true>
+     */
     private function orderTypes(array $types): array
     {
         ksort($types);

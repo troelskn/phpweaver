@@ -9,20 +9,6 @@ class FunctionBodyScannerTest extends TestCase
     /**
      * @return void
      */
-    public function testCanTrackFunctionBody(): void
-    {
-        $this->markTestSkipped('Partial php is no longer parsable.');
-        $scanner = new FunctionBodyScanner();
-        $tokenizer = new TokenStreamParser();
-        $tokenStream = $tokenizer->scan('<?php function bar() {');
-        $this->assertFalse($scanner->isActive());
-        $tokenStream->iterate($scanner);
-        $this->assertTrue($scanner->isActive());
-    }
-
-    /**
-     * @return void
-     */
     public function testCanTrackEndOfFunctionBody(): void
     {
         $scanner = new FunctionBodyScanner();

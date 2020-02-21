@@ -9,7 +9,7 @@ class TokenBuffer
     protected $tokens = [];
 
     /**
-     * @param self|null $super
+     * @param static|null $super
      */
     public function __construct(self $super = null)
     {

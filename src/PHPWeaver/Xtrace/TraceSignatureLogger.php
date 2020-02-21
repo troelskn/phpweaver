@@ -119,7 +119,7 @@ class TraceSignatureLogger
      *
      * @param string $type
      *
-     * @return array
+     * @return array<int, string>
      */
     private function getArrayElements(string $type): array
     {
@@ -131,6 +131,9 @@ class TraceSignatureLogger
 
         // Find each string|int key followed by double arrow, taking \' into account
         $rawSubTypes = preg_split('~(?:, |^)(?:(?:\'.+?(?:(?<!\\\\)\')+)|\d) => ~u', $match[1]);
+        if (false === $rawSubTypes) {
+            throw new Exception('Unable to build regex');
+        }
         unset($rawSubTypes[0]); // Remove split at first key
 
         return array_values($rawSubTypes);
@@ -141,7 +144,7 @@ class TraceSignatureLogger
      *
      * @todo Find common class/interface/trait for object types
      *
-     * @param array $subTypes
+     * @param array<string, true> $subTypes
      *
      * @return string
      */

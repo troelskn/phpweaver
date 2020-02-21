@@ -25,6 +25,7 @@ class TraceReader
      */
     public function processLine(string $line): void
     {
+        /** @var array<int, string> */
         $entry = str_getcsv($line, "\t");
 
         if (!isset($entry[2])) {
@@ -37,13 +38,13 @@ class TraceReader
                     return; // Internal function
                 }
 
-                $this->handler->functionCall($entry[1], $entry[5], array_slice($entry, 11));
+                $this->handler->functionCall((int)$entry[1], $entry[5], array_slice($entry, 11));
                 break;
             case '1':
-                $this->handler->markCallAsExited($entry[1]);
+                $this->handler->markCallAsExited((int)$entry[1]);
                 break;
             case 'R':
-                $this->handler->returnValue($entry[1], $entry[5]);
+                $this->handler->returnValue((int)$entry[1], $entry[5]);
                 break;
         }
     }

@@ -15,6 +15,7 @@ before_script:
 script:
   - vendor/bin/phpunit --coverage-clover build/logs/clover.xml
   - vendor/bin/psalm
+  - vendor/bin/phpstan analyze
 
 after_success:
   - travis_retry php vendor/bin/php-coveralls

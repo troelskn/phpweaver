@@ -80,8 +80,14 @@ class FunctionTracer
      */
     private function closeVoidReturn(): void
     {
-        if (!empty(end($this->stack)['exited'])) {
-            $this->returnValue(key($this->stack));
+        $last = end($this->stack);
+        $key = key($this->stack);
+        if (false === $last || null === $key) {
+            return;
+        }
+
+        if (!empty($last['exited'])) {
+            $this->returnValue($key);
         }
     }
 }

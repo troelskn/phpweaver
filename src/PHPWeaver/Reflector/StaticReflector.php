@@ -153,7 +153,8 @@ class StaticReflector implements ClassCollatorInterface
         $id = $first . '|' . $second;
         if (!array_key_exists($id, $this->collateCache)) {
             $intersection = array_intersect($this->allAncestorsAndSelf($first), $this->allAncestorsAndSelf($second));
-            $this->collateCache[$id] = count($intersection) > 0 ? array_shift($intersection) : '*CANT_COLLATE*';
+            $first = reset($intersection);
+            $this->collateCache[$id] = is_string($first) ? $first : '*CANT_COLLATE*';
         }
 
         return $this->collateCache[$id];

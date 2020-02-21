@@ -117,9 +117,9 @@ EOT
     /**
      * Fetch array of file names to process.
      *
-     * @param array $pathsToWeave
+     * @param string[] $pathsToWeave
      *
-     * @return array
+     * @return array<int, string>
      */
     private function getFilesToProcess(array $pathsToWeave): array
     {
@@ -181,7 +181,7 @@ EOT
      *
      * @refactor Avoid need to check if scanner and trasformer where created
      *
-     * @param array      $filesToWeave
+     * @param string[]   $filesToWeave
      * @param Signatures $sigs
      *
      * @return void

@@ -11,12 +11,13 @@
         "php": "^7.1",
         "ext-xdebug": "*",
         "composer/xdebug-handler": "^1.0",
-        "phpstan/phpstan": "^0.12.11",
         "symfony/console": "^3.4"
     },
     "require-dev": {
         "codacy/coverage": "^1.0",
         "php-coveralls/php-coveralls": "^2.0",
+        "phpstan/phpstan": "^0.12.11",
+        "phpstan/phpstan-phpunit": "^0.12.6",
         "phpunit/phpunit": "^9.0",
         "vimeo/psalm": "^3.9"
     },
