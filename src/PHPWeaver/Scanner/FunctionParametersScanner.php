@@ -3,7 +3,7 @@
 /** Scans for, collects and parses function signatures */
 class FunctionParametersScanner implements ScannerInterface
 {
-    /** @var array[] */
+    /** @var Token[] */
     protected $signature = [];
     /** @var int */
     protected $parenCount = 0;
@@ -25,14 +25,14 @@ class FunctionParametersScanner implements ScannerInterface
             $this->state = 1;
         } elseif (1 === $this->state && '(' === $token->getText()) {
             $this->signature = [];
-            $this->signature[] = [$token->getText(), $token->getToken()];
+            $this->signature[] = $token;
             $this->parenCount = 1;
             $this->state = 2;
             if (is_callable($this->onSignatureBegin)) {
                 call_user_func($this->onSignatureBegin);
             }
         } elseif (2 === $this->state) {
-            $this->signature[] = [$token->getText(), $token->getToken()];
+            $this->signature[] = $token;
             if ('(' === $token->getText()) {
                 ++$this->parenCount;
             } elseif (')' === $token->getText()) {
@@ -75,14 +75,13 @@ class FunctionParametersScanner implements ScannerInterface
     {
         $current = null;
         $map = [];
-        foreach ($this->signature as $tuple) {
-            [$text, $token] = $tuple;
-            if (T_VARIABLE === $token) {
-                $map[$text] = $current ? $current : '???';
-            } elseif (',' === $text) {
+        foreach ($this->signature as $token) {
+            if (T_VARIABLE === $token->getToken()) {
+                $map[$token->getText()] = $current ? $current : '???';
+            } elseif (',' === $token->getText()) {
                 $current = null;
-            } elseif (T_STRING === $token) {
-                $current = $text;
+            } elseif (T_STRING === $token->getToken()) {
+                $current = $token->getText();
             }
         }
 

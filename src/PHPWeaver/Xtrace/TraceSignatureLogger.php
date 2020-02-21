@@ -27,16 +27,14 @@ class TraceSignatureLogger
     }
 
     /**
-     * @param array<string, mixed> $trace
-     *
      * @return void
      */
-    public function log(array $trace): void
+    public function log(Trace $trace): void
     {
-        $sig = $this->signatures->get($trace['function']);
+        $sig = $this->signatures->get($trace->function);
         $sig->blend(
-            $this->parseArguments($trace['arguments']),
-            $this->parseType($trace['returnValue'])
+            $this->parseArguments($trace->arguments),
+            $this->parseType($trace->returnValue)
         );
     }
 

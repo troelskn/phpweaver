@@ -4,7 +4,7 @@ class FunctionTracer
 {
     /** @var TraceSignatureLogger */
     protected $handler;
-    /** @var array<int, array<string, mixed>> */
+    /** @var array<int, Trace> */
     protected $stack = [];
     /** @var string[] */
     protected $internalFunctions = ['{main}', 'eval', 'include', 'include_once', 'require', 'require_once'];
@@ -29,7 +29,7 @@ class FunctionTracer
             return;
         }
 
-        $this->stack[$id] = ['function' => $function, 'arguments' => $arguments, 'exited' => false];
+        $this->stack[$id] = new Trace($function, $arguments, false);
     }
 
     /**
@@ -43,11 +43,11 @@ class FunctionTracer
     {
         $this->closeVoidReturn();
 
-        if (!isset($this->stack[$id])) {
+        if (!key_exists($id, $this->stack)) {
             return;
         }
 
-        $this->stack[$id]['exited'] = true;
+        $this->stack[$id]->exited = true;
     }
 
     /**
@@ -62,14 +62,14 @@ class FunctionTracer
      */
     public function returnValue(int $id, string $value = 'void'): void
     {
-        if (!isset($this->stack[$id])) {
+        if (!key_exists($id, $this->stack)) {
             return;
         }
 
         $functionCall = $this->stack[$id];
         unset($this->stack[$id]);
 
-        $functionCall['returnValue'] = $value;
+        $functionCall->returnValue = $value;
         $this->handler->log($functionCall);
     }
 
@@ -86,7 +86,7 @@ class FunctionTracer
             return;
         }
 
-        if (!empty($last['exited'])) {
+        if ($last->exited) {
             $this->returnValue($key);
         }
     }
