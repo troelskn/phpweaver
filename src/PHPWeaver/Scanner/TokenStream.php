@@ -7,14 +7,6 @@ class TokenStream
     protected $tokens = [];
 
     /**
-     * @return string
-     */
-    public function getHash(): string
-    {
-        return md5(serialize($this->tokens));
-    }
-
-    /**
      * @param Token $token
      *
      * @return void

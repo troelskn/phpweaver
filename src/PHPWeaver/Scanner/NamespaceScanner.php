@@ -4,33 +4,11 @@
 class NamespaceScanner implements ScannerInterface
 {
     /** @var ?callable */
-    protected $onModifiersBegin;
-    /** @var ?callable */
     protected $onModifiersEnd;
     /** @var int */
     protected $state = 0;
     /** @var string */
     private $currentNamespace = '';
-
-    /**
-     * @param ?callable $callback
-     *
-     * @return void
-     */
-    public function notifyOnModifiersBegin(?callable $callback): void
-    {
-        $this->onModifiersBegin = $callback;
-    }
-
-    /**
-     * @param ?callable $callback
-     *
-     * @return void
-     */
-    public function notifyOnModifiersEnd(?callable $callback): void
-    {
-        $this->onModifiersEnd = $callback;
-    }
 
     /**
      * @param Token $token

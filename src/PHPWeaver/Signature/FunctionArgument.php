@@ -25,42 +25,6 @@ class FunctionArgument
     }
 
     /**
-     * @return int
-     */
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int $id
-     *
-     * @return void
-     */
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * @return ?string
-     */
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return void
-     */
-    public function setName(string $name): void
-    {
-        $this->name = $name;
-    }
-
-    /**
      * @return bool
      */
     public function isUndefined(): bool
@@ -123,14 +87,5 @@ class FunctionArgument
         }
 
         $this->types[$type] = true;
-    }
-
-    /**
-     * @return string
-     */
-    public function export(): string
-    {
-        /** @psalm-suppress PossiblyNullOperand */
-        return $this->getName() . ' (' . ($this->isUndefined() ? 'mixed' : $this->getType()) . ')';
     }
 }

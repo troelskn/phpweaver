@@ -55,17 +55,4 @@ class Signatures
 
         return $this->signaturesArray[$name];
     }
-
-    /**
-     * @return array[]
-     */
-    public function export(): array
-    {
-        $out = [];
-        foreach ($this->signaturesArray as $name => $functionSignature) {
-            $out[$name] = $functionSignature->export();
-        }
-
-        return $out;
-    }
 }

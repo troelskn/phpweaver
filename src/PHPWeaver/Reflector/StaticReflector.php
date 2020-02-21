@@ -77,14 +77,6 @@ class StaticReflector implements ClassCollatorInterface
     }
 
     /**
-     * @return array[]
-     */
-    public function export(): array
-    {
-        return $this->typemap;
-    }
-
-    /**
      * @param string[] $symbols
      *
      * @return string[]
@@ -109,20 +101,6 @@ class StaticReflector implements ClassCollatorInterface
         $class = strtolower($class);
 
         return $this->symbolsToNames(isset($this->typemap[$class]) ? $this->typemap[$class] : []);
-    }
-
-    /**
-     * @param string $class
-     *
-     * @return string[]
-     */
-    public function ancestorsAndSelf(string $class): array
-    {
-        $class = strtolower($class);
-
-        $symbols = isset($this->typemap[$class]) ? array_merge([$class], $this->typemap[$class]) : [$class];
-
-        return $this->symbolsToNames($symbols);
     }
 
     /**

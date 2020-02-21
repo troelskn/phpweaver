@@ -17,36 +17,6 @@ class ClassScanner implements ScannerInterface
     protected $onClassname;
 
     /**
-     * @param ?callable $callback
-     *
-     * @return void
-     */
-    public function notifyOnClassBegin(?callable $callback): void
-    {
-        $this->onClassBegin = $callback;
-    }
-
-    /**
-     * @param ?callable $callback
-     *
-     * @return void
-     */
-    public function notifyOnClassEnd(?callable $callback): void
-    {
-        $this->onClassEnd = $callback;
-    }
-
-    /**
-     * @param ?callable $callback
-     *
-     * @return void
-     */
-    public function notifyOnClassName(?callable $callback): void
-    {
-        $this->onClassname = $callback;
-    }
-
-    /**
      * @param Token $token
      *
      * @return void

@@ -7,30 +7,8 @@ class ModifiersScanner implements ScannerInterface
     protected $onModifiersBegin;
     /** @var ?callable */
     protected $onModifiersEnd;
-    /** @var bool */
-    protected $wasFunction = false;
     /** @var int */
     protected $state = 0;
-
-    /**
-     * @param ?callable $callback
-     *
-     * @return void
-     */
-    public function notifyOnModifiersBegin(?callable $callback): void
-    {
-        $this->onModifiersBegin = $callback;
-    }
-
-    /**
-     * @param ?callable $callback
-     *
-     * @return void
-     */
-    public function notifyOnModifiersEnd(?callable $callback): void
-    {
-        $this->onModifiersEnd = $callback;
-    }
 
     /**
      * @param Token $token
@@ -49,7 +27,6 @@ class ModifiersScanner implements ScannerInterface
         }
 
         if ($this->isModifyable($token)) {
-            $this->wasFunction = $token->isA(T_FUNCTION);
             $this->state = 0;
             if (is_callable($this->onModifiersEnd)) {
                 call_user_func($this->onModifiersEnd);
@@ -93,13 +70,5 @@ class ModifiersScanner implements ScannerInterface
     public function isActive(): bool
     {
         return 1 === $this->state;
-    }
-
-    /**
-     * @return bool
-     */
-    public function wasFunction(): bool
-    {
-        return $this->wasFunction;
     }
 }

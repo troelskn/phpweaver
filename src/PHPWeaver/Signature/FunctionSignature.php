@@ -61,22 +61,6 @@ class FunctionSignature
     }
 
     /**
-     * @param string $name
-     *
-     * @return ?FunctionArgument
-     */
-    public function getArgumentByName(string $name): ?FunctionArgument
-    {
-        foreach ($this->arguments as $argument) {
-            if ($argument->getName() === $name) {
-                return $argument;
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * @return FunctionArgument[]
      */
     public function getArguments(): array
@@ -85,18 +69,5 @@ class FunctionSignature
         ksort($args);
 
         return $args;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function export(): array
-    {
-        $out = [];
-        foreach ($this->arguments as $argument) {
-            $out[] = $argument->export();
-        }
-
-        return $out;
     }
 }

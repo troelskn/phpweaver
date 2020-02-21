@@ -15,26 +15,6 @@ class FunctionParametersScanner implements ScannerInterface
     protected $onSignatureEnd;
 
     /**
-     * @param ?callable $callback
-     *
-     * @return void
-     */
-    public function notifyOnSignatureBegin(?callable $callback): void
-    {
-        $this->onSignatureBegin = $callback;
-    }
-
-    /**
-     * @param ?callable $callback
-     *
-     * @return void
-     */
-    public function notifyOnSignatureEnd(?callable $callback): void
-    {
-        $this->onSignatureEnd = $callback;
-    }
-
-    /**
      * @param Token $token
      *
      * @return void
@@ -73,14 +53,6 @@ class FunctionParametersScanner implements ScannerInterface
     public function isActive(): bool
     {
         return 0 !== $this->state;
-    }
-
-    /**
-     * @return array[]
-     */
-    public function getCurrentSignature(): array
-    {
-        return $this->signature;
     }
 
     /**
