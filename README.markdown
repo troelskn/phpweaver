@@ -29,7 +29,7 @@ Sample usage:
 
     phpweaver trace test.php
 
-If your script requires it's own paremeter you can stop paramerter pasing in bash with the duble dash:
+If your script requires it's own paremeter you can stop paramerter pasing in bash with the double dash:
 
     phpweaver trace -- vendor/bin/phpunit "-c phpunit.xml"
 
