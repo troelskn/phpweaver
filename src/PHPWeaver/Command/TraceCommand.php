@@ -64,13 +64,16 @@ EOT
             return self::RETURN_CODE_ERROR;
         }
 
-        $command = 'php';
+        $command = PHP_BINARY;
 
         /** @var array<string, int|string|bool> $params */
         $params = [
             '-d xdebug.collect_includes'         => 0,
             '-d xdebug.auto_trace'               => 1,
+            '-d xdebug.mode'                     => 'trace',
+            '-d xdebug.start_with_request'       => 'yes',
             '-d xdebug.trace_options'            => $append,
+            '-d xdebug.output_dir'               => getcwd(),
             '-d xdebug.trace_output_dir'         => getcwd(),
             '-d xdebug.trace_output_name'        => $tracefile,
             '-d xdebug.trace_format'             => 1,
@@ -80,6 +83,7 @@ EOT
             '-d xdebug.var_display_max_children' => 5, // Analyse the 5 first elements when determining array sub-type
             '-d xdebug.var_display_max_depth'    => 1, // 1 depth of array (and classes) to analyze array sub-type
         ];
+
         foreach ($params as $param => $value) {
             $command .= ' ' . $param . '=' . (string)$value;
         }
