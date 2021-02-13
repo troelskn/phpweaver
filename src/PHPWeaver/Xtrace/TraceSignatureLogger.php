@@ -68,7 +68,7 @@ class TraceSignatureLogger
             return $this->typeMapping[$type];
         }
 
-        $typeTransforms = ['~^(array) \(.*\)$~', '~^class (\S+)~', '~^(resource)\(\d+\)~u'];
+        $typeTransforms = ['~^(array) \(.*\)$~s', '~^class (\S+)~s', '~^(resource)\(\d+\)~s'];
         foreach ($typeTransforms as $regex) {
             if (preg_match($regex, $type, $match)) {
                 if ('array' === $match[1]) {
@@ -79,8 +79,12 @@ class TraceSignatureLogger
             }
         }
 
+        if (preg_match('~^\[.*\]$~s', $type, $match)) {
+            return $this->getArrayType($type, true);
+        }
+
         if (is_numeric($type)) {
-            if (preg_match('~^-?\d+$~u', $type)) {
+            if (preg_match('~^-?\d+$~', $type)) {
                 return 'int';
             }
 
@@ -101,10 +105,10 @@ class TraceSignatureLogger
      *
      * @return string
      */
-    public function getArrayType(string $arrayType): string
+    public function getArrayType(string $arrayType, bool $xdebug3 = false): string
     {
         $subTypes = [];
-        $elementTypes = $this->getArrayElements($arrayType);
+        $elementTypes = $this->getArrayElements($arrayType, $xdebug3);
         foreach ($elementTypes as $elementType) {
             $subTypes[$this->parseType($elementType)] = true;
         }
@@ -119,16 +123,20 @@ class TraceSignatureLogger
      *
      * @return array<int, string>
      */
-    private function getArrayElements(string $type): array
+    private function getArrayElements(string $type, bool $xdebug3 = false): array
     {
         // Remove array wrapper
-        preg_match('~^array \((.*?)(?:, )?\.{0,3}\)$~u', $type, $match);
+        if ($xdebug3) {
+            preg_match('~^\[(.*?)(?:, )?\.{0,3}\]$~s', $type, $match);
+        } else {
+            preg_match('~^array \((.*?)(?:, )?\.{0,3}\)$~s', $type, $match);
+        }
         if (empty($match[1])) {
             return [];
         }
 
         // Find each string|int key followed by double arrow, taking \' into account
-        $rawSubTypes = preg_split('~(?:, |^)(?:(?:\'.+?(?:(?<!\\\\)\')+)|\d) => ~u', $match[1]);
+        $rawSubTypes = preg_split('~(?:, |^)(?:(?:\'.+?(?:(?<!\\\\)\')+)|\d) => ~s', $match[1]);
         if (false === $rawSubTypes) {
             throw new Exception('Unable to build regex');
         }
