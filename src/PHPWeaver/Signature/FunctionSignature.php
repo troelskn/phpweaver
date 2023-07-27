@@ -5,9 +5,8 @@ use PHPWeaver\Reflector\ClassCollatorInterface;
 class FunctionSignature
 {
     /** @var array<int, FunctionArgument> */
-    protected $arguments = [];
-    /** @var FunctionArgument */
-    protected $returnType;
+    protected array $arguments = [];
+    protected FunctionArgument $returnType;
 
     public function __construct()
     {
@@ -16,9 +15,6 @@ class FunctionSignature
 
     /**
      * @param array<int, string> $arguments
-     * @param string             $returnType
-     *
-     * @return void
      */
     public function blend(array $arguments, string $returnType): void
     {
@@ -32,19 +28,11 @@ class FunctionSignature
         }
     }
 
-    /**
-     * @return string
-     */
     public function getReturnType(): string
     {
         return $this->returnType->getType();
     }
 
-    /**
-     * @param int $id
-     *
-     * @return FunctionArgument
-     */
     public function getArgumentById(int $id): FunctionArgument
     {
         if (!isset($this->arguments[$id])) {

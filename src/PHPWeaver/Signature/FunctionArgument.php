@@ -3,19 +3,13 @@
 class FunctionArgument
 {
     /** @var array<string, true> */
-    protected $types = [];
+    protected array $types = [];
 
-    /**
-     * @return bool
-     */
     public function isUndefined(): bool
     {
         return !$this->types;
     }
 
-    /**
-     * @return string
-     */
     public function getType(): string
     {
         if ($this->isUndefined()) {
@@ -60,11 +54,6 @@ class FunctionArgument
         return $types;
     }
 
-    /**
-     * @param string $type
-     *
-     * @return void
-     */
     public function collateWith(string $type): void
     {
         if ('???' === $type) {

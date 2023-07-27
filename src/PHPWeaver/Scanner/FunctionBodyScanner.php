@@ -3,18 +3,10 @@
 /** Scans for function name + body */
 class FunctionBodyScanner implements ScannerInterface
 {
-    /** @var int */
-    protected $currentClassScope = 0;
-    /** @var string */
-    protected $name = '';
-    /** @var int */
-    protected $state = 0;
+    protected int $currentClassScope = 0;
+    protected string $name = '';
+    protected int $state = 0;
 
-    /**
-     * @param Token $token
-     *
-     * @return void
-     */
     public function accept(Token $token): void
     {
         if ($token->isA(T_FUNCTION)) {
@@ -30,17 +22,11 @@ class FunctionBodyScanner implements ScannerInterface
         }
     }
 
-    /**
-     * @return bool
-     */
     public function isActive(): bool
     {
         return $this->state > 2;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;

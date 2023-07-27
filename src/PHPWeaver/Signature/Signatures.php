@@ -6,15 +6,8 @@ use PHPWeaver\Reflector\ClassCollatorInterface;
 class Signatures
 {
     /** @var FunctionSignature[] */
-    protected $signaturesArray = [];
+    protected array $signaturesArray = [];
 
-    /**
-     * @param string $func
-     * @param string $class
-     * @param string $namespace
-     *
-     * @return bool
-     */
     public function has(string $func, string $class = '', string $namespace = ''): bool
     {
         if (!$func) {
@@ -26,13 +19,6 @@ class Signatures
         return isset($this->signaturesArray[$name]);
     }
 
-    /**
-     * @param string $func
-     * @param string $class
-     * @param string $namespace
-     *
-     * @return FunctionSignature
-     */
     public function get(string $func, string $class = '', string $namespace = ''): FunctionSignature
     {
         if (!$func) {

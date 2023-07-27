@@ -5,10 +5,9 @@ use PHPWeaver\Signature\Signatures;
 
 class TraceSignatureLogger
 {
-    /** @var Signatures */
-    private $signatures;
+    private Signatures $signatures;
     /** @var array<string, string> */
-    private $typeMapping = [
+    private array $typeMapping = [
         'TRUE'            => 'bool',
         'FALSE'           => 'false', // Falsable or tbd. bool
         'NULL'            => 'null',
@@ -18,17 +17,11 @@ class TraceSignatureLogger
         '...'             => 'array',
     ];
 
-    /**
-     * @param Signatures $signatures
-     */
     public function __construct(Signatures $signatures)
     {
         $this->signatures = $signatures;
     }
 
-    /**
-     * @return void
-     */
     public function log(Trace $trace): void
     {
         $sig = $this->signatures->get($trace->function);
@@ -54,13 +47,9 @@ class TraceSignatureLogger
     }
 
     /**
-     * @param string $type
-     *
      * @todo fuzzy type detection (float or int in string)
      *
      * @throws Exception
-     *
-     * @return string
      */
     public function parseType(string $type): string
     {
@@ -100,10 +89,6 @@ class TraceSignatureLogger
 
     /**
      * Determin the array sub-type.
-     *
-     * @param string $arrayType
-     *
-     * @return string
      */
     public function getArrayType(string $arrayType, bool $xdebug3 = false): string
     {
@@ -118,8 +103,6 @@ class TraceSignatureLogger
 
     /**
      * Extract the array elements from an array trace.
-     *
-     * @param string $type
      *
      * @return array<int, string>
      */
@@ -151,8 +134,6 @@ class TraceSignatureLogger
      * @todo Find common class/interface/trait for object types
      *
      * @param array<string, true> $subTypes
-     *
-     * @return string
      */
     private function formatArrayType(array $subTypes): string
     {

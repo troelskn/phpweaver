@@ -11,12 +11,9 @@
  */
 
 /**
- * @param string $file
- *
  * @psalm-suppress MixedInferredReturnType
- * @return ?object
  */
-function includeIfExists(string $file)
+function includeIfExists(string $file): ?object
 {
     /** @psalm-suppress MixedReturnStatement */
     return file_exists($file) ? include $file : null;

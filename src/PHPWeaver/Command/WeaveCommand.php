@@ -38,25 +38,16 @@ class WeaveCommand extends Command
     const RETURN_CODE_ERROR = 1;
     const REFRESH_RATE_INTERVAL = 0.033333334; // 30hz
 
-    /** @var int */
-    private $nextSteps = 0;
-    /** @var float */
-    private $nextUpdate = 0.0;
-    /** @var ?SymfonyStyle */
-    private $output;
-    /** @var ?ProgressBar */
-    private $progressBar;
-    /** @var ?TokenStreamParser */
-    private $tokenizer;
-    /** @var ?ScannerMultiplexer */
-    private $scanner;
-    /** @var ?DocCommentEditorTransformer */
-    private $transformer;
+    private int $nextSteps = 0;
+    private float $nextUpdate = 0.0;
+    private ?SymfonyStyle $output = null;
+    private ?ProgressBar $progressBar = null;
+    private ?TokenStreamParser $tokenizer = null;
+    private ?ScannerMultiplexer $scanner = null;
+    private ?DocCommentEditorTransformer $transformer = null;
 
     /**
      * Set up command parameteres and help message.
-     *
-     * @return void
      */
     protected function configure(): void
     {
@@ -86,11 +77,6 @@ EOT
 
     /**
      * Run the weave process.
-     *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
-     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -160,10 +146,6 @@ EOT
 
     /**
      * Parse the trace file.
-     *
-     * @param string $tracefile
-     *
-     * @return Signatures
      */
     private function parseTrace(string $tracefile): Signatures
     {
@@ -193,10 +175,7 @@ EOT
      *
      * @refactor Avoid need to check if scanner and trasformer where created
      *
-     * @param string[]   $filesToWeave
-     * @param Signatures $sigs
-     *
-     * @return void
+     * @param string[] $filesToWeave
      */
     private function transformFiles(array $filesToWeave, Signatures $sigs): void
     {
@@ -225,10 +204,6 @@ EOT
 
     /**
      * Initialize the php parser.
-     *
-     * @param Signatures $sigs
-     *
-     * @return void
      */
     private function setupFileProcesser(Signatures $sigs): void
     {
@@ -267,11 +242,6 @@ EOT
      * Start a progressbar on the ouput.
      *
      * @refactor Avoid need to check if output has been created
-     *
-     * @param int    $steps
-     * @param string $message
-     *
-     * @return void
      */
     private function progressBarStart(int $steps, string $message): void
     {
@@ -298,10 +268,6 @@ EOT
      * Advance the progress bare by steps.
      *
      * Rate limited to avoid performance issues.
-     *
-     * @param int $steps
-     *
-     * @return void
      */
     private function progressBarAdvance(int $steps = 1): void
     {
@@ -322,8 +288,6 @@ EOT
 
     /**
      * Set the progress to 100% and clear it from the output.
-     *
-     * @return void
      */
     private function progressBarEnd(): void
     {

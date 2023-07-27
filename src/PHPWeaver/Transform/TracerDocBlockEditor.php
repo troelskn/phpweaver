@@ -12,24 +12,12 @@ use PHPWeaver\Signature\Signatures;
 /** Uses result from a trace to construct docblocks */
 class TracerDocBlockEditor implements BufferEditorInterface
 {
-    /** @var Signatures */
-    protected $signatures;
-    /** @var ClassScanner */
-    protected $classScanner;
-    /** @var FunctionBodyScanner */
-    protected $functionBodyScanner;
-    /** @var FunctionParametersScanner */
-    protected $parametersScanner;
-    /** @var NamespaceScanner */
-    protected $namespaceScanner;
+    protected Signatures $signatures;
+    protected ClassScanner $classScanner;
+    protected FunctionBodyScanner $functionBodyScanner;
+    protected FunctionParametersScanner $parametersScanner;
+    protected NamespaceScanner $namespaceScanner;
 
-    /**
-     * @param Signatures                $signatures
-     * @param ClassScanner              $classScanner
-     * @param FunctionBodyScanner       $functionBodyScanner
-     * @param FunctionParametersScanner $parametersScanner
-     * @param NamespaceScanner          $namespaceScanner
-     */
     public function __construct(
         Signatures $signatures,
         ClassScanner $classScanner,
@@ -45,11 +33,7 @@ class TracerDocBlockEditor implements BufferEditorInterface
     }
 
     /**
-     * @param string   $func
-     * @param string   $class
      * @param string[] $params
-     *
-     * @return ?string
      */
     public function generateDoc(string $func, string $class = '', array $params = [], string $namespace = ''): ?string
     {
@@ -87,11 +71,6 @@ class TracerDocBlockEditor implements BufferEditorInterface
         return $doc;
     }
 
-    /**
-     * @param TokenBuffer $buffer
-     *
-     * @return void
-     */
     public function editBuffer(TokenBuffer $buffer): void
     {
         $text = $this->generateDoc(
@@ -114,8 +93,8 @@ class TracerDocBlockEditor implements BufferEditorInterface
             $buffer->prepend(new Token("\n    /**\n     */", T_DOC_COMMENT, $firstToken->getDepth()));
         }
 
-        /** @var Token */
         $current = $buffer->getFirstToken();
+        assert($current instanceof Token);
         $newToken = new Token($text, $current->getToken(), $current->getDepth());
         $buffer->replaceToken($current, $newToken);
     }
