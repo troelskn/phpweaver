@@ -6,6 +6,9 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * @psalm-suppress UnusedClass
+ */
 class TraceCommand extends Command
 {
     const RETURN_CODE_OK = 0;
@@ -51,6 +54,9 @@ EOT
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $tracefile = $input->getOption('tracefile');
+        if (!is_string($tracefile)) {
+            return self::RETURN_CODE_ERROR;
+        }
         $append = $input->getOption('append');
         if (!is_bool($append)) {
             return self::RETURN_CODE_ERROR;

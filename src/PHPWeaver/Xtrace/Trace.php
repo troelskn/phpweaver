@@ -12,7 +12,7 @@ class Trace
     public $returnValue = 'void';
 
     /**
-     * @param string[] $arguments
+     * @param array<int, string> $arguments
      */
     public function __construct(string $function, array $arguments, bool $exited)
     {
