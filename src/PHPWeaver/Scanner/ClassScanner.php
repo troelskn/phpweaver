@@ -3,18 +3,10 @@
 /** Tracks the current class scope */
 class ClassScanner implements ScannerInterface
 {
-    /** @var int */
-    protected $currentClassScope = 0;
-    /** @var string */
-    protected $currentClass = '';
-    /** @var int */
-    protected $state = 0;
+    protected int $currentClassScope = 0;
+    protected string $currentClass = '';
+    protected int $state = 0;
 
-    /**
-     * @param Token $token
-     *
-     * @return void
-     */
     public function accept(Token $token): void
     {
         if ($token->isA(T_INTERFACE) || $token->isA(T_CLASS)) {
@@ -45,9 +37,6 @@ class ClassScanner implements ScannerInterface
         }
     }
 
-    /**
-     * @return string
-     */
     public function getCurrentClass(): string
     {
         return $this->currentClass;

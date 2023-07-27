@@ -16,8 +16,6 @@ class TraceCommand extends Command
 
     /**
      * Set up command parameteres and help message.
-     *
-     * @return void
      */
     protected function configure(): void
     {
@@ -45,11 +43,6 @@ EOT
 
     /**
      * Run the trace process.
-     *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
-     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {

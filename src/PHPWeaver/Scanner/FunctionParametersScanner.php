@@ -4,17 +4,10 @@
 class FunctionParametersScanner implements ScannerInterface
 {
     /** @var Token[] */
-    protected $signature = [];
-    /** @var int */
-    protected $parenCount = 0;
-    /** @var int */
-    protected $state = 0;
+    protected array $signature = [];
+    protected int $parenCount = 0;
+    protected int $state = 0;
 
-    /**
-     * @param Token $token
-     *
-     * @return void
-     */
     public function accept(Token $token): void
     {
         if ($token->isA(T_FUNCTION)) {
@@ -37,9 +30,6 @@ class FunctionParametersScanner implements ScannerInterface
         }
     }
 
-    /**
-     * @return bool
-     */
     public function isActive(): bool
     {
         return 0 !== $this->state;

@@ -3,16 +3,9 @@
 /** Tracks possible preludes for functions */
 class NamespaceScanner implements ScannerInterface
 {
-    /** @var int */
-    protected $state = 0;
-    /** @var string */
-    private $currentNamespace = '';
+    protected int $state = 0;
+    private string $currentNamespace = '';
 
-    /**
-     * @param Token $token
-     *
-     * @return void
-     */
     public function accept(Token $token): void
     {
         if ($token->isA(T_NAMESPACE)) {
@@ -35,9 +28,6 @@ class NamespaceScanner implements ScannerInterface
         }
     }
 
-    /**
-     * @return string
-     */
     public function getCurrentNamespace(): string
     {
         return $this->currentNamespace;

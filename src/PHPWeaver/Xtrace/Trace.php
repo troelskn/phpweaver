@@ -2,14 +2,11 @@
 
 class Trace
 {
-    /** @var string */
-    public $function;
+    public string $function;
     /** @var array<int, string> */
-    public $arguments;
-    /** @var bool */
-    public $exited;
-    /** @var string */
-    public $returnValue = 'void';
+    public array $arguments;
+    public bool $exited;
+    public string $returnValue = 'void';
 
     /**
      * @param array<int, string> $arguments

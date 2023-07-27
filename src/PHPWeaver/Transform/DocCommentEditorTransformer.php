@@ -8,25 +8,13 @@ use PHPWeaver\Scanner\TokenBuffer;
 
 class DocCommentEditorTransformer implements TransformerInterface
 {
-    /** @var FunctionBodyScanner */
-    protected $functionBodyScanner;
-    /** @var ModifiersScanner */
-    protected $modifiersScanner;
-    /** @var FunctionParametersScanner */
-    protected $parametersScanner;
-    /** @var BufferEditorInterface */
-    protected $editor;
-    /** @var int */
-    protected $state = 0;
-    /** @var TokenBuffer */
-    protected $buffer;
+    protected FunctionBodyScanner $functionBodyScanner;
+    protected ModifiersScanner $modifiersScanner;
+    protected FunctionParametersScanner $parametersScanner;
+    protected BufferEditorInterface $editor;
+    protected int $state = 0;
+    protected TokenBuffer $buffer;
 
-    /**
-     * @param FunctionBodyScanner       $functionBodyScanner
-     * @param ModifiersScanner          $modifiersScanner
-     * @param FunctionParametersScanner $parametersScanner
-     * @param BufferEditorInterface     $editor
-     */
     public function __construct(
         FunctionBodyScanner $functionBodyScanner,
         ModifiersScanner $modifiersScanner,
@@ -40,11 +28,6 @@ class DocCommentEditorTransformer implements TransformerInterface
         $this->buffer = new TokenBuffer();
     }
 
-    /**
-     * @param Token $token
-     *
-     * @return void
-     */
     public function accept(Token $token): void
     {
         if ($token->isA(T_DOC_COMMENT)) {
@@ -67,18 +50,12 @@ class DocCommentEditorTransformer implements TransformerInterface
         $this->buffer->append($token);
     }
 
-    /**
-     * @return void
-     */
     public function raiseBuffer(): void
     {
         $this->flushBuffers();
         $this->buffer = $this->buffer->raise();
     }
 
-    /**
-     * @return void
-     */
     public function flushBuffers(): void
     {
         while ($this->buffer->hasSuper()) {
@@ -86,9 +63,6 @@ class DocCommentEditorTransformer implements TransformerInterface
         }
     }
 
-    /**
-     * @return string
-     */
     public function getOutput(): string
     {
         $this->flushBuffers();
