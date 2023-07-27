@@ -2,15 +2,8 @@
 
 class FunctionArgument
 {
-    /** @var int */
-    protected $id;
     /** @var array<string, true> */
     protected $types = [];
-
-    public function __construct(int $id)
-    {
-        $this->id = $id;
-    }
 
     /**
      * @return bool

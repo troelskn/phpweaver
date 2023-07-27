@@ -7,7 +7,7 @@ class TraceSignatureLogger
 {
     /** @var Signatures */
     private $signatures;
-    /** @var string[] */
+    /** @var array<string, string> */
     private $typeMapping = [
         'TRUE'            => 'bool',
         'FALSE'           => 'false', // Falsable or tbd. bool
@@ -41,7 +41,7 @@ class TraceSignatureLogger
     /**
      * @param string[] $arguments
      *
-     * @return string[]
+     * @return array<int, string>
      */
     private function parseArguments(array $arguments): array
     {

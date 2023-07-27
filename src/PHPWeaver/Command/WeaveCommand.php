@@ -29,6 +29,9 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @psalm-suppress UnusedClass
+ */
 class WeaveCommand extends Command
 {
     const RETURN_CODE_OK = 0;
@@ -96,9 +99,15 @@ EOT
         $xdebug->check();
         unset($xdebug);
 
-        $pathsToWeave = $input->getArgument('path');
-        if (!is_array($pathsToWeave))
+        $paths = $input->getArgument('path');
+        if (!is_array($paths))
             return self::RETURN_CODE_ERROR;
+        $pathsToWeave = [];
+        foreach ($paths as $path) {
+            if (!is_string($path))
+                return self::RETURN_CODE_ERROR;
+            $pathsToWeave[] = $path;
+        }
         $tracefile = $input->getOption('tracefile');
         if (!is_string($tracefile))
             return self::RETURN_CODE_ERROR;
@@ -129,7 +138,10 @@ EOT
             if (is_dir($pathToWeave)) {
                 $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($pathToWeave));
                 $fileIterator = new RegexIterator($iterator, '/^.+\.php$/i', RecursiveRegexIterator::GET_MATCH);
+                /** @psalm-suppress MixedAssignment */
                 foreach ($fileIterator as $file) {
+                    if (!is_array($file) || !is_string($file[0]))
+                        continue;
                     $filesToWeave[] = $file[0];
                 }
 

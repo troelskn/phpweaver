@@ -4,19 +4,19 @@ use PHPWeaver\Reflector\ClassCollatorInterface;
 
 class FunctionSignature
 {
-    /** @var FunctionArgument[] */
+    /** @var array<int, FunctionArgument> */
     protected $arguments = [];
     /** @var FunctionArgument */
     protected $returnType;
 
     public function __construct()
     {
-        $this->returnType = new FunctionArgument(0);
+        $this->returnType = new FunctionArgument();
     }
 
     /**
-     * @param string[] $arguments
-     * @param string   $returnType
+     * @param array<int, string> $arguments
+     * @param string             $returnType
      *
      * @return void
      */
@@ -48,14 +48,14 @@ class FunctionSignature
     public function getArgumentById(int $id): FunctionArgument
     {
         if (!isset($this->arguments[$id])) {
-            $this->arguments[$id] = new FunctionArgument($id);
+            $this->arguments[$id] = new FunctionArgument();
         }
 
         return $this->arguments[$id];
     }
 
     /**
-     * @return FunctionArgument[]
+     * @return array<int, FunctionArgument>
      */
     public function getArguments(): array
     {
