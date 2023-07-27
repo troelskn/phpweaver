@@ -67,14 +67,14 @@ class TracerDocBlockEditor implements BufferEditorInterface
         foreach ($params as $name => $type) {
             $seenArgument = $seenArguments[$key];
             $seenArgument->collateWith($type);
-            $longestType = max((int)mb_strlen($seenArgument->getType()), $longestType);
+            $longestType = max(mb_strlen($seenArgument->getType()), $longestType);
             $params[$name] = $seenArgument->getType();
             ++$key;
         }
 
         $doc = "/**\n";
         foreach ($params as $name => $type) {
-            $doc .= '     * @param ' . $type . str_repeat(' ', $longestType - (int)mb_strlen($type) + 1) . $name . "\n";
+            $doc .= '     * @param ' . $type . str_repeat(' ', $longestType - mb_strlen($type) + 1) . $name . "\n";
         }
         if ('__construct' !== $func && '__destruct' !== $func) {
             if ($params) {

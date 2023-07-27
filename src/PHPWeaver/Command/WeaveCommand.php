@@ -92,7 +92,7 @@ EOT
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         // Restart if xdebug is loaded, unless the environment variable PHPWEAVER_ALLOW_XDEBUG is set.
-        $xdebug = new XdebugHandler('phpweaver', '--ansi');
+        $xdebug = new XdebugHandler('phpweaver');
         $xdebug->check();
         unset($xdebug);
 
