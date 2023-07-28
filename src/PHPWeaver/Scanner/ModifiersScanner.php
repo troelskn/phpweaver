@@ -3,14 +3,8 @@
 /** Tracks possible preludes for functions */
 class ModifiersScanner implements ScannerInterface
 {
-    /** @var int */
-    protected $state = 0;
+    protected int $state = 0;
 
-    /**
-     * @param Token $token
-     *
-     * @return void
-     */
     public function accept(Token $token): void
     {
         if ($this->isModifyer($token)) {
@@ -26,11 +20,6 @@ class ModifiersScanner implements ScannerInterface
         }
     }
 
-    /**
-     * @param Token $token
-     *
-     * @return bool
-     */
     private function isModifyable(Token $token): bool
     {
         return $token->isA(T_INTERFACE)
@@ -39,11 +28,6 @@ class ModifiersScanner implements ScannerInterface
             || $token->isA(T_VARIABLE);
     }
 
-    /**
-     * @param Token $token
-     *
-     * @return bool
-     */
     private function isModifyer(Token $token): bool
     {
         return $token->isA(T_PRIVATE)
@@ -54,9 +38,6 @@ class ModifiersScanner implements ScannerInterface
             || $token->isA(T_ABSTRACT);
     }
 
-    /**
-     * @return bool
-     */
     public function isActive(): bool
     {
         return 1 === $this->state;

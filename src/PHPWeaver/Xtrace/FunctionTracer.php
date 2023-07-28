@@ -2,16 +2,12 @@
 
 class FunctionTracer
 {
-    /** @var TraceSignatureLogger */
-    protected $handler;
+    protected TraceSignatureLogger $handler;
     /** @var array<int, Trace> */
-    protected $stack = [];
+    protected array $stack = [];
     /** @var string[] */
-    protected $internalFunctions = ['{main}', 'eval', 'include', 'include_once', 'require', 'require_once'];
+    protected array $internalFunctions = ['{main}', 'eval', 'include', 'include_once', 'require', 'require_once'];
 
-    /**
-     * @param TraceSignatureLogger $handler
-     */
     public function __construct(TraceSignatureLogger $handler)
     {
         $this->handler = $handler;
@@ -19,7 +15,6 @@ class FunctionTracer
 
     /**
      * @param array<int, string> $arguments
-     * @return void
      */
     public function functionCall(int $id, string $function, array $arguments): void
     {
@@ -34,10 +29,6 @@ class FunctionTracer
 
     /**
      * Set exit to true for the given call id.
-     *
-     * @param int $id
-     *
-     * @return void
      */
     public function markCallAsExited(int $id): void
     {
@@ -54,11 +45,6 @@ class FunctionTracer
      * Match a return value with the function call and log it.
      *
      * Note: The optimizer will remove unused retun values making them look like void returns
-     *
-     * @param int    $id
-     * @param string $value
-     *
-     * @return void
      */
     public function returnValue(int $id, string $value = 'void'): void
     {
@@ -75,8 +61,6 @@ class FunctionTracer
 
     /**
      * Set void as return type for prvious call if it has already exitede.
-     *
-     * @return void
      */
     private function closeVoidReturn(): void
     {

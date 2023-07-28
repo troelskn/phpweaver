@@ -5,10 +5,9 @@ use PHPWeaver\Signature\Signatures;
 
 class TraceSignatureLogger
 {
-    /** @var Signatures */
-    private $signatures;
-    /** @var string[] */
-    private $typeMapping = [
+    private Signatures $signatures;
+    /** @var array<string, string> */
+    private array $typeMapping = [
         'TRUE'            => 'bool',
         'FALSE'           => 'false', // Falsable or tbd. bool
         'NULL'            => 'null',
@@ -18,17 +17,11 @@ class TraceSignatureLogger
         '...'             => 'array',
     ];
 
-    /**
-     * @param Signatures $signatures
-     */
     public function __construct(Signatures $signatures)
     {
         $this->signatures = $signatures;
     }
 
-    /**
-     * @return void
-     */
     public function log(Trace $trace): void
     {
         $sig = $this->signatures->get($trace->function);
@@ -41,7 +34,7 @@ class TraceSignatureLogger
     /**
      * @param string[] $arguments
      *
-     * @return string[]
+     * @return array<int, string>
      */
     private function parseArguments(array $arguments): array
     {
@@ -54,13 +47,9 @@ class TraceSignatureLogger
     }
 
     /**
-     * @param string $type
-     *
      * @todo fuzzy type detection (float or int in string)
      *
      * @throws Exception
-     *
-     * @return string
      */
     public function parseType(string $type): string
     {
@@ -68,7 +57,7 @@ class TraceSignatureLogger
             return $this->typeMapping[$type];
         }
 
-        $typeTransforms = ['~^(array) \(.*\)$~s', '~^class (\S+)~s', '~^(resource)\(\d+\)~s'];
+        $typeTransforms = ['/^(array) \(.*\)$/s', '/^class (\S+)/s', '/^enum (\S+)::/s', '/^(resource)\(\d+\)/s'];
         foreach ($typeTransforms as $regex) {
             if (preg_match($regex, $type, $match)) {
                 if ('array' === $match[1]) {
@@ -79,12 +68,12 @@ class TraceSignatureLogger
             }
         }
 
-        if (preg_match('~^\[.*\]$~s', $type, $match)) {
+        if (preg_match('/^\[.*\]$/s', $type, $match)) {
             return $this->getArrayType($type, true);
         }
 
         if (is_numeric($type)) {
-            if (preg_match('~^-?\d+$~', $type)) {
+            if (preg_match('/^-?\d+$/', $type)) {
                 return 'int';
             }
 
@@ -100,10 +89,6 @@ class TraceSignatureLogger
 
     /**
      * Determin the array sub-type.
-     *
-     * @param string $arrayType
-     *
-     * @return string
      */
     public function getArrayType(string $arrayType, bool $xdebug3 = false): string
     {
@@ -119,24 +104,22 @@ class TraceSignatureLogger
     /**
      * Extract the array elements from an array trace.
      *
-     * @param string $type
-     *
      * @return array<int, string>
      */
     private function getArrayElements(string $type, bool $xdebug3 = false): array
     {
         // Remove array wrapper
         if ($xdebug3) {
-            preg_match('~^\[(.*?)(?:, )?\.{0,3}\]$~s', $type, $match);
+            preg_match('/^\[(.*?)(?:, )?\.{0,3}\]$/s', $type, $match);
         } else {
-            preg_match('~^array \((.*?)(?:, )?\.{0,3}\)$~s', $type, $match);
+            preg_match('/^array \((.*?)(?:, )?\.{0,3}\)$/s', $type, $match);
         }
         if (empty($match[1])) {
             return [];
         }
 
         // Find each string|int key followed by double arrow, taking \' into account
-        $rawSubTypes = preg_split('~(?:, |^)(?:(?:\'.+?(?:(?<!\\\\)\')+)|\d) => ~s', $match[1]);
+        $rawSubTypes = preg_split('/(?:, |^)(?:(?:\'.+?(?:(?<!\\\\\\\\)\')+)|\d+) => /s', $match[1]);
         if (false === $rawSubTypes) {
             throw new Exception('Unable to build regex');
         }
@@ -151,8 +134,6 @@ class TraceSignatureLogger
      * @todo Find common class/interface/trait for object types
      *
      * @param array<string, true> $subTypes
-     *
-     * @return string
      */
     private function formatArrayType(array $subTypes): string
     {

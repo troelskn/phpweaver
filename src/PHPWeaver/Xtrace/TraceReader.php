@@ -5,12 +5,8 @@
  */
 class TraceReader
 {
-    /** @var FunctionTracer */
-    protected $handler;
+    protected FunctionTracer $handler;
 
-    /**
-     * @param FunctionTracer $handler
-     */
     public function __construct(FunctionTracer $handler)
     {
         $this->handler = $handler;
@@ -18,10 +14,6 @@ class TraceReader
 
     /**
      * Process a trace line.
-     *
-     * @param string $line
-     *
-     * @return void
      */
     public function processLine(string $line): void
     {

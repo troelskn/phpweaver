@@ -2,27 +2,14 @@
 
 class FunctionArgument
 {
-    /** @var int */
-    protected $id;
     /** @var array<string, true> */
-    protected $types = [];
+    protected array $types = [];
 
-    public function __construct(int $id)
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * @return bool
-     */
     public function isUndefined(): bool
     {
         return !$this->types;
     }
 
-    /**
-     * @return string
-     */
     public function getType(): string
     {
         if ($this->isUndefined()) {
@@ -67,11 +54,6 @@ class FunctionArgument
         return $types;
     }
 
-    /**
-     * @param string $type
-     *
-     * @return void
-     */
     public function collateWith(string $type): void
     {
         if ('???' === $type) {

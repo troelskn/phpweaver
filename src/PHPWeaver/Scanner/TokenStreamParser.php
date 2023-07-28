@@ -3,11 +3,6 @@
 /** parses a string -> tokenstream */
 class TokenStreamParser
 {
-    /**
-     * @param string $source
-     *
-     * @return TokenStream
-     */
     public function scan(string $source): TokenStream
     {
         //todo: track indentation

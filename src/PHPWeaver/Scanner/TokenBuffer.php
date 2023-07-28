@@ -3,53 +3,34 @@
 /** Used by transformers */
 class TokenBuffer
 {
-    /** @var static|null */
-    protected $super;
+    /** @var ?static */
+    protected ?self $super;
     /** @var Token[] */
-    protected $tokens = [];
+    protected array $tokens = [];
 
     /**
-     * @param static|null $super
+     * @param ?static $super
      */
-    public function __construct(self $super = null)
+    public function __construct(?self $super = null)
     {
         $this->super = $super;
     }
 
-    /**
-     * @param Token $token
-     *
-     * @return void
-     */
     public function prepend(Token $token): void
     {
         array_unshift($this->tokens, $token);
     }
 
-    /**
-     * @param Token $token
-     *
-     * @return void
-     */
     public function append(Token $token): void
     {
         $this->tokens[] = $token;
     }
 
-    /**
-     * @return ?Token
-     */
     public function getFirstToken(): ?Token
     {
         return isset($this->tokens[0]) ? $this->tokens[0] : null;
     }
 
-    /**
-     * @param Token $token
-     * @param Token $newToken
-     *
-     * @return void
-     */
     public function replaceToken(Token $token, Token $newToken): void
     {
         $tmp = [];
@@ -65,25 +46,16 @@ class TokenBuffer
         $this->tokens = $tmp;
     }
 
-    /**
-     * @return bool
-     */
     public function hasSuper(): bool
     {
         return (bool) $this->super;
     }
 
-    /**
-     * @return self
-     */
     public function raise(): self
     {
         return new self($this);
     }
 
-    /**
-     * @return self
-     */
     public function flush(): self
     {
         if (!$this->super) {
@@ -98,9 +70,6 @@ class TokenBuffer
         return $this->super;
     }
 
-    /**
-     * @return string
-     */
     public function toText(): string
     {
         $out = '';

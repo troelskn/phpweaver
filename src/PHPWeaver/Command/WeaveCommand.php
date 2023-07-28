@@ -29,31 +29,25 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @psalm-suppress UnusedClass
+ */
 class WeaveCommand extends Command
 {
     const RETURN_CODE_OK = 0;
     const RETURN_CODE_ERROR = 1;
     const REFRESH_RATE_INTERVAL = 0.033333334; // 30hz
 
-    /** @var int */
-    private $nextSteps = 0;
-    /** @var float */
-    private $nextUpdate = 0.0;
-    /** @var ?SymfonyStyle */
-    private $output;
-    /** @var ?ProgressBar */
-    private $progressBar;
-    /** @var ?TokenStreamParser */
-    private $tokenizer;
-    /** @var ?ScannerMultiplexer */
-    private $scanner;
-    /** @var ?DocCommentEditorTransformer */
-    private $transformer;
+    private int $nextSteps = 0;
+    private float $nextUpdate = 0.0;
+    private ?SymfonyStyle $output = null;
+    private ?ProgressBar $progressBar = null;
+    private ?TokenStreamParser $tokenizer = null;
+    private ?ScannerMultiplexer $scanner = null;
+    private ?DocCommentEditorTransformer $transformer = null;
 
     /**
      * Set up command parameteres and help message.
-     *
-     * @return void
      */
     protected function configure(): void
     {
@@ -83,22 +77,23 @@ EOT
 
     /**
      * Run the weave process.
-     *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     *
-     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         // Restart if xdebug is loaded, unless the environment variable PHPWEAVER_ALLOW_XDEBUG is set.
-        $xdebug = new XdebugHandler('phpweaver', '--ansi');
+        $xdebug = new XdebugHandler('phpweaver');
         $xdebug->check();
         unset($xdebug);
 
-        $pathsToWeave = $input->getArgument('path');
-        if (!is_array($pathsToWeave))
+        $paths = $input->getArgument('path');
+        if (!is_array($paths))
             return self::RETURN_CODE_ERROR;
+        $pathsToWeave = [];
+        foreach ($paths as $path) {
+            if (!is_string($path))
+                return self::RETURN_CODE_ERROR;
+            $pathsToWeave[] = $path;
+        }
         $tracefile = $input->getOption('tracefile');
         if (!is_string($tracefile))
             return self::RETURN_CODE_ERROR;
@@ -129,7 +124,10 @@ EOT
             if (is_dir($pathToWeave)) {
                 $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($pathToWeave));
                 $fileIterator = new RegexIterator($iterator, '/^.+\.php$/i', RecursiveRegexIterator::GET_MATCH);
+                /** @psalm-suppress MixedAssignment */
                 foreach ($fileIterator as $file) {
+                    if (!is_array($file) || !is_string($file[0]))
+                        continue;
                     $filesToWeave[] = $file[0];
                 }
 
@@ -148,10 +146,6 @@ EOT
 
     /**
      * Parse the trace file.
-     *
-     * @param string $tracefile
-     *
-     * @return Signatures
      */
     private function parseTrace(string $tracefile): Signatures
     {
@@ -181,10 +175,7 @@ EOT
      *
      * @refactor Avoid need to check if scanner and trasformer where created
      *
-     * @param string[]   $filesToWeave
-     * @param Signatures $sigs
-     *
-     * @return void
+     * @param string[] $filesToWeave
      */
     private function transformFiles(array $filesToWeave, Signatures $sigs): void
     {
@@ -213,10 +204,6 @@ EOT
 
     /**
      * Initialize the php parser.
-     *
-     * @param Signatures $sigs
-     *
-     * @return void
      */
     private function setupFileProcesser(Signatures $sigs): void
     {
@@ -255,11 +242,6 @@ EOT
      * Start a progressbar on the ouput.
      *
      * @refactor Avoid need to check if output has been created
-     *
-     * @param int    $steps
-     * @param string $message
-     *
-     * @return void
      */
     private function progressBarStart(int $steps, string $message): void
     {
@@ -286,10 +268,6 @@ EOT
      * Advance the progress bare by steps.
      *
      * Rate limited to avoid performance issues.
-     *
-     * @param int $steps
-     *
-     * @return void
      */
     private function progressBarAdvance(int $steps = 1): void
     {
@@ -310,8 +288,6 @@ EOT
 
     /**
      * Set the progress to 100% and clear it from the output.
-     *
-     * @return void
      */
     private function progressBarEnd(): void
     {

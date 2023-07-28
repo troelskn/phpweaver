@@ -1,0 +1,49 @@
+name: PHP CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php_version: [7.4, 8.0, 8.1, 8.2]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php_version }}
+          coverage: xdebug # Enable Xdebug extension, required by the project and used for coverage
+
+      - name: Install dependencies
+        run: composer install
+
+      - name: Install Code Climate Test Reporter
+        run: |
+          curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+          chmod +x ./cc-test-reporter
+
+      - name: Run Code Climate before-build
+        run: ./cc-test-reporter before-build
+
+      - name: Run tests and analysis
+        run: |
+          vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+          vendor/bin/psalm
+          vendor/bin/phpstan analyze
+
+      - name: Codecov
+        uses: codecov/codecov-action@v1.5.2
+        with:
+          files: build/logs/clover.xml

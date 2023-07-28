@@ -11,13 +11,11 @@
  */
 
 /**
- * @param string $file
- *
- * @return ?object
+ * @psalm-suppress MixedInferredReturnType
  */
-function includeIfExists(string $file)
+function includeIfExists(string $file): ?object
 {
-	/** @psalm-suppress UnresolvableInclude */
+    /** @psalm-suppress MixedReturnStatement */
     return file_exists($file) ? include $file : null;
 }
 

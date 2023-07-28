@@ -93,7 +93,7 @@ class TracerTest extends TestCase
         $commandTester = new CommandTester(new TraceCommand());
         $commandTester->execute(['phpscript' => $this->sandbox() . '/main.php']);
         $output = $commandTester->getDisplay();
-        static::assertRegExp('~TRACE COMPLETE\n$~', $output);
+        static::assertStringEndsWith("TRACE COMPLETE\n", $output);
     }
 
     /**
