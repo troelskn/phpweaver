@@ -119,7 +119,7 @@ class TraceSignatureLogger
         }
 
         // Find each string|int key followed by double arrow, taking \' into account
-        $rawSubTypes = preg_split('/(?:, |^)(?:(?:\'.+?(?:(?<!\\\\\\\\)\')+)|\d) => /s', $match[1]);
+        $rawSubTypes = preg_split('/(?:, |^)(?:(?:\'.+?(?:(?<!\\\\\\\\)\')+)|\d+) => /s', $match[1]);
         if (false === $rawSubTypes) {
             throw new Exception('Unable to build regex');
         }
