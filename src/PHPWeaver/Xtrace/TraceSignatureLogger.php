@@ -57,7 +57,7 @@ class TraceSignatureLogger
             return $this->typeMapping[$type];
         }
 
-        $typeTransforms = ['~^(array) \(.*\)$~s', '~^class (\S+)~s', '~^(resource)\(\d+\)~s'];
+        $typeTransforms = ['/^(array) \(.*\)$/s', '/^class (\S+)/s', '/^(resource)\(\d+\)/s'];
         foreach ($typeTransforms as $regex) {
             if (preg_match($regex, $type, $match)) {
                 if ('array' === $match[1]) {
@@ -68,12 +68,12 @@ class TraceSignatureLogger
             }
         }
 
-        if (preg_match('~^\[.*\]$~s', $type, $match)) {
+        if (preg_match('/^\[.*\]$/s', $type, $match)) {
             return $this->getArrayType($type, true);
         }
 
         if (is_numeric($type)) {
-            if (preg_match('~^-?\d+$~', $type)) {
+            if (preg_match('/^-?\d+$/', $type)) {
                 return 'int';
             }
 
@@ -110,16 +110,16 @@ class TraceSignatureLogger
     {
         // Remove array wrapper
         if ($xdebug3) {
-            preg_match('~^\[(.*?)(?:, )?\.{0,3}\]$~s', $type, $match);
+            preg_match('/^\[(.*?)(?:, )?\.{0,3}\]$/s', $type, $match);
         } else {
-            preg_match('~^array \((.*?)(?:, )?\.{0,3}\)$~s', $type, $match);
+            preg_match('/^array \((.*?)(?:, )?\.{0,3}\)$/s', $type, $match);
         }
         if (empty($match[1])) {
             return [];
         }
 
         // Find each string|int key followed by double arrow, taking \' into account
-        $rawSubTypes = preg_split('~(?:, |^)(?:(?:\'.+?(?:(?<!\\\\)\')+)|\d) => ~s', $match[1]);
+        $rawSubTypes = preg_split('/(?:, |^)(?:(?:\'.+?(?:(?<!\\\\\\\\)\')+)|\d) => /s', $match[1]);
         if (false === $rawSubTypes) {
             throw new Exception('Unable to build regex');
         }
