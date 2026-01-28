@@ -29,14 +29,6 @@ jobs:
       - name: Install dependencies
         run: composer install
 
-      - name: Install Code Climate Test Reporter
-        run: |
-          curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-          chmod +x ./cc-test-reporter
-
-      - name: Run Code Climate before-build
-        run: ./cc-test-reporter before-build
-
       - name: Run tests and analysis
         run: |
           vendor/bin/phpunit --coverage-clover build/logs/clover.xml
